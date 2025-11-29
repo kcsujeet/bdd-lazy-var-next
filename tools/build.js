@@ -91,9 +91,9 @@ async function main() {
   await Bun.write('dist/.gitkeep', '');
   
   // Build all three dialects
-  await buildBundle('./src/dialects/bdd.js', './dist/index.js');
-  await buildBundle('./src/dialects/bdd_global_var.js', './dist/global.js');
-  await buildBundle('./src/dialects/bdd_getter_var.js', './dist/getter.js');
+  await buildBundle('./src/dialects/bdd.ts', './dist/index.js');
+  await buildBundle('./src/dialects/bdd_global_var.ts', './dist/global.js');
+  await buildBundle('./src/dialects/bdd_getter_var.ts', './dist/getter.js');
   
   console.log('\n✓ All builds completed successfully!');
 }

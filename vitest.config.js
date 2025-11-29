@@ -5,7 +5,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    setupFiles: ['./src/features/jest/setup.js'],
-    include: ['src/dialects/**/*.spec.js'],
+    setupFiles: ['./src/features/jest/setup.ts'],
+    include: ['src/dialects/**/*.spec.ts'],
   },
 });

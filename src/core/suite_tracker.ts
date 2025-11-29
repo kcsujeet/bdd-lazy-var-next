@@ -1,12 +1,27 @@
-const { Metadata } = require('./metadata');
+import { Metadata } from "./metadata";
 
-class SuiteTracker {
-  constructor(config = {}) {
-    this.state = { currentlyDefinedSuite: config.rootSuite, contexts: [config.rootSuite] };
+export interface SuiteTrackerConfig {
+  rootSuite?: any;
+  suiteTracker?: any;
+}
+
+export class SuiteTracker {
+  state: { currentlyDefinedSuite: any; contexts: any[] };
+
+  suiteTracker: any;
+
+  suites: any[];
+
+  constructor(config: SuiteTrackerConfig = {}) {
+    this.state = {
+      currentlyDefinedSuite: config.rootSuite,
+      contexts: [config.rootSuite],
+    };
     this.suiteTracker = config.suiteTracker;
     this.suites = [];
     this.cleanUpCurrentContext = this.cleanUpCurrentContext.bind(this);
-    this.cleanUpCurrentAndRestorePrevContext = this.cleanUpCurrentAndRestorePrevContext.bind(this);
+    this.cleanUpCurrentAndRestorePrevContext =
+      this.cleanUpCurrentAndRestorePrevContext.bind(this);
   }
 
   get currentContext() {
@@ -17,17 +32,27 @@ class SuiteTracker {
     return this.state.currentlyDefinedSuite;
   }
 
-  wrapSuite(describe) {
+  wrapSuite(describe: Function) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const tracker = this;
 
-    return function detectSuite(title, defineTests, ...suiteArgs) {
-      return describe(title, function defineSuite(...args) {
-        tracker.trackSuite(this, defineTests, args);
-      }, ...suiteArgs);
+    return function detectSuite(
+      this: any,
+      title: string,
+      defineTests: Function,
+      ...suiteArgs: any[]
+    ) {
+      return describe(
+        title,
+        function defineSuite(this: any, ...args: any[]) {
+          tracker.trackSuite(this, defineTests, args);
+        },
+        ...suiteArgs
+      );
     };
   }
 
-  trackSuite(suite, defineTests, args) {
+  trackSuite(suite: any, defineTests: Function, args: any[]) {
     const previousDefinedSuite = this.state.currentlyDefinedSuite;
 
     this.defineMetaFor(suite);
@@ -36,7 +61,7 @@ class SuiteTracker {
     this.state.currentlyDefinedSuite = previousDefinedSuite;
   }
 
-  defineMetaFor(suite) {
+  defineMetaFor(suite: any) {
     const meta = Metadata.ensureDefinedOn(suite);
     const parentMeta = Metadata.of(suite.parent || suite.parentSuite);
 
@@ -45,7 +70,7 @@ class SuiteTracker {
     }
   }
 
-  execute(defineTests, suite, args) {
+  execute(defineTests: Function, suite: any, args: any[]) {
     this.suiteTracker.before(this, suite);
     defineTests.apply(suite, args);
 
@@ -54,15 +79,17 @@ class SuiteTracker {
     }
   }
 
-  isRoot(suite) {
-    return !(suite.parent ? suite.parent.parent : suite.parentSuite.parentSuite);
+  isRoot(suite: any) {
+    return !(suite.parent
+      ? suite.parent.parent
+      : suite.parentSuite.parentSuite);
   }
 
-  registerSuite(context) {
+  registerSuite(context: any) {
     this.state.contexts.push(context);
   }
 
-  cleanUp(context) {
+  cleanUp(context: any) {
     const metadata = Metadata.of(context);
 
     if (metadata) {
@@ -79,5 +106,3 @@ class SuiteTracker {
     this.state.contexts.pop();
   }
 }
-
-module.exports = SuiteTracker;

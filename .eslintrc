@@ -1,10 +1,17 @@
 {
-  "extends": "airbnb-base",
+  "extends": ["airbnb-base", "plugin:@typescript-eslint/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
   "env": {
     "node": true
   },
   "settings": {
-    "import/core-modules": ["bun:test"]
+    "import/core-modules": ["bun:test"],
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
   },
   "rules": {
     "no-plusplus": "off",
@@ -17,18 +24,40 @@
     "no-confusing-arrow": "off",
     "no-return-assign": "off",
     "arrow-body-style": "off",
-    "no-use-before-define": ["error", { "functions": false }],
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["error", { "functions": false }],
     "class-methods-use-this": "off",
     "prefer-destructuring": "off",
-    "max-classes-per-file": "off"
+    "max-classes-per-file": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-unsafe-function-type": "off",
+    "@typescript-eslint/no-require-imports": "off",
+    "@typescript-eslint/no-unused-expressions": "off",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_" }],
+    "max-len": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
+    "import/no-import-module-exports": "off"
   },
   "overrides": [
     {
       "files": [
-        "src/dialects/**/*.spec.js",
-        "src/test/**/*.js",
-        "src/features/**/preloads/*.js",
-        "src/features/**/setup.js",
+        "src/dialects/**/*.spec.ts",
+        "src/test/**/*.ts",
+        "src/features/**/preloads/*.ts",
+        "src/features/**/setup.ts",
         "tools/**/*.js"
       ],
       "env": {
