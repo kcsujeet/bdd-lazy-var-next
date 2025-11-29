@@ -1,5 +1,13 @@
 # BDD Lazy Var Next - AI Agent Instructions
 
+## Critical Instruction: Use Bun
+
+**ALWAYS use `bun` instead of `npm` for running scripts and installing packages.**
+
+- Run scripts: `bun run <script-name>` (e.g., `bun run test`, `bun run build`)
+- Install packages: `bun install`
+- Run tests: `bun test` (or via scripts like `bun run test.bun`)
+
 ## Project Overview
 
 This is **bdd-lazy-var-next**, a testing DSL library that adds RSpec-style lazy variable definitions to JavaScript testing frameworks (Mocha, Jasmine, Jest, Vitest, Bun). It provides three dialects for accessing lazy variables: `$varName` (global), `get.varName` (getter), and `get('varName')` (function).
@@ -10,7 +18,7 @@ This is **bdd-lazy-var-next**, a testing DSL library that adds RSpec-style lazy 
 
 ## Key Architectural Components
 
-### 1. Variable Evaluation System (`lib/variable.js` & `lib/metadata.js`)
+### 1. Variable Evaluation System (`src/core/variable.js` & `src/core/metadata.js`)
 
 - **Lazy evaluation**: Variables are only instantiated when accessed, not when defined
 - **Variable stack**: Tracks currently-evaluating variables to enable parent context access via `$subject` within child definitions
@@ -29,22 +37,22 @@ describe("nested", () => {
 });
 ```
 
-### 2. Framework Integration (`lib/interface/`)
+### 2. Framework Integration (`src/features/`)
 
 - Auto-detects testing framework: checks for `jest` global → `jasmine` global → `Bun.jest` → `vitest` → `mocha` module
 - Each framework adapter (`mocha.js`, `jasmine.js`, `jest.js`, `vitest.js`, `bun.js`) wraps suite/test functions to track lifecycle
-- **Suite tracking** (`lib/suite_tracker.js`): Wraps `describe` to maintain current context and register cleanup hooks
+- **Suite tracking** (`src/core/suite_tracker.js`): Wraps `describe` to maintain current context and register cleanup hooks
 - Mocha uses `on('pre-require')` events; Jasmine/Jest/Vitest/Bun use direct monkey-patching
 
 ### 3. Dialects & Build System
 
-Three UMD bundles built via Rollup (`tools/rollup.umd.js`):
+Three UMD bundles built via Bun (`tools/build.js`):
 
 - `index.js`: `get('varName')` syntax
 - `global.js`: `$varName` syntax (uses `defineGetter` to create global properties)
 - `getter.js`: `get.varName` syntax (uses Proxy)
 
-**Build workflow**: `npm run build` → compiles `lib/interface/dialects/bdd_*.js` → transpiles with Babel → creates UMD with optional peer deps
+**Build workflow**: `bun run build` → compiles `src/dialects/bdd_*.js` → transpiles with Babel → creates UMD with optional peer deps
 
 ## Development Workflows
 
@@ -73,14 +81,14 @@ npm test  # Runs all combinations
 ### Code Conventions
 
 - **Airbnb style** with exceptions in `.eslintrc` (no-plusplus off, comma-dangle off, etc.)
-- Use `Symbol.for()` for private property keys (see `lib/symbol.js`)
+- Use `Symbol.for()` for private property keys (see `src/utils/symbol.js`)
 - No ES6 classes except `Variable` and `Metadata` classes
 - Factory functions return object literals with closures over dependencies
 
 ### Adding Features
 
-1. **Add to core interface** (`lib/interface.js`) - implements framework-agnostic logic
-2. **Update framework adapters** if lifecycle hooks needed (e.g., `lib/interface/mocha.js`)
+1. **Add to core interface** (`src/core/interface.js`) - implements framework-agnostic logic
+2. **Update framework adapters** if lifecycle hooks needed (e.g., `src/features/mocha/index.js`)
 3. **Add TypeScript definitions** to `interface.d.ts` (and `getter.d.ts` for getter dialect)
 4. **Test with shared examples** in `spec/interface_examples.js` to validate across all frameworks
 

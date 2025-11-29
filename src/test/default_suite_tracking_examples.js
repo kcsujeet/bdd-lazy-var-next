@@ -1,8 +1,6 @@
-
 const { expect } = require('chai');
 
 sharedExamplesFor('Default suite tracking', function(getVar) {
-
   describe('when using variable inside another variable definition', function() {
     var user = { firstName: 'John', lastName: 'Doe' };
     var index = 0;
@@ -46,17 +44,17 @@ sharedExamplesFor('Default suite tracking', function(getVar) {
     });
 
     describe('nested suite', function() {
-      var user = { firstName: 'Alex' };
+      var nestedUser = { firstName: 'Alex' };
 
       before(function() {
         expect(getVar('currentIndex')).to.equal(cast(currentIndex));
       });
 
-      beforeEach(function usesOwnDefinedVariableInBeforeEachCallbackEvenWhenItIsRunForNestedTests() {
+      beforeEach(function usesOwnDefinedVariableInBeforeEachCallbackEvenWhenItIsRunForNestedTests() { // eslint-disable-line max-len
         expect(getVar('currentIndex')).to.equal(cast(currentIndex));
       });
 
-      afterEach(function usesOwnDefinedVariableInAfterEachCallbackEvenWhenItIsRunForNestedTests() {
+      afterEach(function usesOwnDefinedVariableInAfterEachCallbackEvenWhenItIsRunForNestedTests() { // eslint-disable-line max-len
         expect(getVar('currentIndex')).to.equal(cast(currentIndex));
       });
 
@@ -64,7 +62,7 @@ sharedExamplesFor('Default suite tracking', function(getVar) {
         expect(getVar('currentIndex')).to.equal(cast(currentIndex));
       });
 
-      def('firstName', user.firstName);
+      def('firstName', nestedUser.firstName);
 
       def('currentIndex', function() {
         return cast(getVar('currentIndex'));
@@ -79,7 +77,7 @@ sharedExamplesFor('Default suite tracking', function(getVar) {
       });
 
       it('computes parent variable using redefined variable', function() {
-        expect(getVar('personName')).to.equal(user.firstName + ' ' + getVar('lastName'));
+        expect(getVar('personName')).to.equal(nestedUser.firstName + ' ' + getVar('lastName'));
       });
 
       it('can redefine parent variable with the same name and access value of parent variable inside definition', function() {

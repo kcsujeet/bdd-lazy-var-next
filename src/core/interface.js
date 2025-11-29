@@ -1,6 +1,6 @@
 const { Metadata } = require('./metadata');
 const Variable = require('./variable');
-const { parseMessage, humanize } = require('./parse_message');
+const { parseMessage, humanize } = require('../utils/parse_message');
 
 module.exports = (context, tracker, options) => {
   const get = (varName) => {

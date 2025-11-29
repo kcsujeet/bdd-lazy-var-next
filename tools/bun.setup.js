@@ -30,4 +30,4 @@ require(`../${srcFile}`);
 require('../spec/config');
 require('../spec/interface_examples');
 require('../spec/default_suite_tracking_examples');
-require('../spec/shared_behavior_spec');
+require('../src/test/shared_behavior.spec');

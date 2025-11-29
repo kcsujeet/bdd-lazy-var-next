@@ -1,5 +1,5 @@
-const createLazyVarInterface = require('../interface');
-const SuiteTracker = require('../suite_tracker');
+const createLazyVarInterface = require('../../core/interface');
+const SuiteTracker = require('../../core/suite_tracker');
 
 function createSuiteTracker() {
   return {
@@ -62,7 +62,10 @@ function addInterface(rootSuite, options) {
 module.exports = {
   createUi(name, options) {
     const config = { Tracker: SuiteTracker, ...options };
+    const rootSuite = global.jasmine && typeof global.jasmine.getEnv === 'function'
+      ? global.jasmine.getEnv().topSuite()
+      : { parent: null, parentSuite: null };
 
-    return addInterface(global.jasmine.getEnv().topSuite(), config);
+    return addInterface(rootSuite, config);
   }
 };

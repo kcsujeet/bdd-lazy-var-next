@@ -1,6 +1,6 @@
 const Mocha = require('mocha'); // eslint-disable-line
-const createLazyVarInterface = require('../interface');
-const SuiteTracker = require('../suite_tracker');
+const createLazyVarInterface = require('../../core/interface');
+const SuiteTracker = require('../../core/suite_tracker');
 
 function createSuiteTracker() {
   return {

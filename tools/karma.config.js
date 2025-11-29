@@ -11,11 +11,11 @@ module.exports = function(config) {
   srcFiles.unshift(
     'node_modules/chai/chai.js',
     'node_modules/chai-spies/chai-spies.js',
-    'spec/config.js'
+    'src/test/config.js'
   );
   specs.unshift(
-    'spec/interface_examples.js',
-    'spec/default_suite_tracking_examples.js'
+    'src/test/interface_examples.js',
+    'src/test/default_suite_tracking_examples.js'
   );
 
   config.set({

@@ -51,11 +51,11 @@ export default {
   },
   plugins: [
     commonjs({
-      include: 'lib/**',
+      include: 'src/**',
       ignoreGlobal: true
     }),
     inject({
-      include: 'lib/**',
+      include: 'src/**',
       global: resolvePath('./tools/globals/global.js')
     }),
     babel({

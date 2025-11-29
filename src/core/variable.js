@@ -1,5 +1,5 @@
 const { Metadata } = require('./metadata');
-const Symbol = require('./symbol');
+const Symbol = require('../utils/symbol');
 
 const CURRENTLY_RETRIEVED_VAR_FIELD = Symbol.for('__currentVariableStack');
 const last = (array) => array ? array[array.length - 1] : null;

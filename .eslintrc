@@ -1,5 +1,11 @@
 {
   "extends": "airbnb-base",
+  "env": {
+    "node": true
+  },
+  "settings": {
+    "import/core-modules": ["bun:test"]
+  },
   "rules": {
     "no-plusplus": "off",
     "comma-dangle": "off",
@@ -15,5 +21,54 @@
     "class-methods-use-this": "off",
     "prefer-destructuring": "off",
     "max-classes-per-file": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "src/dialects/**/*.spec.js",
+        "src/test/**/*.js",
+        "src/features/**/preloads/*.js",
+        "src/features/**/setup.js",
+        "tools/**/*.js"
+      ],
+      "env": {
+        "mocha": true,
+        "jasmine": true,
+        "jest": true
+      },
+      "globals": {
+        "sharedExamplesFor": "readonly",
+        "includeExamplesFor": "readonly",
+        "itBehavesLike": "readonly",
+        "def": "readonly",
+        "subject": "readonly",
+        "get": "readonly",
+        "expect": "readonly",
+        "spy": "readonly",
+        "is": "readonly",
+        "its": "readonly",
+        "xits": "readonly",
+        "xcontext": "readonly",
+        "$subject": "readonly",
+        "$anotherVar": "readonly",
+        "$bddLazyCounter": "readonly"
+      },
+      "rules": {
+        "import/no-extraneous-dependencies": "off",
+        "no-undef": "off",
+        "func-names": "off",
+        "prefer-arrow-callback": "off",
+        "space-before-function-paren": "off",
+        "no-unused-expressions": "off",
+        "no-var": "off",
+        "vars-on-top": "off",
+        "one-var": "off",
+        "one-var-declaration-per-line": "off",
+        "prefer-template": "off",
+        "global-require": "off",
+        "import/no-dynamic-require": "off",
+        "import/extensions": "off"
+      }
+    }
+  ]
 }

@@ -1,9 +1,8 @@
-
 const { expect } = require('chai');
+
 const describe = global.context || global.describe;
 
 sharedExamplesFor('Lazy Vars Interface', function(getVar) {
-
   describe('by default', function() {
     var definition;
     var value = {};
@@ -22,7 +21,7 @@ sharedExamplesFor('Lazy Vars Interface', function(getVar) {
 
     beforeEach(function() {
       definition = spy();
-    })
+    });
 
     it('does not create variable if it has not been accessed', function() {
       expect(definition).not.to.have.been.called();
@@ -139,7 +138,7 @@ sharedExamplesFor('Lazy Vars Interface', function(getVar) {
 
       it('can define other variables inside', function() {
         expect(getVar('hasVariables')).to.be.true;
-      })
+      });
 
       describe('nested suite with variable definition', function() {
         def('var', function() {
@@ -321,7 +320,7 @@ sharedExamplesFor('Lazy Vars Interface', function(getVar) {
           value: 10
         },
         getName() {
-          return 'John'
+          return 'John';
         }
       };
     });
@@ -351,10 +350,10 @@ sharedExamplesFor('Lazy Vars Interface', function(getVar) {
 });
 
 sharedExamplesFor('Root Lazy Vars', function(getVar) {
-  const varName = `hello.${Date.now()}.${Math.random()}`
+  const varName = `hello.${Date.now()}.${Math.random()}`;
 
   def(varName, function() {
-    return 'world'
+    return 'world';
   });
 
   it('allows to define lazy vars at root level', function() {

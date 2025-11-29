@@ -22,7 +22,7 @@ describe('Shared behavior', function() {
     var fnDefinition = spy();
 
     try {
-      includeExamplesFor('__non_existing')
+      includeExamplesFor('__non_existing');
     } catch (error) {
       includeError = error;
     }
@@ -32,7 +32,7 @@ describe('Shared behavior', function() {
     includeExamplesFor(fnDefinition, args[0]);
 
     it('throws error when trying to include non-existing shared examples', function() {
-      expect(includeError.message).to.match(/not defined shared behavior/)
+      expect(includeError.message).to.match(/not defined shared behavior/);
     });
 
     it('calls registered shared examples with specified arguments', function() {
@@ -41,7 +41,7 @@ describe('Shared behavior', function() {
 
     it('accepts function as the 1st argument and call it', () => {
       expect(fnDefinition).to.have.been.called.with.exactly(args[0]);
-    })
+    });
   });
 
   describe('`itBehavesLike`', function() {
@@ -98,8 +98,8 @@ describe('Shared behavior', function() {
 
       it('defines examples scoped to the suite tree', function() {
         expect(isExamplesProperlyDefined).to.be.true;
-        expect(missedError).to.match(/not defined shared behavior/)
+        expect(missedError).to.match(/not defined shared behavior/);
       });
-    })
+    });
   });
 });

@@ -1,4 +1,4 @@
-const prop = require('./symbol').for;
+const prop = require('../utils/symbol').for;
 
 const LAZY_VARS_PROP_NAME = prop('__lazyVars');
 

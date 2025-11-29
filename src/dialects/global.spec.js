@@ -1,17 +1,14 @@
 const { expect, spy } = require('chai');
 
 function getVar(name) {
-  return get[name];
+  return global['$' + name];
 }
 
 includeExamplesFor('Root Lazy Vars', getVar);
 
-describe('Lazy vars defined as getter on "get" function', function() {
+describe('Interface with globally defined lazy vars', function() {
   includeExamplesFor('Lazy Vars Interface', getVar);
-
-  subject(function() {
-    return {};
-  });
+  includeExamplesFor('Default suite tracking', getVar);
 
   describe('by default', function() {
     subject(function() {
@@ -22,18 +19,18 @@ describe('Lazy vars defined as getter on "get" function', function() {
     def('anotherVar', 'Doe');
 
     try {
-      get.bddLazyCounter = 2;
+      global.$bddLazyCounter = 2;
       def('bddLazyCounter', 5);
-    } catch(e) {
-      get.bddLazyCounter = null;
+    } catch (e) {
+      global.$bddLazyCounter = null;
     }
 
-    it('defines a getter for lazy variable', function() {
-      expect(get.subject).to.exist;
+    it('defines a getter on global object for lazy variable with name prefixed by "$"', function() {
+      expect(global.$subject).to.exist;
     });
 
-    it('allows to access lazy variable value by checking property on "get" function', function() {
-      expect(get.subject).to.equal(subject());
+    it('allows to access lazy variable value by its name', function() {
+      expect($subject).to.equal(subject());
     });
 
     it('forwards calls to `get` function when access variable', function() {
@@ -41,14 +38,14 @@ describe('Lazy vars defined as getter on "get" function', function() {
       var originalGet = global.get;
 
       global.get = accessor;
-      originalGet.anotherVar;
+      $anotherVar;
       global.get = originalGet;
 
       expect(accessor).to.have.been.called.with('anotherVar');
     });
 
     it('does not allow to redefine existing variable in global context', function() {
-      expect(get.bddLazyCounter).to.be.null;
+      expect($bddLazyCounter).to.be.null;
     });
   });
 });

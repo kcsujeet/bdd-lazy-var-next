@@ -1,4 +1,4 @@
-const Symbol = require('./symbol');
+const Symbol = require('../utils/symbol');
 
 const LAZY_VARS_FIELD = Symbol.for('__lazyVars');
 const EXAMPLES_PREFIX = '__SH_EX:';

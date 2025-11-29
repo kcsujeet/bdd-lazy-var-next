@@ -6,7 +6,7 @@
     window.global = window;
     factory(window.chai, window);
   }
-})(function(chai, globalContext) {
+}(function(chai, globalContext) {
   globalContext.expect = chai.expect;
   globalContext.spy = chai.spy;
 
@@ -19,10 +19,12 @@
       globalContext.after = bunTest.afterAll;
       globalContext.beforeAll = bunTest.beforeAll;
       globalContext.afterAll = bunTest.afterAll;
-    } catch (e) {}
+    } catch (e) {
+      // ignore
+    }
   }
 
   if (globalContext.afterAll) {
     globalContext.after = globalContext.afterAll;
   }
-});
+}));

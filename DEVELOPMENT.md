@@ -90,7 +90,7 @@ This project uses [Husky](https://typicode.github.io/husky/) and [lint-staged](h
 
 Before each commit, lint-staged will:
 
-- Run ESLint on staged JavaScript files in `lib/`
+- Run ESLint on staged JavaScript files in `src/`
 - Auto-fix linting issues where possible
 - Abort commit if there are unfixable linting errors
 
@@ -129,7 +129,7 @@ This will:
 
 ```
 bdd-lazy-var-next/
-├── lib/                          # Source code
+├── src/                          # Source code
 │   ├── interface/               # Framework adapters
 │   │   ├── mocha.js            # Mocha adapter
 │   │   ├── jasmine.js          # Jasmine adapter
