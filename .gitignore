@@ -59,8 +59,5 @@ typings/
 # dotenv environment variables file
 .env
 
-# dist
-index.js
-global.js
-getter.js
-/*.js.map
+# Build output
+dist/

@@ -1,3 +1,5 @@
+const { expect, spy } = require('chai');
+
 function getVar(name) {
   return global['$' + name];
 }

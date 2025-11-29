@@ -1,33 +1,34 @@
 # BDD + lazy variable definition (aka rspec)
 
-[![BDD Lazy Var NPM version](https://badge.fury.io/js/bdd-lazy-var.svg)](http://badge.fury.io/js/bdd-lazy-var)
-[![Build Status](https://travis-ci.org/stalniy/bdd-lazy-var.svg?branch=master)](https://travis-ci.org/stalniy/bdd-lazy-var)
-[![Maintainability](https://api.codeclimate.com/v1/badges/65f79ae494101ba5f757/maintainability)](https://codeclimate.com/github/stalniy/bdd-lazy-var/maintainability)
-[![BDD Lazy Var Join the chat at https://gitter.im/bdd-lazy-var/Lobby](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bdd-lazy-var/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+> **Note**: This is a community-maintained fork of the original [bdd-lazy-var](https://github.com/stalniy/bdd-lazy-var) with added support for Vitest and Bun test frameworks.
 
-Provides "ui" for testing frameworks such as [mocha][mocha], [jasmine][jasmine] and [jest][jest] which allows to define lazy variables and subjects.
+[![NPM version](https://badge.fury.io/js/bdd-lazy-var-next.svg)](http://badge.fury.io/js/bdd-lazy-var-next)
+[![CI](https://github.com/kcsujeet/bdd-lazy-var-next/workflows/CI/badge.svg)](https://github.com/kcsujeet/bdd-lazy-var-next/actions)
+[![GitHub](https://img.shields.io/github/license/kcsujeet/bdd-lazy-var-next)](https://github.com/kcsujeet/bdd-lazy-var-next/blob/master/LICENSE)
+
+Provides "ui" for testing frameworks such as [mocha][mocha], [jasmine][jasmine], [jest][jest], [vitest][vitest] and [bun:test][bun] which allows to define lazy variables and subjects.
 
 ## Purpose
 
 ### The old way
 
 ```js
-describe('Suite', function() {
+describe("Suite", function () {
   var name;
 
-  beforeEach(function() {
+  beforeEach(function () {
     name = getName();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     name = null;
   });
 
-  it('uses name variable', function() {
+  it("uses name variable", function () {
     expect(name).to.exist;
   });
 
-  it('does not use name but anyway it is created in beforeEach', function() {
+  it("does not use name but anyway it is created in beforeEach", function () {
     expect(1).to.equal(1);
   });
 });
@@ -52,14 +53,14 @@ In an attempt to address these issues, I had with my e2e tests, I decided to cre
 So the original code above looks something like this:
 
 ```js
-describe('Suite', () => {
-  def('name', () => `John Doe ${Math.random()}`);
+describe("Suite", () => {
+  def("name", () => `John Doe ${Math.random()}`);
 
-  it('defines `name` variable', () => {
-    expect($name).to.exist
+  it("defines `name` variable", () => {
+    expect($name).to.exist;
   });
 
-  it('does not use name, so it is not created', () => {
+  it("does not use name, so it is not created", () => {
     expect(1).to.equal(1);
   });
 });
@@ -119,9 +120,10 @@ and you would like to reuse tests for a different class or object.
 To do this [Wiki of Mocha.js](https://github.com/mochajs/mocha/wiki/Shared-Behaviours) recommend to move your tests into separate function and call it whenever you need it.
 
 I prefer to be more explicit in doing this, that's why created few helper methods:
-* `sharedExamplesFor` - defines a set of reusable tests. When you call this function, it just stores your tests
-* `includeExamplesFor` - runs previously defined examples in current context (i.e., in current `describe`)
-* `itBehavesLike` - runs defined examples in nested context (i.e., in nested `describe`)
+
+- `sharedExamplesFor` - defines a set of reusable tests. When you call this function, it just stores your tests
+- `includeExamplesFor` - runs previously defined examples in current context (i.e., in current `describe`)
+- `itBehavesLike` - runs defined examples in nested context (i.e., in nested `describe`)
 
 `sharedExamplesFor` defines shared examples in the scope of the currently defining suite.
 If you call this function outside `describe` (or `context`) it defines shared examples globally.
@@ -135,109 +137,120 @@ use them.
   <summary>shared examples group included in two groups in one file</summary>
 
 ```js
-sharedExamplesFor('a collection', () => {
-  it('has three items', () => {
-    expect($subject.size).to.equal(3)
-  })
+sharedExamplesFor("a collection", () => {
+  it("has three items", () => {
+    expect($subject.size).to.equal(3);
+  });
 
-  describe('#has', () => {
-    it('returns true with an item that is in the collection', () => {
-      expect($subject.has(7)).to.be.true
-    })
+  describe("#has", () => {
+    it("returns true with an item that is in the collection", () => {
+      expect($subject.has(7)).to.be.true;
+    });
 
-    it('returns false with an item that is not in the collection', () => {
-      expect($subject.has(9)).to.be.false
-    })
-  })
-})
+    it("returns false with an item that is not in the collection", () => {
+      expect($subject.has(9)).to.be.false;
+    });
+  });
+});
 
-describe('Set', () => {
-  subject(() => new Set([1, 2, 7]))
+describe("Set", () => {
+  subject(() => new Set([1, 2, 7]));
 
-  itBehavesLike('a collection')
-})
+  itBehavesLike("a collection");
+});
 
-describe('Map', () => {
-  subject(() => new Map([[2, 1], [7, 5], [3, 4]]))
+describe("Map", () => {
+  subject(
+    () =>
+      new Map([
+        [2, 1],
+        [7, 5],
+        [3, 4],
+      ])
+  );
 
-  itBehavesLike('a collection')
-})
+  itBehavesLike("a collection");
+});
 ```
+
 </details>
 
 <details>
   <summary>Passing parameters to a shared example group</summary>
 
 ```js
-sharedExamplesFor('a collection', (size, existingItem, nonExistingItem) => {
-  it('has three items', () => {
-    expect($subject.size).to.equal(size)
-  })
+sharedExamplesFor("a collection", (size, existingItem, nonExistingItem) => {
+  it("has three items", () => {
+    expect($subject.size).to.equal(size);
+  });
 
-  describe('#has', () => {
-    it('returns true with an item that is in the collection', () => {
-      expect($subject.has(existingItem)).to.be.true
-    })
+  describe("#has", () => {
+    it("returns true with an item that is in the collection", () => {
+      expect($subject.has(existingItem)).to.be.true;
+    });
 
-    it('returns false with an item that is not in the collection', () => {
-      expect($subject.has(nonExistingItem)).to.be.false
-    })
-  })
-})
+    it("returns false with an item that is not in the collection", () => {
+      expect($subject.has(nonExistingItem)).to.be.false;
+    });
+  });
+});
 
-describe('Set', () => {
-  subject(() => new Set([1, 2, 7]))
+describe("Set", () => {
+  subject(() => new Set([1, 2, 7]));
 
-  itBehavesLike('a collection', 3, 2, 10)
-})
+  itBehavesLike("a collection", 3, 2, 10);
+});
 
-describe('Map', () => {
-  subject(() => new Map([[2, 1]]))
+describe("Map", () => {
+  subject(() => new Map([[2, 1]]));
 
-  itBehavesLike('a collection', 1, 2, 3)
-})
+  itBehavesLike("a collection", 1, 2, 3);
+});
 ```
+
 </details>
 
 <details>
   <summary>Passing lazy vars to a shared example group</summary>
 
 There are 2 ways how to pass lazy variables:
-* all variables are inherited by nested contexts (i.e., `describe` calls),
-so you can rely on variable name, as it was done with `subject` in previous examples
-* you can pass variable definition using `get.variable` helper
+
+- all variables are inherited by nested contexts (i.e., `describe` calls),
+  so you can rely on variable name, as it was done with `subject` in previous examples
+- you can pass variable definition using `get.variable` helper
 
 ```js
-sharedExamplesFor('a collection', (collection) => {
-  def('collection', collection)
+sharedExamplesFor("a collection", (collection) => {
+  def("collection", collection);
 
-  it('has three items', () => {
-    expect($collection.size).to.equal(1)
-  })
+  it("has three items", () => {
+    expect($collection.size).to.equal(1);
+  });
 
-  describe('#has', () => {
-    it('returns true with an item that is in the collection', () => {
-      expect($collection.has(7)).to.be.true
-    })
+  describe("#has", () => {
+    it("returns true with an item that is in the collection", () => {
+      expect($collection.has(7)).to.be.true;
+    });
 
-    it('returns false with an item that is not in the collection', () => {
-      expect($collection.has(9)).to.be.false
-    })
-  })
-})
+    it("returns false with an item that is not in the collection", () => {
+      expect($collection.has(9)).to.be.false;
+    });
+  });
+});
 
-describe('Set', () => {
-  subject(() => new Set([7]))
+describe("Set", () => {
+  subject(() => new Set([7]));
 
-  itBehavesLike('a collection', get.variable('subject'))
-})
+  itBehavesLike("a collection", get.variable("subject"));
+});
 
-describe('Map', () => {
-  subject(() => new Map([[2, 1]]))
+describe("Map", () => {
+  subject(() => new Map([[2, 1]]));
 
-  itBehavesLike('a collection', get.variable('subject'))
-})
+  itBehavesLike("a collection", get.variable("subject"));
+});
 ```
+
 </details>
 
 ## Shortcuts
@@ -249,18 +262,18 @@ To do this quickly you can use `its` or `it` without message:
   <summary>Shortcuts example</summary>
 
 ```js
-describe('Array', () => {
+describe("Array", () => {
   subject(() => ({
     items: [1, 2, 3],
-    name: 'John'
-  }))
+    name: "John",
+  }));
 
-  its('items.length', () => is.expected.to.equal(3)) // i.e. expect($subject.items.length).to.equal(3)
-  its('name', () => is.expected.to.equal('John')) // i.e. expect($subject.name).to.equal('John')
+  its("items.length", () => is.expected.to.equal(3)); // i.e. expect($subject.items.length).to.equal(3)
+  its("name", () => is.expected.to.equal("John")); // i.e. expect($subject.name).to.equal('John')
 
   // i.e. expect($subject).to.have.property('items').which.has.length(3)
-  it(() => is.expected.to.have.property('items').which.has.length(3))
-})
+  it(() => is.expected.to.have.property("items").which.has.length(3));
+});
 ```
 
 Also it generates messages for you based on passed in function body. The example above reports:
@@ -273,6 +286,7 @@ Also it generates messages for you based on passed in function body. The example
     name
       ✓ is expected to equal('John')
 ```
+
 </details>
 
 **Note**: if you use `mocha` and `chai` make sure that defines `global.expect = chai.expect`, otherwise `is.expected` will throw error that `context.expect` is `undefined`.
@@ -280,15 +294,16 @@ Also it generates messages for you based on passed in function body. The example
 ## Installation
 
 ```bash
-npm install bdd-lazy-var --save-dev
+npm install bdd-lazy-var-next --save-dev
 ```
 
 <details>
   <summary>Mocha.js</summary>
 
 #### Command line
+
 ```sh
-mocha -u bdd-lazy-var/global
+mocha -u bdd-lazy-var-next/global
 ```
 
 #### In JavaScript
@@ -296,10 +311,10 @@ mocha -u bdd-lazy-var/global
 See [Using Mocha programatically](https://github.com/mochajs/mocha/wiki/Using-mocha-programmatically)
 
 ```js
-const Mocha = require('mocha');
+const Mocha = require("mocha");
 
 const mocha = new Mocha({
-  ui: 'bdd-lazy-var/global' // bdd-lazy-var or bdd-lazy-var/getter
+  ui: "bdd-lazy-var-next/global", // bdd-lazy-var-next or bdd-lazy-var-next/getter
 });
 
 mocha.addFile(...)
@@ -308,7 +323,7 @@ mocha.run(...)
 // !!! Important the next code should be written in a separate file
 // later you can either use `get` and `def` as global functions
 // or export them from corresponding module
-const { get, def } = require('bdd-lazy-var/global');
+const { get, def } = require('bdd-lazy-var-next/global');
 
 describe('Test', () => {
   // ...
@@ -320,19 +335,21 @@ describe('Test', () => {
 **Note** requires `karma-mocha` `^1.1.1`
 
 So, in `karma.config.js` it looks like this:
+
 ```js
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     // ....
     client: {
       mocha: {
-        ui: 'bdd-lazy-var/global',
-        require: [require.resolve('bdd-lazy-var/global')]
-      }
-    }
+        ui: "bdd-lazy-var-next/global",
+        require: [require.resolve("bdd-lazy-var-next/global")],
+      },
+    },
   });
-}
+};
 ```
+
 </details>
 
 <details>
@@ -341,13 +358,13 @@ module.exports = function(config) {
 #### Command line
 
 ```sh
-jasmine --helper=node_modules/bdd-lazy-var/global.js
+jasmine --helper=node_modules/bdd-lazy-var-next/global.js
 ```
 
 or using `spec/spec_helper.js`
 
 ```js
-require('bdd-lazy-var/global');
+require("bdd-lazy-var-next/global");
 
 // ... other helper stuff
 ```
@@ -363,16 +380,16 @@ jasmine --helper=spec/*_helper.js
 When you want programatically run jasmine
 
 ```js
-require('jasmine-core');
+require("jasmine-core");
 
 // !!! Important the next code should be written in a separate file
 // later you can either use `get` and `def` as global functions
 // or export them from corresponding module
-const { get, def } = require('bdd-lazy-var/global');
+const { get, def } = require("bdd-lazy-var-next/global");
 
-describe('Test', () => {
+describe("Test", () => {
   // ...
-})
+});
 ```
 
 #### Using karma (via karma-jasmine npm package)
@@ -380,16 +397,17 @@ describe('Test', () => {
 So, in `karma.config.js` it looks like this:
 
 ```js
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     // ....
     files: [
-      'node_modules/bdd-lazy-var/global.js',
+      "node_modules/bdd-lazy-var-next/global.js",
       // ... your specs here
-    ]
+    ],
   });
-}
+};
 ```
+
 </details>
 
 <details>
@@ -400,13 +418,13 @@ module.exports = function(config) {
 Use Jest as usually if you export `get` and `def` from corresponding module
 
 ```js
-jest
+jest;
 ```
 
 In case you want to use global `get` and `def`
 
 ```sh
-jest --setupTestFrameworkScriptFile bdd-lazy-var/global
+jest --setupTestFrameworkScriptFile bdd-lazy-var-next/global
 ```
 
 #### In JavaScript
@@ -414,37 +432,106 @@ jest --setupTestFrameworkScriptFile bdd-lazy-var/global
 ```js
 // later you can either use `get` and `def` as global functions
 // or export them from relative module
-const { get, def } = require('bdd-lazy-var/global');
+const { get, def } = require("bdd-lazy-var-next/global");
 ```
+
+</details>
+
+<details>
+  <summary>Vitest</summary>
+
+#### Command line
+
+Use Vitest as usual if you export `get` and `def` from the corresponding module
+
+```js
+vitest;
+```
+
+In case you want to use global `get` and `def`, add to your `vitest.config.js`:
+
+```js
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    setupFiles: ["bdd-lazy-var-next/global"],
+  },
+});
+```
+
+#### In JavaScript
+
+```js
+// You can either use `get` and `def` as global functions
+// or export them from the module
+import { get, def } from "bdd-lazy-var-next/global";
+```
+
+</details>
+
+<details>
+  <summary>Bun Test</summary>
+
+#### Command line
+
+Use Bun test as usual if you export `get` and `def` from the corresponding module
+
+```sh
+bun test
+```
+
+In case you want to use global `get` and `def`, create a test setup file and add `--preload` flag:
+
+```sh
+bun test --preload ./setup.js
+```
+
+Where `setup.js` contains:
+
+```js
+require("bdd-lazy-var-next/global");
+```
+
+#### In JavaScript
+
+```js
+// You can either use `get` and `def` as global functions
+// or export them from the module
+import { get, def } from "bdd-lazy-var-next/global";
+```
+
 </details>
 
 ## Dialects
 
-`bdd-lazy-var` provides 3 different dialects:
-* access variables by referencing `$<variableName>` (the recommended one, available by requiring `bdd-lazy-var/global`)
-* access variables by referencing `get.<variableName>` (more strict, available by requiring `bdd-lazy-var/getter`)
-* access variables by referencing `get('<variableName>')` (the most strict and less readable way, available by requiring `bdd-lazy-var`)
+`bdd-lazy-var-next` provides 3 different dialects:
+
+- access variables by referencing `$<variableName>` (the recommended one, available by requiring `bdd-lazy-var-next/global`)
+- access variables by referencing `get.<variableName>` (more strict, available by requiring `bdd-lazy-var-next/getter`)
+- access variables by referencing `get('<variableName>')` (the most strict and less readable way, available by requiring `bdd-lazy-var-next`)
 
 All are bundled as UMD versions. Each dialect is compiled in a separate file and should be required or provided for testing framework.
 
 ### Aliases
 
-In accordance with Rspec's DDL, `context`, `xcontext`, and `fcontext` have been aliased to their related `describe` commands for both the Jest and Jasmine testing libraries. Mocha's BDD interface already provides this keyword.
+In accordance with Rspec's DDL, `context`, `xcontext`, and `fcontext` have been aliased to their related `describe` commands for the Jest, Jasmine, Vitest, and Bun test libraries. Mocha's BDD interface already provides this keyword.
 
 ## The Core Features
-* lazy instantiation, allows variable composition
-* automatically cleaned after each test
-* accessible inside `before/beforeAll`, `after/afterAll` callbacks
-* named `subject`s to be more explicit
-* ability to shadow parent's variable
-* variable inheritance with access to parent variables
-* supports typescript
+
+- lazy instantiation, allows variable composition
+- automatically cleaned after each test
+- accessible inside `before/beforeAll`, `after/afterAll` callbacks
+- named `subject`s to be more explicit
+- ability to shadow parent's variable
+- variable inheritance with access to parent variables
+- supports typescript
 
 For more information, read [the article on Medium](https://medium.com/@sergiy.stotskiy/lazy-variables-with-mocha-js-d6063503104c#.ceo9jvrzh).
 
 ## TypeScript Notes
 
-It's also possible to use `bdd-lazy-var` with TypeScript. The best integrated dialects are `get` and `getter`. To do so, you need either include corresponding definitions in your [tsconfig.json](http://www.typescriptlang.org/docs/handbook/tsconfig-json.html) or use ES6 module system.
+It's also possible to use `bdd-lazy-var-next` with TypeScript. The best integrated dialects are `get` and `getter`. To do so, you need either include corresponding definitions in your [tsconfig.json](http://www.typescriptlang.org/docs/handbook/tsconfig-json.html) or use ES6 module system.
 
 <details>
   <summary>tsconfig.json</summary>
@@ -459,28 +546,30 @@ It's also possible to use `bdd-lazy-var` with TypeScript. The best integrated di
   },
   "include": [
     "src/**/*",
-    "node_modules/bdd-lazy-var/index.d.ts" // for `get('<variableName>')` syntax
+    "node_modules/bdd-lazy-var-next/index.d.ts" // for `get('<variableName>')` syntax
     // or
-    "node_modules/bdd-lazy-var/getter.d.ts" // for `get.<variableName>` syntax
+    "node_modules/bdd-lazy-var-next/getter.d.ts" // for `get.<variableName>` syntax
   ]
 }
 ```
+
 </details>
 
 <details>
   <summary>ES6 module system</summary>
 
 ```js
-import { get, def } from 'bdd-lazy-var'
+import { get, def } from "bdd-lazy-var-next";
 // or
-import { get, def } from 'bdd-lazy-var/getter'
+import { get, def } from "bdd-lazy-var-next/getter";
 
-describe('My Test', () => {
+describe("My Test", () => {
   // ....
-})
+});
 ```
 
 In this case TypeScript loads corresponding declarations automatically
+
 </details>
 
 It's a bit harder to work with `global` dialect. It creates global getters on the fly, so there is no way to let TypeScript know something about these variables, thus you need to `declare` them manually.
@@ -489,19 +578,20 @@ It's a bit harder to work with `global` dialect. It creates global getters on th
   <summary>TypeScript and global dialect</summary>
 
 ```ts
-import { def } from 'bdd-lazy-var/global'
+import { def } from "bdd-lazy-var-next/global";
 
-describe('My Test', () => {
-  declare let $value: number // <-- need to place this declarations manually
-  def('value', () => 5)
+describe("My Test", () => {
+  declare let $value: number; // <-- need to place this declarations manually
+  def("value", () => 5);
 
-  it('equals 5', () => {
-    expect($value).to.equal(5)
-  })
-})
+  it("equals 5", () => {
+    expect($value).to.equal(5);
+  });
+});
 ```
 
 As with other dialects you can either use `import` statements to load typings automatically or add them manually in `tsconfig.json`
+
 </details>
 
 ## Examples
@@ -510,37 +600,39 @@ As with other dialects you can either use `import` statements to load typings au
   <summary>Test with subject</summary>
 
 ```js
-describe('Array', () => {
+describe("Array", () => {
   subject(() => [1, 2, 3]);
 
-  it('has 3 elements by default', () => {
+  it("has 3 elements by default", () => {
     expect($subject).to.have.length(3);
   });
 });
 ```
+
 </details>
 
 <details>
   <summary>Named subject</summary>
 
 ```js
-describe('Array', () => {
-  subject('collection', () => [1, 2, 3]);
+describe("Array", () => {
+  subject("collection", () => [1, 2, 3]);
 
-  it('has 3 elements by default', () => {
+  it("has 3 elements by default", () => {
     expect($subject).to.equal($collection);
     expect($collection).to.have.length(3);
   });
 });
 ```
+
 </details>
 
 <details>
   <summary>`beforeEach` and redefined subject</summary>
 
 ```js
-describe('Array', () => {
-  subject('collection', () => [1, 2, 3]);
+describe("Array", () => {
+  subject("collection", () => [1, 2, 3]);
 
   beforeEach(() => {
     // this beforeEach is executed for tests of suite with subject equal [1, 2, 3]
@@ -548,48 +640,50 @@ describe('Array', () => {
     $subject.push(4);
   });
 
-  it('has 3 elements by default', () => {
+  it("has 3 elements by default", () => {
     expect($subject).to.equal($collection);
     expect($collection).to.have.length(3);
   });
 
-  describe('when empty', () => {
+  describe("when empty", () => {
     subject(() => []);
 
-    it('has 1 element', () => {
+    it("has 1 element", () => {
       expect($subject).not.to.equal($collection);
       expect($collection).to.deep.equal([4]);
     });
   });
 });
 ```
+
 </details>
 
 <details>
   <summary>Access parent variable in child variable definition</summary>
 
 ```js
-describe('Array', () => {
-  subject('collection', () => [1, 2, 3]);
+describe("Array", () => {
+  subject("collection", () => [1, 2, 3]);
 
-  it('has 3 elements by default', () => {
+  it("has 3 elements by default", () => {
     expect($subject).to.equal($collection);
     expect($collection).to.have.length(3);
   });
 
-  describe('when empty', () => {
+  describe("when empty", () => {
     subject(() => {
       // in this definition `$subject` references parent $subject (i.e., `$collection` variable)
       return $subject.concat([4, 5]);
     });
 
-    it('is properly uses parent subject', () => {
+    it("is properly uses parent subject", () => {
       expect($subject).not.to.equal($collection);
       expect($collection).to.deep.equal([1, 2, 3, 4, 5]);
     });
   });
 });
 ```
+
 </details>
 
 ## Want to help?
@@ -603,4 +697,6 @@ Want to file a bug, contribute some code, or improve documentation? Excellent! R
 [mocha]: https://mochajs.org
 [jasmine]: https://jasmine.github.io/2.0/introduction.html
 [jest]: https://facebook.github.io/jest/docs/en/getting-started.html
-[contributing]: https://github.com/stalniy/bdd-lazy-var/blob/master/CONTRIBUTING.md
+[vitest]: https://vitest.dev
+[bun]: https://bun.sh/docs/cli/test
+[contributing]: https://github.com/kcsujeet/bdd-lazy-var-next/blob/master/CONTRIBUTING.md

@@ -45,10 +45,18 @@ describe('Shared behavior', function() {
   });
 
   describe('`itBehavesLike`', function() {
-    var examples = spy();
+    var examples = spy(function() {
+      if (typeof it === 'function') {
+        it('dummy', function() {});
+      }
+    });
     var args = [{}, {}];
     var spiedDescribe = spy.on(global, 'describe');
-    var fnBehavior = spy();
+    var fnBehavior = spy(function() {
+      if (typeof it === 'function') {
+        it('dummy', function() {});
+      }
+    });
 
     sharedExamplesFor('__Collection', examples);
     itBehavesLike('__Collection', args[0], args[1]);
@@ -72,6 +80,9 @@ describe('Shared behavior', function() {
     describe('suite with `sharedExamplesFor(__test__)`', function() {
       sharedExamplesFor('__test__', function() {
         isExamplesProperlyDefined = true;
+        if (typeof it === 'function') {
+          it('dummy', function() {});
+        }
       });
       includeExamplesFor('__test__');
     });

@@ -1,4 +1,9 @@
+
+const { expect } = require('chai');
+const describe = global.context || global.describe;
+
 sharedExamplesFor('Lazy Vars Interface', function(getVar) {
+
   describe('by default', function() {
     var definition;
     var value = {};

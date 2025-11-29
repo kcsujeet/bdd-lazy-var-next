@@ -1,18 +1,21 @@
 {
-  "name": "bdd-lazy-var",
-  "version": "2.6.1",
-  "author": "Sergii Stotskyi",
-  "description": "Provides \"ui\" for testing frameworks such as mocha/jasmine which allows to define lazy variables and subjects",
+  "name": "bdd-lazy-var-next",
+  "version": "0.0.1",
+  "author": "Sujeet Kc",
+  "description": "Provides \"ui\" for testing frameworks such as mocha/jasmine/jest/vitest/bun which allows to define lazy variables and subjects",
   "license": "MIT",
   "readmeFilename": "README.md",
   "repository": {
     "type": "git",
-    "url": "git@github.com:stalniy/bdd-lazy-var.git"
+    "url": "git@github.com:kcsujeet/bdd-lazy-var-next.git"
   },
   "keywords": [
     "mocha.js",
     "jasmine",
     "jest",
+    "vitest",
+    "bun",
+    "bun:test",
     "bdd",
     "lazy",
     "variable",
@@ -22,14 +25,15 @@
     "rspec"
   ],
   "bugs": {
-    "url": "https://github.com/stalniy/bdd-lazy-var/issues"
+    "url": "https://github.com/kcsujeet/bdd-lazy-var-next/issues"
   },
-  "main": "./index",
+  "main": "./dist/index.js",
   "peerDependencies": {
     "jasmine": ">=2",
     "jasmine-core": ">=2",
     "jest": ">=20",
-    "mocha": ">=2.3"
+    "mocha": ">=2.3",
+    "vitest": ">=1.0.0"
   },
   "peerDependenciesMeta": {
     "jasmine": {
@@ -43,6 +47,9 @@
     },
     "mocha": {
       "optional": true
+    },
+    "vitest": {
+      "optional": true
     }
   },
   "devDependencies": {
@@ -53,56 +60,69 @@
     "@semantic-release/changelog": "^6.0.0",
     "@semantic-release/git": "^10.0.0",
     "babel-plugin-transform-object-assign": "^6.22.0",
-    "chai": "^5.0.0",
+    "chai": "^4.0.0",
     "chai-spies": "^1.0.0",
     "eslint": "^8.0.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.20.1",
-    "jasmine": "^5.0.0",
+    "husky": "^9.1.7",
+    "jasmine": "^4.0.0",
     "jest": "^30.0.0",
     "karma": "^6.0.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-jasmine": "^5.0.0",
     "karma-mocha": "^2.0.0",
+    "lint-staged": "^16.2.7",
     "mocha": "^11.0.0",
     "puppeteer": "^24.0.0",
-    "rollup": "^4.0.0",
-    "@rollup/plugin-babel": "^6.0.0",
-    "rollup-plugin-commonjs": "^10.0.0",
-    "rollup-plugin-inject": "^3.0.0",
-    "semantic-release": "^24.0.0"
+    "semantic-release": "^24.0.0",
+    "vitest": "^3.2.4"
   },
   "scripts": {
     "mocha": "NODE_PATH=. mocha -r spec/config spec/*_examples.js spec/shared_behavior_spec.js",
-    "test.mocha-ui": "npm run mocha -- -u index.js spec/interface_spec.js",
-    "test.mocha-global": "npm run mocha -- -u global.js spec/global_defs_spec.js",
-    "test.mocha-getter": "npm run mocha -- -u getter.js spec/getter_defs_spec.js",
+    "test.mocha-ui": "npm run mocha -- -u dist/index.js spec/interface_spec.js",
+    "test.mocha-global": "npm run mocha -- -u dist/global.js spec/global_defs_spec.js",
+    "test.mocha-getter": "npm run mocha -- -u dist/getter.js spec/getter_defs_spec.js",
     "test.mocha": "npm run test.mocha-ui && npm run test.mocha-global && npm run test.mocha-getter",
-    "test.browser-mocha-ui": "karma start -u bdd-lazy-var --src index.js --specs spec/interface_spec.js tools/karma.config.js",
-    "test.browser-mocha-global": "karma start -u bdd-lazy-var/global --src global.js --specs spec/global_defs_spec.js,spec/interface_spec.js tools/karma.config.js",
-    "test.browser-mocha-getter": "karma start -u bdd-lazy-var/getter --src getter.js --specs spec/getter_defs_spec.js,spec/interface_spec.js tools/karma.config.js",
+    "test.browser-mocha-ui": "karma start -u bdd-lazy-var-next --src dist/index.js --specs spec/interface_spec.js tools/karma.config.js",
+    "test.browser-mocha-global": "karma start -u bdd-lazy-var-next/global --src dist/global.js --specs spec/global_defs_spec.js,spec/interface_spec.js tools/karma.config.js",
+    "test.browser-mocha-getter": "karma start -u bdd-lazy-var-next/getter --src dist/getter.js --specs spec/getter_defs_spec.js,spec/interface_spec.js tools/karma.config.js",
     "test.mocha-in-browser": "npm run test.browser-mocha-ui && npm run test.browser-mocha-global && npm run test.browser-mocha-getter",
-    "test.jasmine-ui": "node tools/jasmine index.js interface_spec.js",
-    "test.jasmine-global": "node tools/jasmine global.js global_defs_spec.js",
-    "test.jasmine-getter": "node tools/jasmine getter.js getter_defs_spec.js",
+    "test.jasmine-ui": "node tools/jasmine dist/index.js interface_spec.js",
+    "test.jasmine-global": "node tools/jasmine dist/global.js global_defs_spec.js",
+    "test.jasmine-getter": "node tools/jasmine dist/getter.js getter_defs_spec.js",
     "test.jasmine": "npm run test.jasmine-ui && npm run test.jasmine-global && npm run test.jasmine-getter",
-    "test.browser-jasmine-ui": "karma start -f jasmine --src index.js --specs spec/interface_spec.js tools/karma.config.js",
-    "test.browser-jasmine-global": "karma start -f jasmine --src global.js --specs spec/global_defs_spec.js,spec/interface_spec.js tools/karma.config.js",
-    "test.browser-jasmine-getter": "karma start -f jasmine --src getter.js --specs spec/getter_defs_spec.js,spec/interface_spec.js tools/karma.config.js",
+    "test.browser-jasmine-ui": "karma start -f jasmine --src dist/index.js --specs spec/interface_spec.js tools/karma.config.js",
+    "test.browser-jasmine-global": "karma start -f jasmine --src dist/global.js --specs spec/global_defs_spec.js,spec/interface_spec.js tools/karma.config.js",
+    "test.browser-jasmine-getter": "karma start -f jasmine --src dist/getter.js --specs spec/getter_defs_spec.js,spec/interface_spec.js tools/karma.config.js",
     "test.jasmine-in-browser": "npm run test.browser-jasmine-ui && npm run test.browser-jasmine-global && npm run test.browser-jasmine-getter",
-    "test.jest-ui": "SRC_FILE=index.js jest --findRelatedTests spec/interface_spec.js",
-    "test.jest-global": "SRC_FILE=global.js jest --findRelatedTests spec/global_defs_spec.js",
-    "test.jest-getter": "SRC_FILE=getter.js jest --findRelatedTests spec/getter_defs_spec.js",
+    "test.jest-ui": "SRC_FILE=dist/index.js jest --findRelatedTests spec/interface_spec.js",
+    "test.jest-global": "SRC_FILE=dist/global.js jest --findRelatedTests spec/global_defs_spec.js",
+    "test.jest-getter": "SRC_FILE=dist/getter.js jest --findRelatedTests spec/getter_defs_spec.js",
     "test.jest": "npm run test.jest-ui && npm run test.jest-global && npm run test.jest-getter",
+    "test.vitest-ui": "SRC_FILE=dist/index.js vitest run spec/interface_spec.js",
+    "test.vitest-global": "SRC_FILE=dist/global.js vitest run spec/global_defs_spec.js",
+    "test.vitest-getter": "SRC_FILE=dist/getter.js vitest run spec/getter_defs_spec.js",
+    "test.vitest": "npm run test.vitest-ui && npm run test.vitest-global && npm run test.vitest-getter",
+    "test.bun-ui": "cd spec && bun test --preload ./bun-preload-ui.js interface_spec.js",
+    "test.bun-global": "cd spec && bun test --preload ./bun-preload-global.js global_defs_spec.js",
+    "test.bun-getter": "cd spec && bun test --preload ./bun-preload-getter.js getter_defs_spec.js",
+    "test.bun": "npm run test.bun-ui && npm run test.bun-global && npm run test.bun-getter",
     "test": "npm run test.mocha && npm run test.mocha-in-browser && npm run test.jasmine && npm run test.jasmine-in-browser && npm run test.jest",
     "prebuild": "npm run lint",
-    "build.ui": "rollup -c tools/rollup.umd.js -i lib/interface/dialects/bdd.js -o index.js",
-    "build.global-ui": "rollup -c tools/rollup.umd.js -i lib/interface/dialects/bdd_global_var.js -o global.js",
-    "build.getter-ui": "rollup -c tools/rollup.umd.js -i lib/interface/dialects/bdd_getter_var.js -o getter.js",
-    "build": "npm run build.ui && npm run build.global-ui && npm run build.getter-ui",
+    "build": "bun run tools/build.js",
     "lint": "eslint --fix lib",
+    "lint:check": "eslint lib",
+    "ci": "npm run lint:check && npm run build",
+    "ci:test": "npm run ci && npm run test.mocha && npm run test.jasmine && npm run test.vitest && npm run test.bun",
+    "prepare": "husky",
     "prerelease": "NODE_ENV=production npm run build",
     "release": "semantic-release"
+  },
+  "lint-staged": {
+    "lib/**/*.js": [
+      "eslint --fix"
+    ]
   },
   "jest": {
     "testEnvironment": "node",
@@ -114,14 +134,14 @@
     ]
   },
   "files": [
-    "getter.js",
-    "getter.js.map",
+    "dist/getter.js",
+    "dist/getter.js.map",
     "getter.d.ts",
-    "global.js",
-    "global.js.map",
+    "dist/global.js",
+    "dist/global.js.map",
     "global.d.ts",
-    "index.js",
-    "index.js.map",
+    "dist/index.js",
+    "dist/index.js.map",
     "index.d.ts",
     "interface.d.ts"
   ],

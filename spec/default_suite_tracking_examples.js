@@ -1,4 +1,8 @@
+
+const { expect } = require('chai');
+
 sharedExamplesFor('Default suite tracking', function(getVar) {
+
   describe('when using variable inside another variable definition', function() {
     var user = { firstName: 'John', lastName: 'Doe' };
     var index = 0;
