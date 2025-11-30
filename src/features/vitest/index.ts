@@ -45,11 +45,7 @@ function addInterface(rootSuite: any, options: any) {
 		rootSuite,
 		suiteTracker: createSuiteTracker(),
 	});
-	const { wrapIts, wrapIt, ...ui } = createLazyVarInterface(
-		context,
-		tracker,
-		options,
-	);
+	const { wrapIt, ...ui } = createLazyVarInterface(context, tracker, options);
 
 	Object.assign(context, ui);
 	["", "x", "f"].forEach((prefix) => {
@@ -69,7 +65,6 @@ function addInterface(rootSuite: any, options: any) {
 		}
 
 		if (itFn) {
-			context[`${itKey}s`] = wrapIts(itFn);
 			context[itKey] = wrapIt(itFn, false);
 		}
 
@@ -83,7 +78,7 @@ function addInterface(rootSuite: any, options: any) {
 	// Try to patch vitest module
 	try {
 		const vi = (global as any).vi;
-		if (vi && vi.mock) {
+		if (vi?.mock) {
 			if (vi.doMock) {
 				vi.doMock("vitest", async (importOriginal: any) => {
 					const actual = await importOriginal();
@@ -147,5 +142,4 @@ export const {
 	sharedExamplesFor,
 	includeExamplesFor,
 	itBehavesLike,
-	is,
 } = ui;

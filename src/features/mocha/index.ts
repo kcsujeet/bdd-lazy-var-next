@@ -42,13 +42,10 @@ function addInterface(rootSuite: any, options: any) {
 
 		if (!ui) {
 			ui = createLazyVarInterface(context, tracker, options);
-			const { wrapIts: _wrapIts, wrapIt: _wrapIt, ...restUi } = ui;
+			const { wrapIt: _wrapIt, ...restUi } = ui;
 			Object.assign(context, restUi);
 		}
 
-		context.its = ui.wrapIts(it);
-		context.its.only = ui.wrapIts(it.only);
-		context.its.skip = ui.wrapIts(it.skip);
 		context.it = ui.wrapIt(it);
 		context.it.only = ui.wrapIt(it.only);
 		context.it.skip = ui.wrapIt(it.skip);
@@ -77,9 +74,7 @@ const api = {
 			"get",
 			"def",
 			"subject",
-			"its",
 			"it",
-			"is",
 			"sharedExamplesFor",
 			"includeExamplesFor",
 			"itBehavesLike",
@@ -113,10 +108,3 @@ export const subject = proxyFn("subject");
 export const sharedExamplesFor = proxyFn("sharedExamplesFor");
 export const includeExamplesFor = proxyFn("includeExamplesFor");
 export const itBehavesLike = proxyFn("itBehavesLike");
-
-export const is = new Proxy(
-	{},
-	{
-		get: (_target, prop) => (global as any).is[prop],
-	},
-);

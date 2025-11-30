@@ -78,31 +78,6 @@ export default (context: any, tracker: SuiteTracker, options: any) => {
 		});
 	}
 
-	const wrapIts = (test: Function) =>
-		function its(
-			prop: string,
-			messageOrAssert: string | Function,
-			fn?: Function,
-		) {
-			const [message, assert] =
-				typeof messageOrAssert === "function"
-					? [parseMessage(messageOrAssert), messageOrAssert]
-					: [messageOrAssert, fn];
-
-			return context.describe(prop, () => {
-				def("__itsSubject__", () =>
-					prop.split(".").reduce((object: any, field: string) => {
-						const value = object[field];
-
-						return typeof value === "function" ? object[field]() : value;
-					}, subject()),
-				);
-
-				test(message || "is correct", assert);
-			});
-		};
-
-	// TODO: `shouldWrapAssert` can be removed when https://github.com/facebook/jest/issues/6516 fixed
 	const wrapIt = (test: Function, shouldWrapAssert: boolean) =>
 		function it(this: any, ...args: any[]) {
 			if (typeof args[0] === "function") {
@@ -120,22 +95,11 @@ export default (context: any, tracker: SuiteTracker, options: any) => {
 			return test(...args);
 		};
 
-	const is = {
-		get expected() {
-			const name = Metadata.of(tracker.currentContext, "__itsSubject__")
-				? "__itsSubject__"
-				: "subject";
-			return context.expect(get(name));
-		},
-	};
-
 	return {
 		subject,
 		def,
 		get,
 		wrapIt,
-		wrapIts,
-		is,
 		sharedExamplesFor,
 		includeExamplesFor,
 		itBehavesLike,

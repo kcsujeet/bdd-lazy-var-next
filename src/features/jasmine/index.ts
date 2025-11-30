@@ -72,18 +72,13 @@ function addInterface(rootSuite: any, options: any) {
 		rootSuite,
 		suiteTracker: createSuiteTracker(isJest),
 	});
-	const { wrapIts, wrapIt, ...ui } = createLazyVarInterface(
-		context,
-		tracker,
-		options,
-	);
+	const { wrapIt, ...ui } = createLazyVarInterface(context, tracker, options);
 
 	Object.assign(context, ui);
 	["", "x", "f"].forEach((prefix) => {
 		const describeKey = `${prefix}describe`;
 		const itKey = `${prefix}it`;
 
-		context[`${itKey}s`] = wrapIts(context[itKey]);
 		context[itKey] = wrapIt(context[itKey], isJest);
 		context[describeKey] = tracker.wrapSuite(context[describeKey]);
 		context[`${prefix}context`] = context[describeKey];
@@ -118,5 +113,4 @@ export const {
 	sharedExamplesFor,
 	includeExamplesFor,
 	itBehavesLike,
-	is,
 } = ui;

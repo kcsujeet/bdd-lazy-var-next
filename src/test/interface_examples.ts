@@ -2,7 +2,6 @@ import { expect } from "chai";
 
 declare const sharedExamplesFor: any;
 declare const context: any;
-declare const xcontext: any;
 declare const it: any;
 declare const def: any;
 declare const subject: any;
@@ -12,9 +11,6 @@ declare const beforeEach: any;
 declare const afterEach: any;
 declare const spy: any;
 declare const get: any;
-declare const is: any;
-declare const its: any;
-declare const xits: any;
 declare const xdescribe: any;
 
 const describe = (global as any).context || (global as any).describe;
@@ -81,18 +77,6 @@ sharedExamplesFor("Lazy Vars Interface", (getVar: any) => {
 				expect(getVar("fullName")).to.equal("John Cusak");
 			});
 		});
-
-		try {
-			xcontext("skipped context", () => {
-				it("should never call assertions", () => {
-					is.expected.to.be.never.called();
-				});
-			});
-		} catch {
-			it(() => {
-				is.expected.to.be.never.called();
-			});
-		}
 	});
 
 	describe("dynamic variable definition", () => {
@@ -303,40 +287,6 @@ sharedExamplesFor("Lazy Vars Interface", (getVar: any) => {
 				});
 			});
 		});
-	});
-
-	describe("`its`", () => {
-		subject(() => ({
-			value: 5,
-			nested: {
-				value: 10,
-			},
-			getName() {
-				return "John";
-			},
-		}));
-
-		its("value", () => {
-			is.expected.to.equal(getVar("subject").value);
-		});
-
-		its("getName", () => {
-			is.expected.to.equal(getVar("subject").getName());
-		});
-
-		its("nested.value", () => {
-			is.expected.to.equal(getVar("subject").nested.value);
-		});
-
-		try {
-			its.skip("name", () => {
-				is.expected.to.be.never.called();
-			});
-		} catch {
-			xits("name", () => {
-				is.expected.to.be.never.called();
-			});
-		}
 	});
 });
 

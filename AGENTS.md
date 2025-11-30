@@ -121,21 +121,6 @@ includeExamplesFor("a collection", 3); // Executes inline
 
 Stored with `EXAMPLES_PREFIX` in metadata to avoid namespace collisions.
 
-### The `its()` Helper
-
-Generates nested describes for property testing:
-
-```javascript
-its("items.length", () => is.expected.to.equal(3));
-// Equivalent to:
-// describe('items.length', () => {
-//   def('__itsSubject__', () => get('subject').items.length)
-//   it('is expected to equal(3)', ...)
-// })
-```
-
-Uses `parseMessage()` to auto-generate test names from assertion code.
-
 ## Common Pitfalls
 
 1. **Variable cleanup**: Must call `metadata.releaseVars()` in `afterEach` or memory leaks occur

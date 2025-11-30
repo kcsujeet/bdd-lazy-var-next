@@ -4,7 +4,6 @@ export {
 	default,
 	get,
 	includeExamplesFor,
-	is,
 	itBehavesLike,
 	sharedExamplesFor,
 	subject,

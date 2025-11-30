@@ -94,11 +94,7 @@ function addInterface(rootSuite: any, options: any) {
 		rootSuite,
 		suiteTracker: createSuiteTracker(),
 	});
-	const { wrapIts, wrapIt, ...ui } = createLazyVarInterface(
-		context,
-		tracker,
-		options,
-	);
+	const { wrapIt, ...ui } = createLazyVarInterface(context, tracker, options);
 
 	Object.assign(context, ui);
 	["", "x", "f"].forEach((prefix) => {
@@ -131,7 +127,6 @@ function addInterface(rootSuite: any, options: any) {
 		}
 
 		if (itFn) {
-			context[`${itKey}s`] = wrapIts(itFn);
 			context[itKey] = wrapIt(itFn, false);
 		}
 
@@ -171,7 +166,7 @@ function addInterface(rootSuite: any, options: any) {
 					}
 
 					// Attempt to mock the module for ESM imports
-					if (bunTest.mock && bunTest.mock.module) {
+					if (bunTest.mock?.module) {
 						bunTest.mock.module("bun:test", () => {
 							return {
 								...bunTest,
@@ -228,5 +223,4 @@ export const {
 	sharedExamplesFor,
 	includeExamplesFor,
 	itBehavesLike,
-	is,
 } = ui;

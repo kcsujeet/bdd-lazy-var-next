@@ -14,7 +14,3 @@ export function sharedExamplesFor(
 ): void;
 export function includeExamplesFor(name: string, ...args: any[]): void;
 export function itBehavesLike(name: string, ...args: any[]): void;
-
-export const is: {
-  expected: any;
-};
