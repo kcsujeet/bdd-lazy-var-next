@@ -4,12 +4,8 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
 const jasmine = new JasmineCli();
-const helpers = [
-  '../../../src/test/config',
-  `../../../${process.argv[2]}`,
-  '../../../src/test/interface_examples',
-  '../../../src/test/default_suite_tracking_examples',
-];
+// Only load the library, not the test config/helpers which inject Chai
+const helpers = [`../../../${process.argv[2]}`];
 
 helpers.forEach(require);
 jasmine.loadConfig({

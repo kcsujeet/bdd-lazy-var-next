@@ -4,7 +4,6 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    setupFiles: ['./src/features/jest/setup.ts'],
-    include: ['src/features/vitest/test/**/*.test.ts'],
+    include: ['src/features/vitest/test/native_usage.test.ts'],
   },
 });

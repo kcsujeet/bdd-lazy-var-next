@@ -55,6 +55,7 @@
     {
       "files": [
         "src/dialects/**/*.spec.ts",
+        "src/features/**/test/*.test.ts",
         "src/test/**/*.ts",
         "src/features/**/preloads/*.ts",
         "src/features/**/setup.ts",
