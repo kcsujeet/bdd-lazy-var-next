@@ -75,6 +75,10 @@ Bun runs all test files in a shared global context. This means global variable d
 - Define variables inside `describe` only
 - Use unique variable names or suite names in each test file.
 
+**Example:**
+
+[Bun Consumer Example](./examples/bun-consumer/)
+
 ### Vitest
 
 **Option 1: Explicit Imports (Recommended)**
@@ -92,7 +96,7 @@ Add to your `vitest.config.ts` setup files:
 export default defineConfig({
   test: {
     setupFiles: ["./setup.ts"],
-    globals: true
+    globals: true,
   },
 });
 ```
@@ -101,6 +105,10 @@ export default defineConfig({
 // setup.ts
 import "bdd-lazy-var-next/vitest";
 ```
+
+**Example:**
+
+[Vitest Consumer Example](./examples/vitest-consumer/)
 
 ### Jest
 
@@ -312,7 +320,6 @@ bun pack # or npm pack
 # Then in consumer project:
 bun add ../bdd-lazy-var-next/bdd-lazy-var-next-x.y.z.tgz
 ```
-
 
 ### Preload Setup for Bun
 
