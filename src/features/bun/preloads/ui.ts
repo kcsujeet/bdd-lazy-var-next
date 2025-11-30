@@ -23,7 +23,7 @@ beforeEach(() => {
 (global as any).beforeEach = beforeEach;
 (global as any).afterEach = afterEach;
 
-require("../../../dialects/bdd");
+require("../index");
 
 require("../../../test/interface_examples");
 require("../../../test/default_suite_tracking_examples");

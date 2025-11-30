@@ -1,4 +1,4 @@
-import "../../../../dist/index";
+import "../../../../dist/jest";
 
 declare const def: any;
 declare const subject: any;

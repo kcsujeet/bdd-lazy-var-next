@@ -1,4 +1,4 @@
-import "../../../../dist/index";
+import "../../../../dist/bun";
 import { beforeEach, describe, expect, it } from "bun:test";
 
 declare const def: any;

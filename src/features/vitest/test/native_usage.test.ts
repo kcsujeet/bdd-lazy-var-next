@@ -1,5 +1,4 @@
-import "../../../../dist/index";
-import "../../../../dist/index";
+import "../../../../dist/vitest";
 import { beforeEach, describe, expect, it } from "vitest";
 
 declare const def: any;

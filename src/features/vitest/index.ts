@@ -128,9 +128,24 @@ function createRootSuite() {
 	};
 }
 
-export default {
+const api = {
 	createUi(name: string, options: any) {
 		const config = { Tracker: SuiteTracker, ...options };
 		return addInterface(createRootSuite(), config);
 	},
 };
+
+export default api;
+
+// Auto-initialize
+const ui = api.createUi("bdd-lazy-var-next", {});
+
+export const {
+	get,
+	def,
+	subject,
+	sharedExamplesFor,
+	includeExamplesFor,
+	itBehavesLike,
+	is,
+} = ui;

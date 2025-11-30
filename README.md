@@ -53,7 +53,7 @@ In an attempt to address these issues, I had with my e2e tests, I decided to cre
 So the original code above looks something like this:
 
 ```js
-import { get, def } from "bdd-lazy-var-next";
+import { get, def } from "bdd-lazy-var-next/bun"; // or /vitest, /jest, /mocha, /jasmine
 
 describe("Suite", () => {
   def("name", () => `John Doe ${Math.random()}`);
@@ -299,25 +299,140 @@ Also it generates messages for you based on passed in function body. The example
 npm install bdd-lazy-var-next --save-dev
 ```
 
-### Usage
+## Setup & Configuration
 
-Import `get` and `def` from `bdd-lazy-var-next` in your test files.
+**Important**: Unlike the original `bdd-lazy-var`, this library requires you to import the specific entry point for your testing framework. There is no "auto-detection" entry point.
 
-```js
-import { get, def } from "bdd-lazy-var-next";
+### Bun
 
-describe("My Test", () => {
-  def("myVar", () => "value");
+**Option 1: Explicit Imports (Recommended)**
 
-  it("works", () => {
-    expect(get("myVar")).toBe("value");
-  });
+```ts
+import { get, def, subject } from "bdd-lazy-var-next/bun";
+
+describe("My Bun Test", () => {
+  def("value", () => 1);
+  // ...
 });
 ```
 
-### Aliases
+**Option 2: Global Variables**
 
-In accordance with Rspec's DDL, `context`, `xcontext`, and `fcontext` have been aliased to their related `describe` commands for the Jest, Jasmine, Vitest, and Bun test libraries. Mocha's BDD interface already provides this keyword.
+Import the library once (e.g. in setup) to register globals:
+
+```ts
+import "bdd-lazy-var-next/bun";
+
+describe("My Bun Test", () => {
+  def("value", () => 1); // Available globally
+});
+```
+
+Or add it to your `bunfig.toml` preload:
+
+```toml
+[test]
+preload = ["./setup.ts"]
+```
+
+```ts
+// setup.ts
+import "bdd-lazy-var-next/bun";
+```
+
+### Vitest
+
+**Option 1: Explicit Imports (Recommended)**
+
+```ts
+import { get, def } from "bdd-lazy-var-next/vitest";
+```
+
+**Option 2: Global Variables**
+
+Add to your `vitest.config.ts` setup files:
+
+```ts
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    setupFiles: ["./setup.ts"],
+  },
+});
+```
+
+```ts
+// setup.ts
+import "bdd-lazy-var-next/vitest";
+```
+
+### Jest
+
+**Option 1: Explicit Imports (Recommended)**
+
+```js
+import { get, def } from "bdd-lazy-var-next/jest";
+```
+
+**Option 2: Global Variables**
+
+Add to your `jest.config.js`:
+
+```js
+module.exports = {
+  setupFilesAfterEnv: ["bdd-lazy-var-next/jest"],
+};
+```
+
+### Mocha
+
+**Option 1: Explicit Imports (Recommended)**
+
+```js
+import { get, def } from "bdd-lazy-var-next/mocha";
+```
+
+**Option 2: Global Variables**
+
+You can require it globally via command line:
+
+```bash
+mocha -r bdd-lazy-var-next/mocha
+```
+
+Or import it in your test/setup file:
+
+```js
+import "bdd-lazy-var-next/mocha";
+```
+
+### Jasmine
+
+**Option 1: Explicit Imports (Recommended)**
+
+```js
+import { get, def } from "bdd-lazy-var-next/jasmine";
+```
+
+**Option 2: Global Variables**
+
+Create a helper file (e.g., `spec/helpers/bdd-lazy-var.js`) or import it in your spec file:
+
+```js
+import "bdd-lazy-var-next/jasmine";
+```
+
+And ensure it's included in your `jasmine.json` helpers list.
+
+## Migration from `bdd-lazy-var`
+
+If you are migrating from the original library, here are the key changes:
+
+1.  **Updated Imports**: You must change your imports from `bdd-lazy-var` to `bdd-lazy-var-next/<framework>`.
+    - Old: `import { get } from 'bdd-lazy-var';`
+    - New: `import { get } from 'bdd-lazy-var-next/bun';` (or `vitest`, `jest`, etc.)
+2.  **No Auto-Detection**: The library no longer tries to guess which test framework you are using. You must explicitly choose the correct entry point.
+3.  **Native ESM**: The library is built as native ESM modules, which works better with modern tools like Bun and Vitest.
 
 ## The Core Features
 
@@ -356,7 +471,7 @@ It's also possible to use `bdd-lazy-var-next` with TypeScript.
   <summary>ES6 module system</summary>
 
 ```js
-import { get, def } from "bdd-lazy-var-next";
+import { get, def } from "bdd-lazy-var-next/bun"; // or your framework
 
 describe("My Test", () => {
   // ....

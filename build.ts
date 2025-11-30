@@ -93,8 +93,12 @@ async function main() {
   // Ensure dist directory exists
   await Bun.write("dist/.gitkeep", "");
 
-  // Build default dialect
-  await buildBundle("./src/dialects/bdd.ts", "./dist/index.js");
+  // Build specific runners directly from features
+  await buildBundle("./src/features/bun/index.ts", "./dist/bun.js");
+  await buildBundle("./src/features/vitest/index.ts", "./dist/vitest.js");
+  await buildBundle("./src/features/jest/index.ts", "./dist/jest.js");
+  await buildBundle("./src/features/jasmine/index.ts", "./dist/jasmine.js");
+  await buildBundle("./src/features/mocha/index.ts", "./dist/mocha.js");
 
   console.log("\n✓ Build completed successfully!");
 }

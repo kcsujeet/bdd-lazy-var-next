@@ -60,7 +60,7 @@ function addInterface(rootSuite: any, options: any) {
 	});
 }
 
-export default {
+const api = {
 	createUi(name: string, options: any) {
 		const config = {
 			Tracker: SuiteTracker,
@@ -92,3 +92,31 @@ export default {
 		return Object.defineProperties((Mocha.interfaces as any)[name], defs);
 	},
 };
+
+export default api;
+
+// Auto-initialize
+if (Mocha) {
+	api.createUi("bdd-lazy-var-next", {});
+}
+
+const proxyFn = (name: string) => {
+	return new Proxy(() => {}, {
+		apply: (_target, _thisArg, args) => (global as any)[name](...args),
+		get: (_target, prop) => (global as any)[name][prop],
+	});
+};
+
+export const get = proxyFn("get");
+export const def = proxyFn("def");
+export const subject = proxyFn("subject");
+export const sharedExamplesFor = proxyFn("sharedExamplesFor");
+export const includeExamplesFor = proxyFn("includeExamplesFor");
+export const itBehavesLike = proxyFn("itBehavesLike");
+
+export const is = new Proxy(
+	{},
+	{
+		get: (_target, prop) => (global as any).is[prop],
+	},
+);
