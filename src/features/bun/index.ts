@@ -1,15 +1,15 @@
-import { createRequire } from "module";
+import { createRequire } from "node:module";
 import createLazyVarInterface from "../../core/interface";
 import { SuiteTracker } from "../../core/suite_tracker";
 
-const require = createRequire(import.meta.url);
+const requireModule = createRequire(import.meta.url);
 
 function createSuiteTracker() {
 	let beforeAll: any;
 	let afterAll: any;
 	let beforeEach: any;
 	try {
-		const bunTest = require("bun:test"); // eslint-disable-line global-require, import/no-unresolved
+		const bunTest = requireModule("bun:test"); // eslint-disable-line global-require, import/no-unresolved
 		beforeAll = bunTest.beforeAll;
 		afterAll = bunTest.afterAll;
 		beforeEach = bunTest.beforeEach;
@@ -46,7 +46,7 @@ function addInterface(rootSuite: any, options: any) {
 
 	if (!originalDescribe) {
 		try {
-			const bunTest = require("bun:test"); // eslint-disable-line global-require, import/no-unresolved
+			const bunTest = requireModule("bun:test"); // eslint-disable-line global-require, import/no-unresolved
 			originalDescribe = bunTest.describe;
 			originalIt = bunTest.it;
 			// Make sure they are available globally if not already
@@ -140,7 +140,7 @@ function addInterface(rootSuite: any, options: any) {
 				});
 
 				// Try to patch bun:test module exports
-				const bunTest = require("bun:test"); // eslint-disable-line global-require, import/no-unresolved
+				const bunTest = requireModule("bun:test"); // eslint-disable-line global-require, import/no-unresolved
 				if (bunTest) {
 					if (bunTest.describe !== wrapped) {
 						bunTest.describe = wrapped;
@@ -150,6 +150,21 @@ function addInterface(rootSuite: any, options: any) {
 					}
 					if (prefix === "f" && bunTest.describe.only !== wrapped) {
 						bunTest.describe.only = wrapped;
+					}
+
+					// Attempt to mock the module for ESM imports
+					if (bunTest.mock && bunTest.mock.module) {
+						bunTest.mock.module("bun:test", () => {
+							return {
+								...bunTest,
+								describe: context.describe,
+								it: context.it,
+								xdescribe: context.xdescribe,
+								fdescribe: context.fdescribe,
+								xit: context.xit,
+								fit: context.fit,
+							};
+						});
 					}
 				}
 			} catch {

@@ -33,7 +33,9 @@ function makeOptionalRequires(code: string) {
   });
 
   // Inject dummy require for browser compatibility
-  const dummyRequire = "const require = () => undefined;";
+  // Use requireModule to avoid conflict with global require in some environments (like Jest)
+  const dummyRequire =
+    "const requireModule = (typeof require !== 'undefined' ? require : () => undefined);";
   result = `${dummyRequire}\n${result}`;
 
   return result;
@@ -91,12 +93,10 @@ async function main() {
   // Ensure dist directory exists
   await Bun.write("dist/.gitkeep", "");
 
-  // Build all three dialects
+  // Build default dialect
   await buildBundle("./src/dialects/bdd.ts", "./dist/index.js");
-  await buildBundle("./src/dialects/bdd_global_var.ts", "./dist/global.js");
-  await buildBundle("./src/dialects/bdd_getter_var.ts", "./dist/getter.js");
 
-  console.log("\n✓ All builds completed successfully!");
+  console.log("\n✓ Build completed successfully!");
 }
 
 main().catch((error) => {

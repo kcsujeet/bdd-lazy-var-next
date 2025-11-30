@@ -60,7 +60,7 @@ export class Variable {
 	}
 
 	value() {
-		return this.evaluationMeta && this.evaluationMeta.getVar(this.name!);
+		return this.evaluationMeta?.getVar(this.name!);
 	}
 
 	addToStack() {

@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 
 process.env.CHROME_BIN = puppeteer.executablePath();
 
-module.exports = function (config) {
+module.exports = (config) => {
   const specs = (config.specs || '').split(',');
   const srcFiles = (config.src || '').split(',');
   const frameworks = (config.f || 'mocha').split(',');

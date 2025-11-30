@@ -29,6 +29,7 @@
     "url": "https://github.com/kcsujeet/bdd-lazy-var-next/issues"
   },
   "main": "./dist/index.js",
+  "types": "index.d.ts",
   "peerDependencies": {
     "jasmine": ">=2",
     "jasmine-core": "^4.6.1",
@@ -87,44 +88,31 @@
     "semantic-release": "^24.2.9",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   },
   "scripts": {
     "mocha": "NODE_PATH=. mocha --loader ./node_modules/ts-node/esm.mjs -r src/test/config.ts src/test/*_examples.ts src/test/shared_behavior.spec.ts",
     "test.mocha-ui": "bun run mocha -- -u dist/index.js src/features/mocha/test/bdd.test.ts",
-    "test.mocha-global": "bun run mocha -- -u dist/global.js src/features/mocha/test/global.test.ts",
-    "test.mocha-getter": "bun run mocha -- -u dist/getter.js src/features/mocha/test/getter.test.ts",
-    "test.mocha": "bun run test.mocha-ui && bun run test.mocha-global && bun run test.mocha-getter",
+    "test.mocha": "bun run test.mocha-ui",
     "test.browser-mocha-ui": "karma start -u bdd-lazy-var-next --src dist/index.js --specs src/features/mocha/test/bdd.test.ts karma.config.cjs",
-    "test.browser-mocha-global": "karma start -u bdd-lazy-var-next/global --src dist/global.js --specs src/features/mocha/test/global.test.ts,src/features/mocha/test/bdd.test.ts karma.config.cjs",
-    "test.browser-mocha-getter": "karma start -u bdd-lazy-var-next/getter --src dist/getter.js --specs src/features/mocha/test/getter.test.ts,src/features/mocha/test/bdd.test.ts karma.config.cjs",
-    "test.mocha-in-browser": "bun run test.browser-mocha-ui && bun run test.browser-mocha-global && bun run test.browser-mocha-getter",
+    "test.mocha-in-browser": "bun run test.browser-mocha-ui",
     "test.jasmine-ui": "bun run src/features/jasmine/runner.ts dist/index.js src/features/jasmine/test/bdd.test.ts",
-    "test.jasmine-global": "bun run src/features/jasmine/runner.ts dist/global.js src/features/jasmine/test/global.test.ts",
-    "test.jasmine-getter": "bun run src/features/jasmine/runner.ts dist/getter.js src/features/jasmine/test/getter.test.ts",
-    "test.jasmine": "bun run test.jasmine-ui && bun run test.jasmine-global && bun run test.jasmine-getter",
+    "test.jasmine": "bun run test.jasmine-ui",
     "test.browser-jasmine-ui": "karma start -f jasmine --src dist/index.js --specs src/features/jasmine/test/bdd.test.ts karma.config.cjs",
-    "test.browser-jasmine-global": "karma start -f jasmine --src dist/global.js --specs src/features/jasmine/test/global.test.ts,src/features/jasmine/test/bdd.test.ts karma.config.cjs",
-    "test.browser-jasmine-getter": "karma start -f jasmine --src dist/getter.js --specs src/features/jasmine/test/getter.test.ts,src/features/jasmine/test/bdd.test.ts karma.config.cjs",
-    "test.jasmine-in-browser": "bun run test.browser-jasmine-ui && bun run test.browser-jasmine-global && bun run test.browser-jasmine-getter",
+    "test.jasmine-in-browser": "bun run test.browser-jasmine-ui",
     "test.jest-ui": "SRC_FILE=dist/index.js jest --findRelatedTests src/features/jest/test/bdd.test.ts",
-    "test.jest-global": "SRC_FILE=dist/global.js jest --findRelatedTests src/features/jest/test/global.test.ts",
-    "test.jest-getter": "SRC_FILE=dist/getter.js jest --findRelatedTests src/features/jest/test/getter.test.ts",
-    "test.jest": "bun run test.jest-ui && bun run test.jest-global && bun run test.jest-getter",
+    "test.jest": "bun run test.jest-ui",
     "test.vitest-ui": "SRC_FILE=dist/index.js vitest run src/features/vitest/test/bdd.test.ts",
-    "test.vitest-global": "SRC_FILE=dist/global.js vitest run src/features/vitest/test/global.test.ts",
-    "test.vitest-getter": "SRC_FILE=dist/getter.js vitest run src/features/vitest/test/getter.test.ts",
-    "test.vitest": "bun run test.vitest-ui && bun run test.vitest-global && bun run test.vitest-getter",
+    "test.vitest": "bun run test.vitest-ui",
     "test.bun-ui": "bun test --preload ./src/features/bun/preloads/ui.ts src/features/bun/test/bdd.test.ts",
-    "test.bun-global": "bun test --preload ./src/features/bun/preloads/global.ts src/features/bun/test/global.test.ts",
-    "test.bun-getter": "bun test --preload ./src/features/bun/preloads/getter.ts src/features/bun/test/getter.test.ts",
-    "test.bun": "bun run test.bun-ui && bun run test.bun-global && bun run test.bun-getter",
+    "test.bun": "bun run test.bun-ui",
     "test.native.bun": "bun test src/features/bun/test/native_usage.test.ts",
-    "test.native.jest": "bun run jest --no-cache --config='{\"preset\":\"ts-jest\",\"testEnvironment\":\"node\",\"setupFilesAfterEnv\":[\"./src/features/jest/empty_setup.ts\"]}' src/features/jest/test/native_usage.test.ts",
+    "test.native.jest": "bun run jest --no-cache --config=jest.native.config.js",
     "test.native.vitest": "bun run vitest run -c vitest.native.config.ts",
-    "test.native.jasmine": "bun run src/features/jasmine/native_runner.ts dist/global.js src/features/jasmine/test/native_usage.test.ts",
-    "test.native.mocha": "bunx mocha -r ts-node/register -u dist/global.js src/features/mocha/test/native_usage.test.ts",
+    "test.native.jasmine": "bun run src/features/jasmine/native_runner.ts dist/index.js src/features/jasmine/test/native_usage.test.ts",
+    "test.native.mocha": "node --import tsx node_modules/mocha/bin/mocha.js -r src/features/mocha/test/setup.js -r dist/index.js -u bdd-lazy-var-next src/features/mocha/test/native_usage.test.ts",
     "test.native": "bun run test.native.bun && bun run test.native.jest && bun run test.native.vitest && bun run test.native.jasmine && bun run test.native.mocha",
     "test": "bun run test.mocha && bun run test.mocha-in-browser && bun run test.jasmine && bun run test.jasmine-in-browser && bun run test.jest",
     "prebuild": "bun run lint",
@@ -132,8 +120,7 @@
     "lint": "biome check --write src",
     "lint:check": "biome check src",
     "type-check": "tsc --noEmit",
-    "ci": "bun run lint:check && bun run type-check && bun run build",
-    "ci:test": "bun run ci && bun run test.mocha && bun run test.jasmine && bun run test.vitest && bun run test.bun && bun run test.native",
+    "ci": "bun lint:check && bun run type-check && bun run build && bun run test.mocha && bun run test.jasmine && bun run test.vitest && bun run test.bun && bun run test.native",
     "prepare": "husky",
     "prerelease": "NODE_ENV=production bun run build",
     "release": "semantic-release"
@@ -144,8 +131,26 @@
     ]
   },
   "jest": {
-    "preset": "ts-jest",
+    "preset": "ts-jest/presets/default-esm",
     "testEnvironment": "node",
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "transform": {
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "useESM": true,
+          "tsconfig": {
+            "module": "esnext",
+            "target": "esnext"
+          }
+        }
+      ]
+    },
     "testMatch": [
       "<rootDir>/src/features/jest/test/**/*.test.ts"
     ],
@@ -154,16 +159,9 @@
     ]
   },
   "files": [
-    "dist/getter.js",
-    "dist/getter.js.map",
-    "getter.d.ts",
-    "dist/global.js",
-    "dist/global.js.map",
-    "global.d.ts",
     "dist/index.js",
     "dist/index.js.map",
-    "index.d.ts",
-    "interface.d.ts"
+    "index.d.ts"
   ],
   "release": {
     "branches": [

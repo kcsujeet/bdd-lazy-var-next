@@ -1,8 +1,5 @@
-import { createRequire } from "module";
-
-const require = createRequire(import.meta.url);
-const chai = require("chai");
-const spies = require("chai-spies");
+import chai from "chai";
+import spies from "chai-spies";
 
 declare const Bun: any;
 
@@ -15,7 +12,7 @@ if (typeof (global as any).beforeAll === "function") {
 	(global as any).before = (global as any).beforeAll;
 } else if (typeof Bun !== "undefined") {
 	try {
-		const bunTest = require("bun:test");
+		const bunTest = import.meta.require("bun:test");
 		(global as any).before = bunTest.beforeAll;
 		(global as any).after = bunTest.afterAll;
 		(global as any).beforeAll = bunTest.beforeAll;

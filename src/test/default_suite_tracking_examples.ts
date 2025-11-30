@@ -36,7 +36,7 @@ sharedExamplesFor("Default suite tracking", (getVar: any) => {
 			expect(getVar("currentIndex")).to.equal(currentIndex);
 		});
 
-		def("personName", () => getVar("firstName") + " " + getVar("lastName"));
+		def("personName", () => `${getVar("firstName")} ${getVar("lastName")}`);
 
 		def("firstName", user.firstName);
 		def("lastName", user.lastName);
@@ -51,7 +51,7 @@ sharedExamplesFor("Default suite tracking", (getVar: any) => {
 
 		it("computes the proper result", () => {
 			expect(getVar("personName")).to.equal(
-				user.firstName + " " + user.lastName,
+				`${user.firstName} ${user.lastName}`,
 			);
 		});
 
@@ -92,7 +92,7 @@ sharedExamplesFor("Default suite tracking", (getVar: any) => {
 
 			it("computes parent variable using redefined variable", () => {
 				expect(getVar("personName")).to.equal(
-					nestedUser.firstName + " " + getVar("lastName"),
+					`${nestedUser.firstName} ${getVar("lastName")}`,
 				);
 			});
 

@@ -53,11 +53,13 @@ In an attempt to address these issues, I had with my e2e tests, I decided to cre
 So the original code above looks something like this:
 
 ```js
+import { get, def } from "bdd-lazy-var-next";
+
 describe("Suite", () => {
   def("name", () => `John Doe ${Math.random()}`);
 
   it("defines `name` variable", () => {
-    expect($name).to.exist;
+    expect(get("name")).to.exist;
   });
 
   it("does not use name, so it is not created", () => {
@@ -76,7 +78,7 @@ Because lazy vars are cleared after each test, we didn't have to worry about tes
 
 ### Clear meaning
 
-Every time I see a `$<variable>` reference in my tests, I know where it's defined.
+Every time I see a `get('<variable>')` reference in my tests, I know where it's defined.
 That, coupled with removing exhaustive `var` declarations in `describe` blocks, have made even my largest tests clear and understandable.
 
 ### Lazy evaluation
@@ -91,14 +93,14 @@ Due to laziness we are able to compose variables. This allows to define more gen
 
 ```js
 describe('User', function() {
-  subject('user', () => new User($props))
+  subject('user', () => new User(get('props')))
 
   describe('when user is "admin"', function() {
     def('props', () => ({ role: 'admin' }))
 
     it('can update articles', function() {
       // user is created with property role equal "admin"
-      expect($user).to....
+      expect(get('user')).to....
     })
   })
 
@@ -107,7 +109,7 @@ describe('User', function() {
 
     it('cannot update articles', function() {
       // user is created with property role equal "member"
-      expect($user).to....
+      expect(get('user')).to....
     })
   })
 })
@@ -139,16 +141,16 @@ use them.
 ```js
 sharedExamplesFor("a collection", () => {
   it("has three items", () => {
-    expect($subject.size).to.equal(3);
+    expect(get("subject").size).to.equal(3);
   });
 
   describe("#has", () => {
     it("returns true with an item that is in the collection", () => {
-      expect($subject.has(7)).to.be.true;
+      expect(get("subject").has(7)).to.be.true;
     });
 
     it("returns false with an item that is not in the collection", () => {
-      expect($subject.has(9)).to.be.false;
+      expect(get("subject").has(9)).to.be.false;
     });
   });
 });
@@ -181,16 +183,16 @@ describe("Map", () => {
 ```js
 sharedExamplesFor("a collection", (size, existingItem, nonExistingItem) => {
   it("has three items", () => {
-    expect($subject.size).to.equal(size);
+    expect(get("subject").size).to.equal(size);
   });
 
   describe("#has", () => {
     it("returns true with an item that is in the collection", () => {
-      expect($subject.has(existingItem)).to.be.true;
+      expect(get("subject").has(existingItem)).to.be.true;
     });
 
     it("returns false with an item that is not in the collection", () => {
-      expect($subject.has(nonExistingItem)).to.be.false;
+      expect(get("subject").has(nonExistingItem)).to.be.false;
     });
   });
 });
@@ -224,16 +226,16 @@ sharedExamplesFor("a collection", (collection) => {
   def("collection", collection);
 
   it("has three items", () => {
-    expect($collection.size).to.equal(1);
+    expect(get("collection").size).to.equal(1);
   });
 
   describe("#has", () => {
     it("returns true with an item that is in the collection", () => {
-      expect($collection.has(7)).to.be.true;
+      expect(get("collection").has(7)).to.be.true;
     });
 
     it("returns false with an item that is not in the collection", () => {
-      expect($collection.has(9)).to.be.false;
+      expect(get("collection").has(9)).to.be.false;
     });
   });
 });
@@ -268,10 +270,10 @@ describe("Array", () => {
     name: "John",
   }));
 
-  its("items.length", () => is.expected.to.equal(3)); // i.e. expect($subject.items.length).to.equal(3)
-  its("name", () => is.expected.to.equal("John")); // i.e. expect($subject.name).to.equal('John')
+  its("items.length", () => is.expected.to.equal(3)); // i.e. expect(get('subject').items.length).to.equal(3)
+  its("name", () => is.expected.to.equal("John")); // i.e. expect(get('subject').name).to.equal('John')
 
-  // i.e. expect($subject).to.have.property('items').which.has.length(3)
+  // i.e. expect(get('subject')).to.have.property('items').which.has.length(3)
   it(() => is.expected.to.have.property("items").which.has.length(3));
 });
 ```
@@ -297,221 +299,21 @@ Also it generates messages for you based on passed in function body. The example
 npm install bdd-lazy-var-next --save-dev
 ```
 
-<details>
-  <summary>Mocha.js</summary>
+### Usage
 
-#### Command line
-
-```sh
-mocha -u bdd-lazy-var-next/global
-```
-
-#### In JavaScript
-
-See [Using Mocha programatically](https://github.com/mochajs/mocha/wiki/Using-mocha-programmatically)
+Import `get` and `def` from `bdd-lazy-var-next` in your test files.
 
 ```js
-const Mocha = require("mocha");
+import { get, def } from "bdd-lazy-var-next";
 
-const mocha = new Mocha({
-  ui: "bdd-lazy-var-next/global", // bdd-lazy-var-next or bdd-lazy-var-next/getter
-});
+describe("My Test", () => {
+  def("myVar", () => "value");
 
-mocha.addFile(...)
-mocha.run(...)
-
-// !!! Important the next code should be written in a separate file
-// later you can either use `get` and `def` as global functions
-// or export them from corresponding module
-const { get, def } = require('bdd-lazy-var-next/global');
-
-describe('Test', () => {
-  // ...
-})
-```
-
-#### Using karma (via karma-mocha npm package)
-
-**Note** requires `karma-mocha` `^1.1.1`
-
-So, in `karma.config.js` it looks like this:
-
-```js
-module.exports = function (config) {
-  config.set({
-    // ....
-    client: {
-      mocha: {
-        ui: "bdd-lazy-var-next/global",
-        require: [require.resolve("bdd-lazy-var-next/global")],
-      },
-    },
+  it("works", () => {
+    expect(get("myVar")).toBe("value");
   });
-};
-```
-
-</details>
-
-<details>
-  <summary>Jasmine.js</summary>
-
-#### Command line
-
-```sh
-jasmine --helper=node_modules/bdd-lazy-var-next/global.js
-```
-
-or using `spec/spec_helper.js`
-
-```js
-require("bdd-lazy-var-next/global");
-
-// ... other helper stuff
-```
-
-and then
-
-```sh
-jasmine --helper=spec/*_helper.js
-```
-
-#### In JavaScript
-
-When you want programatically run jasmine
-
-```js
-require("jasmine-core");
-
-// !!! Important the next code should be written in a separate file
-// later you can either use `get` and `def` as global functions
-// or export them from corresponding module
-const { get, def } = require("bdd-lazy-var-next/global");
-
-describe("Test", () => {
-  // ...
 });
 ```
-
-#### Using karma (via karma-jasmine npm package)
-
-So, in `karma.config.js` it looks like this:
-
-```js
-module.exports = function (config) {
-  config.set({
-    // ....
-    files: [
-      "node_modules/bdd-lazy-var-next/global.js",
-      // ... your specs here
-    ],
-  });
-};
-```
-
-</details>
-
-<details>
-  <summary>Jest</summary>
-
-#### Command line
-
-Use Jest as usually if you export `get` and `def` from corresponding module
-
-```js
-jest;
-```
-
-In case you want to use global `get` and `def`
-
-```sh
-jest --setupTestFrameworkScriptFile bdd-lazy-var-next/global
-```
-
-#### In JavaScript
-
-```js
-// later you can either use `get` and `def` as global functions
-// or export them from relative module
-const { get, def } = require("bdd-lazy-var-next/global");
-```
-
-</details>
-
-<details>
-  <summary>Vitest</summary>
-
-#### Command line
-
-Use Vitest as usual if you export `get` and `def` from the corresponding module
-
-```js
-vitest;
-```
-
-In case you want to use global `get` and `def`, add to your `vitest.config.js`:
-
-```js
-import { defineConfig } from "vitest/config";
-
-export default defineConfig({
-  test: {
-    setupFiles: ["bdd-lazy-var-next/global"],
-  },
-});
-```
-
-#### In JavaScript
-
-```js
-// You can either use `get` and `def` as global functions
-// or export them from the module
-import { get, def } from "bdd-lazy-var-next/global";
-```
-
-</details>
-
-<details>
-  <summary>Bun Test</summary>
-
-#### Command line
-
-Use Bun test as usual if you export `get` and `def` from the corresponding module
-
-```sh
-bun test
-```
-
-In case you want to use global `get` and `def`, create a test setup file and add `--preload` flag:
-
-```sh
-bun test --preload ./setup.js
-```
-
-Where `setup.js` contains:
-
-```js
-require("bdd-lazy-var-next/global");
-```
-
-#### In JavaScript
-
-```js
-// You can either use `get` and `def` as global functions
-// or export them from the module
-import { get, def } from "bdd-lazy-var-next/global";
-```
-
-</details>
-
-## Dialects
-
-`bdd-lazy-var-next` provides 3 different dialects:
-
-- access variables by referencing `$<variableName>` (the recommended one, available by requiring `bdd-lazy-var-next/global`)
-- access variables by referencing `get.<variableName>` (more strict, available by requiring `bdd-lazy-var-next/getter`)
-- access variables by referencing `get('<variableName>')` (the most strict and less readable way, available by requiring `bdd-lazy-var-next`)
-
-All are bundled as UMD versions. Each dialect is compiled in a separate file and should be required or provided for testing framework.
 
 ### Aliases
 
@@ -531,7 +333,7 @@ For more information, read [the article on Medium](https://medium.com/@sergiy.st
 
 ## TypeScript Notes
 
-It's also possible to use `bdd-lazy-var-next` with TypeScript. The best integrated dialects are `get` and `getter`. To do so, you need either include corresponding definitions in your [tsconfig.json](http://www.typescriptlang.org/docs/handbook/tsconfig-json.html) or use ES6 module system.
+It's also possible to use `bdd-lazy-var-next` with TypeScript.
 
 <details>
   <summary>tsconfig.json</summary>
@@ -539,16 +341,11 @@ It's also possible to use `bdd-lazy-var-next` with TypeScript. The best integrat
 ```js
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "removeComments": true,
-    "preserveConstEnums": true,
-    "sourceMap": true
+    // ...
   },
   "include": [
     "src/**/*",
-    "node_modules/bdd-lazy-var-next/index.d.ts" // for `get('<variableName>')` syntax
-    // or
-    "node_modules/bdd-lazy-var-next/getter.d.ts" // for `get.<variableName>` syntax
+    "node_modules/bdd-lazy-var-next/index.d.ts"
   ]
 }
 ```
@@ -560,8 +357,6 @@ It's also possible to use `bdd-lazy-var-next` with TypeScript. The best integrat
 
 ```js
 import { get, def } from "bdd-lazy-var-next";
-// or
-import { get, def } from "bdd-lazy-var-next/getter";
 
 describe("My Test", () => {
   // ....
@@ -569,28 +364,6 @@ describe("My Test", () => {
 ```
 
 In this case TypeScript loads corresponding declarations automatically
-
-</details>
-
-It's a bit harder to work with `global` dialect. It creates global getters on the fly, so there is no way to let TypeScript know something about these variables, thus you need to `declare` them manually.
-
-<details>
-  <summary>TypeScript and global dialect</summary>
-
-```ts
-import { def } from "bdd-lazy-var-next/global";
-
-describe("My Test", () => {
-  declare let $value: number; // <-- need to place this declarations manually
-  def("value", () => 5);
-
-  it("equals 5", () => {
-    expect($value).to.equal(5);
-  });
-});
-```
-
-As with other dialects you can either use `import` statements to load typings automatically or add them manually in `tsconfig.json`
 
 </details>
 
@@ -604,7 +377,7 @@ describe("Array", () => {
   subject(() => [1, 2, 3]);
 
   it("has 3 elements by default", () => {
-    expect($subject).to.have.length(3);
+    expect(get("subject")).to.have.length(3);
   });
 });
 ```
@@ -619,8 +392,8 @@ describe("Array", () => {
   subject("collection", () => [1, 2, 3]);
 
   it("has 3 elements by default", () => {
-    expect($subject).to.equal($collection);
-    expect($collection).to.have.length(3);
+    expect(get("subject")).to.equal(get("collection"));
+    expect(get("collection")).to.have.length(3);
   });
 });
 ```
@@ -637,20 +410,20 @@ describe("Array", () => {
   beforeEach(() => {
     // this beforeEach is executed for tests of suite with subject equal [1, 2, 3]
     // and for nested describe with subject being []
-    $subject.push(4);
+    get("subject").push(4);
   });
 
   it("has 3 elements by default", () => {
-    expect($subject).to.equal($collection);
-    expect($collection).to.have.length(3);
+    expect(get("subject")).to.equal(get("collection"));
+    expect(get("collection")).to.have.length(3);
   });
 
   describe("when empty", () => {
     subject(() => []);
 
     it("has 1 element", () => {
-      expect($subject).not.to.equal($collection);
-      expect($collection).to.deep.equal([4]);
+      expect(get("subject")).not.to.equal(get("collection"));
+      expect(get("collection")).to.deep.equal([4]);
     });
   });
 });
@@ -666,19 +439,19 @@ describe("Array", () => {
   subject("collection", () => [1, 2, 3]);
 
   it("has 3 elements by default", () => {
-    expect($subject).to.equal($collection);
-    expect($collection).to.have.length(3);
+    expect(get("subject")).to.equal(get("collection"));
+    expect(get("collection")).to.have.length(3);
   });
 
   describe("when empty", () => {
     subject(() => {
-      // in this definition `$subject` references parent $subject (i.e., `$collection` variable)
-      return $subject.concat([4, 5]);
+      // in this definition `get('subject')` references parent subject (i.e., `get('collection')` variable)
+      return get("subject").concat([4, 5]);
     });
 
     it("is properly uses parent subject", () => {
-      expect($subject).not.to.equal($collection);
-      expect($collection).to.deep.equal([1, 2, 3, 4, 5]);
+      expect(get("subject")).not.to.equal(get("collection"));
+      expect(get("collection")).to.deep.equal([1, 2, 3, 4, 5]);
     });
   });
 });

@@ -27,7 +27,7 @@ sharedExamplesFor("Lazy Vars Interface", (getVar: any) => {
 		def("var", () => definition());
 		def("staticVar", value);
 
-		def("fullName", () => getVar("firstName") + " " + getVar("lastName"));
+		def("fullName", () => `${getVar("firstName")} ${getVar("lastName")}`);
 
 		def("firstName", "John");
 		def("lastName", "Doe");
@@ -158,7 +158,7 @@ sharedExamplesFor("Lazy Vars Interface", (getVar: any) => {
 			});
 
 			describe("nested suite with variable definition", () => {
-				def("var", () => get("anotherVar") + " " + getVar("var"));
+				def("var", () => `${get("anotherVar")} ${getVar("var")}`);
 
 				def("anotherVar", () => "John");
 
@@ -271,7 +271,7 @@ sharedExamplesFor("Lazy Vars Interface", (getVar: any) => {
 		describe("child suite", () => {
 			subject(() => ({
 				isParent: !subject().isParent,
-				name: subject().name + " child",
+				name: `${subject().name} child`,
 			}));
 
 			it("retrieves proper parent variable", () => {

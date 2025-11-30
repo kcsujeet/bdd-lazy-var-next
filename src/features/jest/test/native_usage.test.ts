@@ -1,10 +1,8 @@
-import "../../../../dist/global";
+import "../../../../dist/index";
 
 declare const def: any;
 declare const subject: any;
 declare const get: any;
-declare var $value: any;
-declare var $obj: any;
 
 // Restore native expect if it was overwritten by config
 // In a real project, config.ts wouldn't be loaded for native tests
@@ -46,21 +44,15 @@ describe("Jest Native Usage", () => {
 		expect(get("subject")).toBe("main subject");
 	});
 
-	it("works with native expect and global accessors ($)", () => {
-		expect($value).toBe(42);
-		expect($obj).toEqual({ id: 1 });
-	});
-
 	describe("nested context", () => {
 		def("value", () => 100);
 
 		it("respects overrides", () => {
 			expect(get("value")).toBe(100);
-			expect($value).toBe(100);
 		});
 
 		it("inherits other values", () => {
-			expect($obj).toEqual({ id: 1 });
+			expect(get("obj")).toEqual({ id: 1 });
 		});
 	});
 });

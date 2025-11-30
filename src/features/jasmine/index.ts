@@ -33,7 +33,12 @@ function createSuiteTracker(isJest: boolean) {
 
 function addInterface(rootSuite: any, options: any) {
 	const context = globalThis as any;
-	const isJest = typeof jest !== "undefined";
+	const isJest =
+		typeof jest !== "undefined" ||
+		context.expect?.extend ||
+		(typeof context.beforeAll === "function" &&
+			typeof context.afterAll === "function" &&
+			!context.jasmine);
 
 	// Custom suite tracker for Jasmine that gets suite from describe() return value
 	class JasmineSuiteTracker extends (options.Tracker as typeof SuiteTracker) {

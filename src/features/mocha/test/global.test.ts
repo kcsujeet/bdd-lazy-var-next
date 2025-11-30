@@ -12,7 +12,7 @@ declare const $anotherVar: any;
 declare const $bddLazyCounter: any;
 
 function getVar(name: string) {
-	return (global as any)["$" + name];
+	return (global as any)[`$${name}`];
 }
 
 includeExamplesFor("Root Lazy Vars", getVar);

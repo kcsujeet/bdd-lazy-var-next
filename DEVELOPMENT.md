@@ -27,11 +27,9 @@ bun install
 bun run build
 ```
 
-This will generate the UMD bundles in the `dist/` folder:
+This will generate the UMD bundle in the `dist/` folder:
 
 - `dist/index.js` - Function dialect: `get('varName')`
-- `dist/global.js` - Global dialect: `$varName`
-- `dist/getter.js` - Getter dialect: `get.varName`
 
 ## Development Workflow
 
@@ -51,7 +49,7 @@ bun run lint
 
 ### Building
 
-Build all three dialects:
+Build the library:
 
 ```bash
 bun run build
@@ -130,22 +128,21 @@ This will:
 ```
 bdd-lazy-var-next/
 ├── src/                          # Source code
-│   ├── interface/               # Framework adapters
-│   │   ├── mocha.js            # Mocha adapter
-│   │   ├── jasmine.js          # Jasmine adapter
-│   │   ├── jest.js             # Jest adapter
-│   │   ├── vitest.js           # Vitest adapter
-│   │   ├── bun.js              # Bun test adapter
-│   │   └── dialects/           # Different access patterns
-│   │       ├── bdd.js          # Function dialect
-│   │       ├── bdd_global_var.js  # Global dialect
-│   │       └── bdd_getter_var.js  # Getter dialect
-│   ├── metadata.js             # Variable metadata management
-│   ├── suite_tracker.js        # Test suite tracking
-│   └── variable.js             # Lazy variable implementation
-├── spec/                        # Test files
+│   ├── features/                # Framework adapters
+│   │   ├── mocha/              # Mocha adapter
+│   │   ├── jasmine/            # Jasmine adapter
+│   │   ├── jest/               # Jest adapter
+│   │   ├── vitest/             # Vitest adapter
+│   │   └── bun/                # Bun test adapter
+│   ├── dialects/               # Different access patterns
+│   │   └── bdd.ts              # Function dialect
+│   ├── core/                   # Core logic
+│   │   ├── metadata.ts         # Variable metadata management
+│   │   ├── suite_tracker.ts    # Test suite tracking
+│   │   └── variable.ts         # Lazy variable implementation
+│   └── test/                   # Test files
 ├── tools/                       # Build and test utilities
-│   └── build.js                # Bun-based build script
+│   └── build.ts                # Bun-based build script
 ├── dist/                        # Generated bundles (gitignored)
 ├── .husky/                      # Git hooks
 └── .github/workflows/          # CI configuration

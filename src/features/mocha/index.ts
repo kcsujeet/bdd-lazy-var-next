@@ -1,13 +1,13 @@
-import { createRequire } from "module";
+import { createRequire } from "node:module";
 import createLazyVarInterface from "../../core/interface";
 import { SuiteTracker } from "../../core/suite_tracker";
 import global from "../../utils/global";
 
-const require = createRequire(import.meta.url);
+const requireModule = createRequire(import.meta.url);
 
 let Mocha: any;
 try {
-	Mocha = require("mocha"); // eslint-disable-line
+	Mocha = requireModule("mocha"); // eslint-disable-line
 } catch {
 	// ignore
 }

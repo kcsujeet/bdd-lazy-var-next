@@ -80,6 +80,42 @@ function addInterface(rootSuite: any, options: any) {
 	});
 	context.afterEach(tracker.cleanUpCurrentContext);
 
+	// Try to patch vitest module
+	try {
+		const vi = (global as any).vi;
+		if (vi && vi.mock) {
+			if (vi.doMock) {
+				vi.doMock("vitest", async (importOriginal: any) => {
+					const actual = await importOriginal();
+					return {
+						...actual,
+						describe: context.describe,
+						it: context.it,
+						xdescribe: context.xdescribe,
+						fdescribe: context.fdescribe,
+						xit: context.xit,
+						fit: context.fit,
+					};
+				});
+			} else {
+				vi.mock("vitest", async (importOriginal: any) => {
+					const actual = await importOriginal();
+					return {
+						...actual,
+						describe: context.describe,
+						it: context.it,
+						xdescribe: context.xdescribe,
+						fdescribe: context.fdescribe,
+						xit: context.xit,
+						fit: context.fit,
+					};
+				});
+			}
+		}
+	} catch {
+		// ignore
+	}
+
 	return ui;
 }
 

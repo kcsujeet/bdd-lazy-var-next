@@ -1,4 +1,4 @@
-import { createRequire } from "module";
+import { createRequire } from "node:module";
 import * as bunFeature from "./features/bun";
 import * as jasmineFeature from "./features/jasmine";
 import * as jestFeature from "./features/jest";
@@ -6,7 +6,7 @@ import * as mochaFeature from "./features/mocha";
 import * as vitestFeature from "./features/vitest";
 import global from "./utils/global";
 
-const require = createRequire(import.meta.url);
+const requireModule = createRequire(import.meta.url);
 
 declare const vitest: any;
 declare const jest: any;
@@ -15,7 +15,7 @@ declare const Bun: any;
 let Mocha;
 
 try {
-	Mocha = require("mocha"); // eslint-disable-line
+	Mocha = requireModule("mocha"); // eslint-disable-line
 } catch {
 	// eslint-disable-line
 }
@@ -25,16 +25,24 @@ let ui;
 if (
 	!ui &&
 	(typeof vitest !== "undefined" ||
+		(global as any).vitest ||
 		(typeof process !== "undefined" && process.env.VITEST))
 ) {
 	// eslint-disable-line
 	ui = vitestFeature; // eslint-disable-line
 } else if (!ui && (global as any).jasmine) {
 	ui = jasmineFeature; // eslint-disable-line
-} else if (!ui && typeof Bun !== "undefined") {
+} else if (!ui && (typeof Bun !== "undefined" || (global as any).Bun)) {
 	// eslint-disable-line
 	ui = bunFeature; // eslint-disable-line
-} else if (!ui && typeof jest !== "undefined") {
+} else if (
+	!ui &&
+	(typeof jest !== "undefined" ||
+		(global as any).jest ||
+		(global as any).expect?.extend ||
+		(typeof (global as any).beforeAll === "function" &&
+			typeof (global as any).afterAll === "function"))
+) {
 	ui = jestFeature; // eslint-disable-line
 } else if (!ui && (Mocha || (global as any).Mocha)) {
 	ui = mochaFeature; // eslint-disable-line
@@ -49,7 +57,7 @@ if (!ui) {
 }
 
 // Handle ES module interop
-const getInterface = (mod: any) => (mod && mod.default ? mod.default : mod);
+const getInterface = (mod: any) => (mod?.default ? mod.default : mod);
 const exportedUi = getInterface(ui);
 
 export default exportedUi;
