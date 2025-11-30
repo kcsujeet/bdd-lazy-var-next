@@ -62,6 +62,10 @@ function addInterface(rootSuite: any, options: any) {
     wrapSuite(describe: Function) {
       return (title: string, defineTests: Function, ...suiteArgs: any[]) => {
         const parentSuite = this.currentlyDefinedSuite;
+        // Ensure describe is a function before calling it
+        if (typeof describe !== 'function') {
+          throw new Error(`describe is not a function. It is ${typeof describe}`);
+        }
         return describe(
           title,
           (...args: any[]) => {
@@ -134,6 +138,12 @@ function addInterface(rootSuite: any, options: any) {
         const bunTest = require('bun:test'); // eslint-disable-line global-require, import/no-unresolved
         if (bunTest.describe !== wrapped) {
           bunTest.describe = wrapped;
+        }
+        if (prefix === 'x' && bunTest.describe.skip !== wrapped) {
+          bunTest.describe.skip = wrapped;
+        }
+        if (prefix === 'f' && bunTest.describe.only !== wrapped) {
+          bunTest.describe.only = wrapped;
         }
       } catch {
         // Ignore
