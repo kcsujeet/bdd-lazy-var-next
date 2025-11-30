@@ -108,14 +108,14 @@
     "test.jasmine": "bun run test.jasmine-ui",
     "test.browser-jasmine-ui": "karma start -f jasmine --src dist/jasmine.js --specs src/features/jasmine/test/bdd.test.ts karma.config.cjs",
     "test.jasmine-in-browser": "bun run test.browser-jasmine-ui",
-    "test.jest-ui": "SRC_FILE=dist/jest.js jest --findRelatedTests src/features/jest/test/bdd.test.ts",
+    "test.jest-ui": "NODE_OPTIONS=--experimental-vm-modules SRC_FILE=dist/jest.js jest --findRelatedTests src/features/jest/test/bdd.test.ts",
     "test.jest": "bun run test.jest-ui",
     "test.vitest-ui": "SRC_FILE=dist/vitest.js vitest run src/features/vitest/test/bdd.test.ts",
     "test.vitest": "bun run test.vitest-ui",
     "test.bun-ui": "bun test --preload ./src/features/bun/preloads/ui.ts src/features/bun/test/bdd.test.ts",
     "test.bun": "bun run test.bun-ui",
     "test.native.bun": "bun test src/features/bun/test/native_usage.test.ts",
-    "test.native.jest": "bun run jest --no-cache --config=jest.native.config.js",
+    "test.native.jest": "NODE_OPTIONS=--experimental-vm-modules bun run jest --no-cache --config=jest.native.config.js",
     "test.native.vitest": "bun run vitest run -c vitest.native.config.ts",
     "test.native.jasmine": "bun run src/features/jasmine/native_runner.ts dist/jasmine.js src/features/jasmine/test/native_usage.test.ts",
     "test.native.mocha": "node --import tsx node_modules/mocha/bin/mocha.js -r src/features/mocha/test/setup.js -r dist/mocha.js -u bdd-lazy-var-next src/features/mocha/test/native_usage.test.ts",
@@ -150,10 +150,7 @@
         "ts-jest",
         {
           "useESM": true,
-          "tsconfig": {
-            "module": "esnext",
-            "target": "esnext"
-          }
+          "tsconfig": "tsconfig.jest.json"
         }
       ]
     },

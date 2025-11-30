@@ -109,13 +109,25 @@ function addInterface(rootSuite: any, options: any) {
 		if (!describeFn && originalDescribe) {
 			if (prefix === "") describeFn = originalDescribe;
 			if (prefix === "x") describeFn = originalDescribe.skip;
-			if (prefix === "f") describeFn = originalDescribe.only;
+			if (prefix === "f") {
+				try {
+					describeFn = originalDescribe.only;
+				} catch {
+					// Ignore error in CI environments where .only is disabled
+				}
+			}
 		}
 
 		let itFn = context[itKey];
 		if (!itFn && originalIt) {
 			if (prefix === "x") itFn = originalIt.skip;
-			if (prefix === "f") itFn = originalIt.only;
+			if (prefix === "f") {
+				try {
+					itFn = originalIt.only;
+				} catch {
+					// Ignore error in CI environments where .only is disabled
+				}
+			}
 		}
 
 		if (itFn) {
@@ -148,8 +160,14 @@ function addInterface(rootSuite: any, options: any) {
 					if (prefix === "x" && bunTest.describe.skip !== wrapped) {
 						bunTest.describe.skip = wrapped;
 					}
-					if (prefix === "f" && bunTest.describe.only !== wrapped) {
-						bunTest.describe.only = wrapped;
+					if (prefix === "f") {
+						try {
+							if (bunTest.describe.only !== wrapped) {
+								bunTest.describe.only = wrapped;
+							}
+						} catch {
+							// Ignore error in CI environments where .only is disabled
+						}
 					}
 
 					// Attempt to mock the module for ESM imports
