@@ -1,5 +1,5 @@
-import createLazyVarInterface from "../../core/interface";
-import { SuiteTracker } from "../../core/suite_tracker";
+import createLazyVarInterface from '../../core/interface';
+import { SuiteTracker } from '../../core/suite_tracker';
 
 function createSuiteTracker() {
   return {
@@ -52,20 +52,20 @@ function addInterface(rootSuite: any, options: any) {
   );
 
   Object.assign(context, ui);
-  ["", "x", "f"].forEach((prefix) => {
+  ['', 'x', 'f'].forEach((prefix) => {
     const describeKey = `${prefix}describe`;
     const itKey = `${prefix}it`;
 
     let describeFn = context[describeKey];
     if (!describeFn && originalDescribe) {
-      if (prefix === "x") describeFn = originalDescribe.skip;
-      if (prefix === "f") describeFn = originalDescribe.only;
+      if (prefix === 'x') describeFn = originalDescribe.skip;
+      if (prefix === 'f') describeFn = originalDescribe.only;
     }
 
     let itFn = context[itKey];
     if (!itFn && originalIt) {
-      if (prefix === "x") itFn = originalIt.skip;
-      if (prefix === "f") itFn = originalIt.only;
+      if (prefix === 'x') itFn = originalIt.skip;
+      if (prefix === 'f') itFn = originalIt.only;
     }
 
     if (itFn) {

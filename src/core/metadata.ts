@@ -1,7 +1,7 @@
-import Symbol from "../utils/symbol";
+import Symbol from '../utils/symbol';
 
-const LAZY_VARS_FIELD = Symbol.for("__lazyVars");
-const EXAMPLES_PREFIX = "__SH_EX:";
+const LAZY_VARS_FIELD = Symbol.for('__lazyVars');
+const EXAMPLES_PREFIX = '__SH_EX:';
 
 export class VariableMetadata {
   value: any;
@@ -26,7 +26,7 @@ export class VariableMetadata {
   }
 
   evaluate() {
-    return typeof this.value === "function" ? this.value() : this.value;
+    return typeof this.value === 'function' ? this.value() : this.value;
   }
 }
 
@@ -64,8 +64,8 @@ export class Metadata {
 
   getVar(name: string) {
     if (
-      !Object.prototype.hasOwnProperty.call(this.values, name) &&
-      this.defs[name]
+      !Object.prototype.hasOwnProperty.call(this.values, name)
+      && this.defs[name]
     ) {
       this.hasValues = true;
       this.values[name] = this.evaluate(name);

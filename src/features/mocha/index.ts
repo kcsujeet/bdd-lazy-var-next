@@ -1,21 +1,32 @@
-import Mocha from "mocha";
 import createLazyVarInterface from "../../core/interface";
 import { SuiteTracker } from "../../core/suite_tracker";
+import global from "../../utils/global";
+
+let Mocha: any;
+try {
+  Mocha = require("mocha"); // eslint-disable-line
+} catch {
+  // ignore
+}
+
+if (!Mocha && (global as any).Mocha) {
+  Mocha = (global as any).Mocha;
+}
 
 function createSuiteTracker() {
   return {
-    before(tracker: SuiteTracker, suite: Mocha.Suite) {
+    before(tracker: SuiteTracker, suite: any) {
       suite.beforeAll(tracker.registerSuite.bind(tracker, suite));
     },
 
-    after(tracker: SuiteTracker, suite: Mocha.Suite) {
+    after(tracker: SuiteTracker, suite: any) {
       suite.beforeAll(tracker.cleanUpCurrentContext);
       suite.afterAll(tracker.cleanUpCurrentAndRestorePrevContext);
     },
   };
 }
 
-function addInterface(rootSuite: Mocha.Suite, options: any) {
+function addInterface(rootSuite: any, options: any) {
   const tracker = new options.Tracker({
     rootSuite,
     suiteTracker: createSuiteTracker(),
@@ -54,7 +65,7 @@ export default {
       ...options,
     };
 
-    (Mocha.interfaces as any)[name] = (rootSuite: Mocha.Suite) => {
+    (Mocha.interfaces as any)[name] = (rootSuite: any) => {
       (Mocha.interfaces as any)[config.inheritUi](rootSuite);
       return addInterface(rootSuite, config);
     };

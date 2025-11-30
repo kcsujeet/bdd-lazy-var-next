@@ -4,7 +4,7 @@ const interfaceBuilder = require("../index");
 const { defineGetter } = require("../core/define_var");
 
 const ui = (interfaceBuilder.default || interfaceBuilder).createUi(
-  "bdd-lazy-var-next/getter",
+  'bdd-lazy-var-next/getter',
   {
     onDefineVariable(suite: any, varName: string, context: any) {
       defineGetter(context, varName, { defineOn: context.get });

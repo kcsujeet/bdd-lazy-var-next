@@ -1,8 +1,11 @@
+import { expect } from "chai";
+
 export {};
-const { expect, spy } = require("chai");
+
 const describe = (global as any).describe;
 const it = (global as any).it;
 
+declare const spy: any;
 declare const includeExamplesFor: any;
 declare const subject: any;
 declare const def: any;

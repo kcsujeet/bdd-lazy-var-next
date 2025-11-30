@@ -11,21 +11,28 @@ module.exports = function(config) {
   srcFiles.unshift(
     'node_modules/chai/chai.js',
     'node_modules/chai-spies/chai-spies.js',
-    'src/test/config.js'
+    'src/test/config.ts'
   );
   specs.unshift(
-    'src/test/interface_examples.js',
-    'src/test/default_suite_tracking_examples.js'
+    'src/test/interface_examples.ts',
+    'src/test/default_suite_tracking_examples.ts'
   );
 
   config.set({
     frameworks,
-    basePath: '..',
+    basePath: '.',
     reporters: ['dots'],
     autoWatch: false,
     singleRun: true,
     browsers: ['ChromeHeadless'],
     files: frameworks.includes('mocha') ? specs : srcFiles.concat(specs),
+    preprocessors: {
+      '**/*.ts': ['esbuild']
+    },
+    esbuild: {
+      target: 'es2015',
+      tsconfig: './tsconfig.json'
+    },
     client: {
       mocha: {
         ui: config.u,

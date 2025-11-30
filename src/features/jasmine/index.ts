@@ -6,12 +6,18 @@ declare const jest: any;
 function createSuiteTracker() {
   return {
     before(tracker: SuiteTracker, suite: any) {
-      (global as any).beforeAll(tracker.registerSuite.bind(tracker, suite));
+      (global as any).beforeAll(() => {
+        tracker.registerSuite(suite);
+      });
+      (global as any).afterAll(() => {
+        tracker.cleanUpCurrentAndRestorePrevContext();
+      });
     },
 
-    after(tracker: SuiteTracker) {
-      (global as any).beforeAll(tracker.cleanUpCurrentContext);
-      (global as any).afterAll(tracker.cleanUpCurrentAndRestorePrevContext);
+    after(_tracker: SuiteTracker) {
+      (global as any).beforeAll(() => {
+        _tracker.cleanUpCurrentContext();
+      });
     },
   };
 }

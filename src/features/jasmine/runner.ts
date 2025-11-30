@@ -1,4 +1,7 @@
 import JasmineCli from "jasmine";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
 
 const jasmine = new JasmineCli();
 const helpers = [

@@ -1,6 +1,6 @@
-import Symbol from "../utils/symbol";
+import Symbol from '../utils/symbol';
 
-const LAZY_VARS_PROP_NAME = Symbol.for("__lazyVars");
+const LAZY_VARS_PROP_NAME = Symbol.for('__lazyVars');
 
 export interface DefineGetterOptions {
   getterPrefix?: string;
@@ -13,15 +13,14 @@ export function defineGetter(
   options: DefineGetterOptions = {}
 ) {
   const params = {
-    getterPrefix: "",
+    getterPrefix: '',
     defineOn: context,
     ...options,
   };
 
   const accessorName = params.getterPrefix + varName;
   const varContext = params.defineOn;
-  const vars = (varContext[LAZY_VARS_PROP_NAME] =
-    varContext[LAZY_VARS_PROP_NAME] || {});
+  const vars = (varContext[LAZY_VARS_PROP_NAME] = varContext[LAZY_VARS_PROP_NAME] || {});
 
   if (accessorName in vars) {
     return;

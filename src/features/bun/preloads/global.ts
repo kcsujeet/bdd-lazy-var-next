@@ -16,6 +16,7 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
+  // console.log('Global Preload: beforeEach');
   (global as any).expect = chai.expect;
   (global as any).spy = chai.spy;
 });

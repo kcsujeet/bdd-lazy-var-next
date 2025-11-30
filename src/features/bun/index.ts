@@ -1,12 +1,12 @@
-import createLazyVarInterface from "../../core/interface";
-import { SuiteTracker } from "../../core/suite_tracker";
+import createLazyVarInterface from '../../core/interface';
+import { SuiteTracker } from '../../core/suite_tracker';
 
 function createSuiteTracker() {
   let beforeAll: any;
   let afterAll: any;
   let beforeEach: any;
   try {
-    const bunTest = require("bun:test"); // eslint-disable-line global-require, import/no-unresolved
+    const bunTest = require('bun:test'); // eslint-disable-line global-require, import/no-unresolved
     beforeAll = bunTest.beforeAll;
     afterAll = bunTest.afterAll;
     beforeEach = bunTest.beforeEach;
@@ -43,7 +43,7 @@ function addInterface(rootSuite: any, options: any) {
 
   if (!originalDescribe) {
     try {
-      const bunTest = require("bun:test"); // eslint-disable-line global-require, import/no-unresolved
+      const bunTest = require('bun:test'); // eslint-disable-line global-require, import/no-unresolved
       originalDescribe = bunTest.describe;
       originalIt = bunTest.it;
       // Make sure they are available globally if not already
@@ -92,21 +92,21 @@ function addInterface(rootSuite: any, options: any) {
   );
 
   Object.assign(context, ui);
-  ["", "x", "f"].forEach((prefix) => {
+  ['', 'x', 'f'].forEach((prefix) => {
     const describeKey = `${prefix}describe`;
     const itKey = `${prefix}it`;
 
     let describeFn = context[describeKey];
     if (!describeFn && originalDescribe) {
-      if (prefix === "") describeFn = originalDescribe;
-      if (prefix === "x") describeFn = originalDescribe.skip;
-      if (prefix === "f") describeFn = originalDescribe.only;
+      if (prefix === '') describeFn = originalDescribe;
+      if (prefix === 'x') describeFn = originalDescribe.skip;
+      if (prefix === 'f') describeFn = originalDescribe.only;
     }
 
     let itFn = context[itKey];
     if (!itFn && originalIt) {
-      if (prefix === "x") itFn = originalIt.skip;
-      if (prefix === "f") itFn = originalIt.only;
+      if (prefix === 'x') itFn = originalIt.skip;
+      if (prefix === 'f') itFn = originalIt.only;
     }
 
     if (itFn) {
@@ -118,7 +118,7 @@ function addInterface(rootSuite: any, options: any) {
       const wrapped = tracker.wrapSuite(describeFn);
 
       try {
-        let currentVal = wrapped;
+        const currentVal = wrapped;
         Object.defineProperty(context, describeKey, {
           get() {
             return currentVal;
@@ -131,7 +131,7 @@ function addInterface(rootSuite: any, options: any) {
         });
 
         // Try to patch bun:test module exports
-        const bunTest = require("bun:test"); // eslint-disable-line global-require, import/no-unresolved
+        const bunTest = require('bun:test'); // eslint-disable-line global-require, import/no-unresolved
         if (bunTest.describe !== wrapped) {
           bunTest.describe = wrapped;
         }
@@ -143,7 +143,7 @@ function addInterface(rootSuite: any, options: any) {
   });
 
   // Use global afterEach directly (Bun test doesn't have it on context)
-  if (typeof (global as any).afterEach === "function") {
+  if (typeof (global as any).afterEach === 'function') {
     (global as any).afterEach(tracker.cleanUpCurrentContext);
   }
 

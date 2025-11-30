@@ -1,4 +1,4 @@
-import { Metadata } from "./metadata";
+import { Metadata } from './metadata';
 
 export interface SuiteTrackerConfig {
   rootSuite?: any;
@@ -20,8 +20,7 @@ export class SuiteTracker {
     this.suiteTracker = config.suiteTracker;
     this.suites = [];
     this.cleanUpCurrentContext = this.cleanUpCurrentContext.bind(this);
-    this.cleanUpCurrentAndRestorePrevContext =
-      this.cleanUpCurrentAndRestorePrevContext.bind(this);
+    this.cleanUpCurrentAndRestorePrevContext = this.cleanUpCurrentAndRestorePrevContext.bind(this);
   }
 
   get currentContext() {

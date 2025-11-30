@@ -1,12 +1,12 @@
-import chai from "chai";
-import spies from "chai-spies";
+const chai = require("chai");
+const spies = require("chai-spies");
 
 declare const Bun: any;
 
 chai.use(spies);
 
 (global as any).expect = chai.expect;
-(global as any).spy = (chai as any).spy;
+(global as any).spy = chai.spy;
 
 if (typeof (global as any).beforeAll === "function") {
   (global as any).before = (global as any).beforeAll;

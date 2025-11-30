@@ -1,9 +1,8 @@
-import { Metadata } from "./metadata";
-import Symbol from "../utils/symbol";
+import { Metadata } from './metadata';
+import Symbol from '../utils/symbol';
 
-const CURRENTLY_RETRIEVED_VAR_FIELD = Symbol.for("__currentVariableStack");
-const last = <T>(array: T[] | undefined): T | null =>
-  array ? array[array.length - 1] : null;
+const CURRENTLY_RETRIEVED_VAR_FIELD = Symbol.for('__currentVariableStack');
+const last = <T>(array: T[] | undefined): T | null => array ? array[array.length - 1] : null;
 
 export class Variable {
   static EMPTY = new Variable(null, null);
@@ -53,9 +52,9 @@ export class Variable {
 
   isSame(anotherVarName: string) {
     return (
-      this.name &&
-      (this.name === anotherVarName ||
-        Metadata.of(this.context, this.name).isNamedAs(anotherVarName))
+      this.name
+      && (this.name === anotherVarName
+        || Metadata.of(this.context, this.name).isNamedAs(anotherVarName))
     );
   }
 
@@ -64,8 +63,7 @@ export class Variable {
   }
 
   addToStack() {
-    this.context[CURRENTLY_RETRIEVED_VAR_FIELD] =
-      this.context[CURRENTLY_RETRIEVED_VAR_FIELD] || [];
+    this.context[CURRENTLY_RETRIEVED_VAR_FIELD] = this.context[CURRENTLY_RETRIEVED_VAR_FIELD] || [];
     this.context[CURRENTLY_RETRIEVED_VAR_FIELD].push(this);
 
     return this;

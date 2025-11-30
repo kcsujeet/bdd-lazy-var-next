@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { expect } from 'chai';
 
 declare const sharedExamplesFor: any;
 declare const it: any;
@@ -8,109 +8,109 @@ declare const after: any;
 declare const beforeEach: any;
 declare const afterEach: any;
 
-sharedExamplesFor("Default suite tracking", function (getVar: any) {
+sharedExamplesFor('Default suite tracking', function (getVar: any) {
   (global as any).describe(
-    "when using variable inside another variable definition",
+    'when using variable inside another variable definition',
     function () {
-      var user = { firstName: "John", lastName: "Doe" };
+      var user = { firstName: 'John', lastName: 'Doe' };
       var index = 0;
       var currentIndex: any;
 
       before(function () {
-        expect(getVar("currentIndex")).to.equal(currentIndex);
+        expect(getVar('currentIndex')).to.equal(currentIndex);
       });
 
       beforeEach(
         function usesVariableDefinedInCurrentlyRunningSuiteInBeforeEachCallback() {
-          expect(cast(getVar("currentIndex"))).to.equal(cast(currentIndex));
+          expect(cast(getVar('currentIndex'))).to.equal(cast(currentIndex));
         }
       );
 
       afterEach(
         function usesVariableDefinedInCurrentlyRunningSuiteInAfterEachCallback() {
-          expect(cast(getVar("currentIndex"))).to.equal(cast(currentIndex));
+          expect(cast(getVar('currentIndex'))).to.equal(cast(currentIndex));
         }
       );
 
       after(function usesOwnDefinedVariable() {
-        expect(getVar("currentIndex")).to.equal(currentIndex);
+        expect(getVar('currentIndex')).to.equal(currentIndex);
       });
 
-      def("personName", function () {
-        return getVar("firstName") + " " + getVar("lastName");
+      def('personName', function () {
+        return getVar('firstName') + ' ' + getVar('lastName');
       });
 
-      def("firstName", user.firstName);
-      def("lastName", user.lastName);
+      def('firstName', user.firstName);
+      def('lastName', user.lastName);
 
-      def("currentIndex", function () {
+      def('currentIndex', function () {
         currentIndex = ++index;
 
         return currentIndex;
       });
 
-      def("CurrenIndexType", function () {
+      def('CurrenIndexType', function () {
         return Number;
       });
 
-      it("computes the proper result", function () {
-        expect(getVar("personName")).to.equal(
-          user.firstName + " " + user.lastName
+      it('computes the proper result', function () {
+        expect(getVar('personName')).to.equal(
+          user.firstName + ' ' + user.lastName
         );
       });
 
-      (global as any).describe("nested suite", function () {
-        var nestedUser = { firstName: "Alex" };
+      (global as any).describe('nested suite', function () {
+        var nestedUser = { firstName: 'Alex' };
 
         before(function () {
-          expect(getVar("currentIndex")).to.equal(cast(currentIndex));
+          expect(getVar('currentIndex')).to.equal(cast(currentIndex));
         });
 
         beforeEach(
           function usesOwnDefinedVariableInBeforeEachCallbackEvenWhenItIsRunForNestedTests() {
             // eslint-disable-line max-len
-            expect(getVar("currentIndex")).to.equal(cast(currentIndex));
+            expect(getVar('currentIndex')).to.equal(cast(currentIndex));
           }
         );
 
         afterEach(
           function usesOwnDefinedVariableInAfterEachCallbackEvenWhenItIsRunForNestedTests() {
             // eslint-disable-line max-len
-            expect(getVar("currentIndex")).to.equal(cast(currentIndex));
+            expect(getVar('currentIndex')).to.equal(cast(currentIndex));
           }
         );
 
         after(function usesOwnDefinedVariable() {
-          expect(getVar("currentIndex")).to.equal(cast(currentIndex));
+          expect(getVar('currentIndex')).to.equal(cast(currentIndex));
         });
 
-        def("firstName", nestedUser.firstName);
+        def('firstName', nestedUser.firstName);
 
-        def("currentIndex", function () {
-          return cast(getVar("currentIndex"));
+        def('currentIndex', function () {
+          return cast(getVar('currentIndex'));
         });
 
-        def("CurrenIndexType", function () {
+        def('CurrenIndexType', function () {
           return String;
         });
 
-        it("falls back to parent variable", function () {
-          expect(getVar("lastName")).to.equal("Doe");
+        it('falls back to parent variable', function () {
+          expect(getVar('lastName')).to.equal('Doe');
         });
 
-        it("computes parent variable using redefined variable", function () {
-          expect(getVar("personName")).to.equal(
-            nestedUser.firstName + " " + getVar("lastName")
+        it('computes parent variable using redefined variable', function () {
+          expect(getVar('personName')).to.equal(
+            nestedUser.firstName + ' ' + getVar('lastName')
           );
         });
 
-        it("can redefine parent variable with the same name and access value of parent variable inside definition", function () {
-          expect(getVar("currentIndex")).to.equal(cast(currentIndex));
+        it('can redefine parent variable with the same name and access value of parent variable inside definition', function () {
+          expect(getVar('currentIndex')).to.equal(cast(currentIndex));
         });
       });
 
       function cast(value: any) {
-        var convert = getVar("CurrenIndexType");
+        var convert = getVar('CurrenIndexType');
 
         return convert(value);
       }
