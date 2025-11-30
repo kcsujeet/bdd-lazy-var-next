@@ -1,29 +1,44 @@
-import { expect } from "chai";
-import global from "../utils/global";
+declare var sharedExamplesFor: any;
+declare var describe: any;
+declare var xdescribe: any;
+declare var context: any;
+declare var it: any;
+declare var def: any;
+declare var subject: any;
+declare var before: any;
+declare var after: any;
+declare var beforeEach: any;
+declare var afterEach: any;
+declare var get: any;
 
-declare const context: any;
-declare const it: any;
-declare const def: any;
-declare const subject: any;
-declare const before: any;
-declare const after: any;
-declare const beforeEach: any;
-declare const afterEach: any;
-declare const spy: any;
-declare const get: any;
-declare const xdescribe: any;
+const globalScope =
+	typeof globalThis !== "undefined"
+		? globalThis
+		: typeof global !== "undefined"
+			? global
+			: typeof window !== "undefined"
+				? window
+				: ({} as any);
 
-const describe = (global as any).context || (global as any).describe;
+const expect = globalScope.expect;
+const spy = globalScope.spy;
 
-(global as any).sharedExamplesFor("Lazy Vars Interface", (getVar: any) => {
-	describe("by default", () => {
+const describeFn =
+	typeof context === "function"
+		? context
+		: typeof describe === "function"
+			? describe
+			: null;
+
+sharedExamplesFor("Lazy Vars Interface", () => {
+	describeFn("by default", () => {
 		var definition: any;
 		var value = {};
 
 		def("var", () => definition());
 		def("staticVar", value);
 
-		def("fullName", () => `${getVar("firstName")} ${getVar("lastName")}`);
+		def("fullName", () => `${get("firstName")} ${get("lastName")}`);
 
 		def("firstName", "John");
 		def("lastName", "Doe");
@@ -37,18 +52,18 @@ const describe = (global as any).context || (global as any).describe;
 		});
 
 		it("creates variable only once", () => {
-			getVar("var");
-			getVar("var");
+			get("var");
+			get("var");
 
 			expect(definition).to.have.been.called.once;
 		});
 
 		it("can define static variable", () => {
-			expect(getVar("staticVar")).to.equal(value);
+			expect(get("staticVar")).to.equal(value);
 		});
 
 		it("returns `undefined` where there is no definition", () => {
-			expect(getVar("notDefined")).to.equal(undefined);
+			expect(get("notDefined")).to.equal(undefined);
 		});
 
 		it('defines "get.variable" and its alias "get.definitionOf" getter builder', () => {
@@ -59,14 +74,14 @@ const describe = (global as any).context || (global as any).describe;
 		it("allows to get variable using builder", () => {
 			var getStatic = get.variable("staticVar");
 
-			expect(getStatic()).to.equal(getVar("staticVar"));
+			expect(getStatic()).to.equal(get("staticVar"));
 		});
 
 		describe("nested suite", () => {
 			def("lastName", "Smith");
 
 			it("uses suite specific variable inside dynamic parent variable", () => {
-				expect(getVar("fullName")).to.equal("John Smith");
+				expect(get("fullName")).to.equal("John Smith");
 			});
 		});
 
@@ -74,7 +89,7 @@ const describe = (global as any).context || (global as any).describe;
 			def("lastName", "Cusak");
 
 			it("uses suite specific variable inside dynamic parent variable", () => {
-				expect(getVar("fullName")).to.equal("John Cusak");
+				expect(get("fullName")).to.equal("John Cusak");
 			});
 		});
 	});
@@ -94,32 +109,32 @@ const describe = (global as any).context || (global as any).describe;
 		});
 
 		before(() => {
-			valueInBefore = getVar("var");
+			valueInBefore = get("var");
 		});
 
 		beforeEach(() => {
 			if (!skipBeforeEach) {
 				skipBeforeEach = true;
-				valueInFirstBeforeEach = getVar("var");
+				valueInFirstBeforeEach = get("var");
 			}
 		});
 
 		afterEach(function usesCachedVariable() {
-			valueInAfterEach = getVar("var");
+			valueInAfterEach = get("var");
 
-			expect(getVar("var")).to.equal(prevValue + 1);
+			expect(get("var")).to.equal(prevValue + 1);
 		});
 
 		after(function usesNewlyCreatedVariable() {
-			expect(getVar("var")).to.equal(valueInAfterEach + 1);
+			expect(get("var")).to.equal(valueInAfterEach + 1);
 		});
 
 		it("defines dynamic variable", () => {
-			expect(getVar("var")).to.not.equal(undefined);
+			expect(get("var")).to.not.equal(undefined);
 		});
 
 		it("stores different values between tests", () => {
-			expect(getVar("var")).to.equal(prevValue + 1);
+			expect(get("var")).to.equal(prevValue + 1);
 		});
 
 		it('does not share the same value between "before" and first "beforeEach" calls', () => {
@@ -134,25 +149,25 @@ const describe = (global as any).context || (global as any).describe;
 			def("hasVariables", true);
 
 			it("fallbacks to parent variable definition", () => {
-				expect(getVar("var")).to.equal("Doe");
+				expect(get("var")).to.equal("Doe");
 			});
 
 			it("can define other variables inside", () => {
-				expect(getVar("hasVariables")).to.equal(true);
+				expect(get("hasVariables")).to.equal(true);
 			});
 
 			describe("nested suite with variable definition", () => {
-				def("var", () => `${get("anotherVar")} ${getVar("var")}`);
+				def("var", () => `${get("anotherVar")} ${get("var")}`);
 
 				def("anotherVar", () => "John");
 
 				it("uses correct parent variable definition", () => {
-					expect(getVar("var")).to.equal("John Doe");
+					expect(get("var")).to.equal("John Doe");
 				});
 
 				describe("one more nested suite without variable definition", () => {
 					it("uses correct parent variable definition", () => {
-						expect(getVar("var")).to.equal("John Doe");
+						expect(get("var")).to.equal("John Doe");
 					});
 				});
 			});
@@ -183,11 +198,11 @@ const describe = (global as any).context || (global as any).describe;
 		subject("named", subjectValue);
 
 		it('is accessible by referencing "subject" variable', () => {
-			expect(getVar("subject")).to.equal(subjectValue);
+			expect(get("subject")).to.equal(subjectValue);
 		});
 
 		it("is accessible by referencing subject name variable", () => {
-			expect(getVar("named")).to.equal(subjectValue);
+			expect(get("named")).to.equal(subjectValue);
 		});
 
 		describe("nested suite", () => {
@@ -196,23 +211,23 @@ const describe = (global as any).context || (global as any).describe;
 			subject("nested", nestedSubjectValue);
 
 			it('shadows parent "subject" variable', () => {
-				expect(getVar("subject")).to.equal(nestedSubjectValue);
+				expect(get("subject")).to.equal(nestedSubjectValue);
 			});
 
 			it("can access parent subject by its name", () => {
-				expect(getVar("named")).to.equal(subjectValue);
+				expect(get("named")).to.equal(subjectValue);
 			});
 		});
 
 		describe("parent subject in child one", () => {
-			subject("nested", () => getVar("subject"));
+			subject("nested", () => get("subject"));
 
 			it('can access parent subject inside named subject by accessing "subject" variable', () => {
-				expect(getVar("subject")).to.equal(subjectValue);
+				expect(get("subject")).to.equal(subjectValue);
 			});
 
 			it("can access parent subject inside named subject by accessing subject by its name", () => {
-				expect(getVar("nested")).to.equal(subjectValue);
+				expect(get("nested")).to.equal(subjectValue);
 			});
 		});
 	});
@@ -226,24 +241,24 @@ const describe = (global as any).context || (global as any).describe;
 			subject(object);
 
 			it("defines variables inside skipped suites", () => {
-				expect(getVar("subject")).to.equal(object);
+				expect(get("subject")).to.equal(object);
 			});
 		});
 	});
 
 	describe("referencing child lazy variable from parent", () => {
-		def("model", () => ({ value: getVar("value") }));
+		def("model", () => ({ value: get("value") }));
 
 		describe("nested suite", () => {
-			subject(() => getVar("model").value);
+			subject(() => get("model").value);
 
 			describe("suite which defines variable used in parent suite", () => {
 				def("value", () => ({ x: 5 }));
 
-				subject(() => getVar("subject").x);
+				subject(() => get("subject").x);
 
 				it("returns 5", () => {
-					expect(getVar("subject")).to.equal(5);
+					expect(get("subject")).to.equal(5);
 				});
 			});
 		});
@@ -266,36 +281,36 @@ const describe = (global as any).context || (global as any).describe;
 	});
 
 	describe("when calls variable defined in parent suites", () => {
-		subject(() => ({ isRoot: getVar("isRoot") }));
+		subject(() => ({ isRoot: get("isRoot") }));
 
 		def("isRoot", true);
 
 		describe("one more level which overrides parent variable", () => {
-			subject(() => getVar("subject").isRoot);
+			subject(() => get("subject").isRoot);
 
 			describe("suite that calls parent variable and redefines dependent variable", () => {
 				def("isRoot", false);
 
 				it("gets the correct variable", () => {
-					expect(getVar("subject")).to.equal(false);
+					expect(get("subject")).to.equal(false);
 				});
 			});
 
 			describe("suite that calls parent variable", () => {
 				it("gets the correct variable", () => {
-					expect(getVar("subject")).to.equal(true);
+					expect(get("subject")).to.equal(true);
 				});
 			});
 		});
 	});
 });
 
-(global as any).sharedExamplesFor("Root Lazy Vars", (getVar: any) => {
+sharedExamplesFor("Root Lazy Vars", () => {
 	const varName = `hello.${Date.now()}.${Math.random()}`;
 
 	def(varName, () => "world");
 
 	it("allows to define lazy vars at root level", () => {
-		expect(getVar(varName)).to.equal("world");
+		expect(get(varName)).to.equal("world");
 	});
 });

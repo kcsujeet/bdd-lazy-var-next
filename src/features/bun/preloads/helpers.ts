@@ -7,6 +7,9 @@ declare global {
 }
 
 // Ensure Chai expect is used instead of Bun's expect
+(global as any).expect = chai.expect;
+(global as any).spy = chai.spy;
+
 beforeAll(() => {
 	(global as any).expect = chai.expect;
 	(global as any).spy = chai.spy;

@@ -1,11 +1,11 @@
 {
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "module": "nodenext",
-    "target": "esnext",
-    "moduleResolution": "nodenext",
-    "isolatedModules": true,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
-  }
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"module": "nodenext",
+		"target": "esnext",
+		"moduleResolution": "nodenext",
+		"isolatedModules": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true
+	}
 }

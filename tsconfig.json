@@ -1,32 +1,40 @@
 {
-  "compilerOptions": {
-    "lib": ["ESNext", "DOM"],
-    "module": "esnext",
-    "target": "esnext",
-    "moduleResolution": "bundler",
-    "moduleDetection": "force",
-    "allowImportingTsExtensions": true,
-    "noEmit": true,
-    "strict": true,
-    "downlevelIteration": true,
-    "skipLibCheck": true,
-    "jsx": "react-jsx",
-    "allowSyntheticDefaultImports": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true,
-    "types": ["bun-types", "chai", "chai-spies", "jasmine", "mocha", "jest", "node"],
-    "esModuleInterop": true,
-    "baseUrl": ".",
-    "paths": {
-      "*": ["node_modules/*"]
-    }
-  },
-  "ts-node": {
-    "compilerOptions": {
-      "module": "esnext",
-      "moduleResolution": "node"
-    }
-  },
-  "include": ["src/**/*", "tools/**/*", "karma.config.js"],
-  "exclude": ["node_modules", "dist"]
+	"compilerOptions": {
+		"lib": ["ESNext", "DOM"],
+		"module": "esnext",
+		"target": "esnext",
+		"moduleResolution": "bundler",
+		"moduleDetection": "force",
+		"allowImportingTsExtensions": true,
+		"noEmit": true,
+		"strict": true,
+		"downlevelIteration": true,
+		"skipLibCheck": true,
+		"jsx": "react-jsx",
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"allowJs": true,
+		"types": [
+			"bun-types",
+			"chai",
+			"chai-spies",
+			"jasmine",
+			"mocha",
+			"jest",
+			"node"
+		],
+		"esModuleInterop": true,
+		"baseUrl": ".",
+		"paths": {
+			"*": ["node_modules/*"]
+		}
+	},
+	"ts-node": {
+		"compilerOptions": {
+			"module": "esnext",
+			"moduleResolution": "node"
+		}
+	},
+	"include": ["src/**/*", "tools/**/*", "karma.config.js"],
+	"exclude": ["node_modules", "dist"]
 }

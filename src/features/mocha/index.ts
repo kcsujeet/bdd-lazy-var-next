@@ -95,7 +95,7 @@ if (Mocha) {
 	api.createHelpers("bdd-lazy-var-next", {});
 }
 
-const proxyFn = (name: string) => {
+const proxyFn = (name: string): any => {
 	return new Proxy(() => {}, {
 		apply: (_target, _thisArg, args) => (global as any)[name](...args),
 		get: (_target, prop) => (global as any)[name][prop],
