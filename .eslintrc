@@ -100,7 +100,11 @@
         "prefer-template": "off",
         "global-require": "off",
         "import/no-dynamic-require": "off",
-        "import/extensions": "off"
+        "import/extensions": "off",
+        // Native usage tests import from 'dist/' to verify the final build artifact.
+        // Since 'dist/' is gitignored and may not exist during linting (e.g. in CI),
+        // we ignore unresolved import errors for it.
+        "import/no-unresolved": ["error", { "ignore": ["dist/"] }]
       }
     }
   ]
