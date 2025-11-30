@@ -1,6 +1,6 @@
 # BDD + lazy variable definition (aka rspec)
 
-> **Note**: This is a community-maintained fork of the original [bdd-lazy-var](https://github.com/stalniy/bdd-lazy-var) with added support for Vitest and Bun test frameworks.
+> **Note**: This is a fork of the original [bdd-lazy-var](https://github.com/stalniy/bdd-lazy-var) with added support for Vitest and Bun test frameworks.
 
 [![NPM version](https://badge.fury.io/js/bdd-lazy-var-next.svg)](http://badge.fury.io/js/bdd-lazy-var-next)
 [![CI](https://github.com/kcsujeet/bdd-lazy-var-next/workflows/CI/badge.svg)](https://github.com/kcsujeet/bdd-lazy-var-next/actions)
@@ -8,7 +8,7 @@
 
 Provides helpers for testing frameworks such as [bun:test][bun], [vitest][vitest], [jest][jest], [mocha][mocha] and [jasmine][jasmine] which allows to define lazy variables and subjects.
 
-> [!WARNING] > **Breaking Changes from `bdd-lazy-var`**
+> ⚠️ [!WARNING] > **Breaking Changes from `bdd-lazy-var`**
 >
 > If you are migrating from the original library, please note the following critical changes:
 >
