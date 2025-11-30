@@ -64,7 +64,9 @@ function addInterface(rootSuite: any, options: any) {
         const parentSuite = this.currentlyDefinedSuite;
         // Ensure describe is a function before calling it
         if (typeof describe !== 'function') {
-          throw new Error(`describe is not a function. It is ${typeof describe}`);
+          throw new Error(
+            `describe is not a function. It is ${typeof describe}`
+          );
         }
         return describe(
           title,

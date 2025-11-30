@@ -21,15 +21,13 @@ if (
 ) {
   // eslint-disable-line
   ui = require("./features/vitest"); // eslint-disable-line
-} else if (!ui && typeof jest !== 'undefined' && (global as any).jasmine) {
-  ui = require("./features/jest"); // eslint-disable-line
+} else if (!ui && (global as any).jasmine) {
+  ui = require("./features/jasmine"); // eslint-disable-line
 } else if (!ui && typeof Bun !== 'undefined') {
   // eslint-disable-line
   ui = require("./features/bun"); // eslint-disable-line
 } else if (!ui && typeof jest !== 'undefined') {
   ui = require("./features/jest"); // eslint-disable-line
-} else if (!ui && (global as any).jasmine) {
-  ui = require("./features/jasmine"); // eslint-disable-line
 } else if (!ui && (Mocha || (global as any).Mocha)) {
   ui = require("./features/mocha"); // eslint-disable-line
 }

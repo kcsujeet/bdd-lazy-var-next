@@ -4,6 +4,7 @@ import '../../../../dist/global';
 declare const def: any;
 declare const subject: any;
 declare const get: any;
+declare var $value: any;
 declare var $nestedValue: any;
 declare var $obj: any;
 

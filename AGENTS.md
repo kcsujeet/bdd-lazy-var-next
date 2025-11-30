@@ -8,6 +8,13 @@
 - Install packages: `bun install`
 - Run tests: `bun test` (or via scripts like `bun run test.bun`)
 
+## Critical Instruction: Verify Before Commit
+
+**ALWAYS run `bun run ci:test` and ensure it passes before committing any changes.**
+
+- This script runs linting, type checking, building, and all test suites (including native usage tests).
+- If this script fails, DO NOT commit. Fix the issues first.
+
 ## Project Overview
 
 This is **bdd-lazy-var-next**, a testing DSL library that adds RSpec-style lazy variable definitions to JavaScript testing frameworks (Mocha, Jasmine, Jest, Vitest, Bun). It provides three dialects for accessing lazy variables: `$varName` (global), `get.varName` (getter), and `get('varName')` (function).
