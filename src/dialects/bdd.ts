@@ -1,7 +1,5 @@
-// eslint-disable-next-line
-const index = require("../index");
+import index from "../index";
 
-const ui = (index.default || index).createUi("bdd-lazy-var-next");
+const ui = (index as any).createUi("bdd-lazy-var-next");
 
-// eslint-disable-next-line
-module.exports = ui;
+export default ui;

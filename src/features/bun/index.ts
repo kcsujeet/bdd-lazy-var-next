@@ -1,5 +1,8 @@
+import { createRequire } from "module";
 import createLazyVarInterface from "../../core/interface";
 import { SuiteTracker } from "../../core/suite_tracker";
+
+const require = createRequire(import.meta.url);
 
 function createSuiteTracker() {
 	let beforeAll: any;
@@ -138,14 +141,16 @@ function addInterface(rootSuite: any, options: any) {
 
 				// Try to patch bun:test module exports
 				const bunTest = require("bun:test"); // eslint-disable-line global-require, import/no-unresolved
-				if (bunTest.describe !== wrapped) {
-					bunTest.describe = wrapped;
-				}
-				if (prefix === "x" && bunTest.describe.skip !== wrapped) {
-					bunTest.describe.skip = wrapped;
-				}
-				if (prefix === "f" && bunTest.describe.only !== wrapped) {
-					bunTest.describe.only = wrapped;
+				if (bunTest) {
+					if (bunTest.describe !== wrapped) {
+						bunTest.describe = wrapped;
+					}
+					if (prefix === "x" && bunTest.describe.skip !== wrapped) {
+						bunTest.describe.skip = wrapped;
+					}
+					if (prefix === "f" && bunTest.describe.only !== wrapped) {
+						bunTest.describe.only = wrapped;
+					}
 				}
 			} catch {
 				// Ignore

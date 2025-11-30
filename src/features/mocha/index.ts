@@ -1,6 +1,9 @@
+import { createRequire } from "module";
 import createLazyVarInterface from "../../core/interface";
 import { SuiteTracker } from "../../core/suite_tracker";
 import global from "../../utils/global";
+
+const require = createRequire(import.meta.url);
 
 let Mocha: any;
 try {

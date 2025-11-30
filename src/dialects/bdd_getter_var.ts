@@ -1,16 +1,10 @@
-// eslint-disable-next-line
-const interfaceBuilder = require("../index");
-// eslint-disable-next-line
-const { defineGetter } = require("../core/define_var");
+import { defineGetter } from "../core/define_var";
+import interfaceBuilder from "../index";
 
-const ui = (interfaceBuilder.default || interfaceBuilder).createUi(
-	"bdd-lazy-var-next/getter",
-	{
-		onDefineVariable(suite: any, varName: string, context: any) {
-			defineGetter(context, varName, { defineOn: context.get });
-		},
+const ui = (interfaceBuilder as any).createUi("bdd-lazy-var-next/getter", {
+	onDefineVariable(suite: any, varName: string, context: any) {
+		defineGetter(context, varName, { defineOn: context.get });
 	},
-);
+});
 
-// eslint-disable-next-line
-module.exports = ui;
+export default ui;

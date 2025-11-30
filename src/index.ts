@@ -1,4 +1,12 @@
+import { createRequire } from "module";
+import * as bunFeature from "./features/bun";
+import * as jasmineFeature from "./features/jasmine";
+import * as jestFeature from "./features/jest";
+import * as mochaFeature from "./features/mocha";
+import * as vitestFeature from "./features/vitest";
 import global from "./utils/global";
+
+const require = createRequire(import.meta.url);
 
 declare const vitest: any;
 declare const jest: any;
@@ -20,16 +28,16 @@ if (
 		(typeof process !== "undefined" && process.env.VITEST))
 ) {
 	// eslint-disable-line
-	ui = require("./features/vitest"); // eslint-disable-line
+	ui = vitestFeature; // eslint-disable-line
 } else if (!ui && (global as any).jasmine) {
-	ui = require("./features/jasmine"); // eslint-disable-line
+	ui = jasmineFeature; // eslint-disable-line
 } else if (!ui && typeof Bun !== "undefined") {
 	// eslint-disable-line
-	ui = require("./features/bun"); // eslint-disable-line
+	ui = bunFeature; // eslint-disable-line
 } else if (!ui && typeof jest !== "undefined") {
-	ui = require("./features/jest"); // eslint-disable-line
+	ui = jestFeature; // eslint-disable-line
 } else if (!ui && (Mocha || (global as any).Mocha)) {
-	ui = require("./features/mocha"); // eslint-disable-line
+	ui = mochaFeature; // eslint-disable-line
 }
 
 if (!ui) {

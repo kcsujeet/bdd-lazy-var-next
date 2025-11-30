@@ -1,3 +1,6 @@
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
 const uiFile = process.env.SRC_FILE;
 
 require("../../test/config.ts");
