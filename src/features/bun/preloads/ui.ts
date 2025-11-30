@@ -5,10 +5,7 @@ import {
 } from 'bun:test';
 
 declare global {
-  var expect: any;
   var spy: any;
-  var before: any;
-  var after: any;
 }
 
 // Ensure Chai expect is used instead of Bun's expect

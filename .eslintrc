@@ -6,7 +6,7 @@
     "node": true
   },
   "settings": {
-    "import/core-modules": ["bun:test"],
+    "import/core-modules": ["bun:test", "vitest/config"],
     "import/resolver": {
       "node": {
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
@@ -58,7 +58,10 @@
         "src/test/**/*.ts",
         "src/features/**/preloads/*.ts",
         "src/features/**/setup.ts",
-        "tools/**/*.js"
+        "tools/**/*.js",
+        "karma.config.js",
+        "vitest.config.ts",
+        "build.ts"
       ],
       "env": {
         "mocha": true,

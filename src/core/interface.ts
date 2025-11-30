@@ -66,14 +66,13 @@ export default (context: any, tracker: SuiteTracker, options: any) => {
     }
   }
 
-  function itBehavesLike(...args: any[]) {
-    const nameOrFn = args[0];
+  function itBehavesLike(nameOrFn: string | Function, ...args: any[]) {
     const title = typeof nameOrFn === 'function'
       ? humanize(nameOrFn.name || 'this')
       : nameOrFn;
 
     context.describe(`behaves like ${title}`, () => {
-      includeExamplesFor(...args);
+      includeExamplesFor(nameOrFn, ...args);
     });
   }
 

@@ -54,7 +54,7 @@ function addInterface(rootSuite: any, options: any) {
     }
   }
 
-  class BunSuiteTracker extends options.Tracker {
+  class BunSuiteTracker extends (options.Tracker as typeof SuiteTracker) {
     trackSuite(suite: any, defineTests: Function, args: any[]) {
       super.trackSuite(suite, defineTests, args);
     }

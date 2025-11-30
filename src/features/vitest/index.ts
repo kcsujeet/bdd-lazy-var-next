@@ -19,7 +19,7 @@ function addInterface(rootSuite: any, options: any) {
   const originalDescribe = context.describe;
   const originalIt = context.it;
 
-  class VitestSuiteTracker extends options.Tracker {
+  class VitestSuiteTracker extends (options.Tracker as typeof SuiteTracker) {
     wrapSuite(describe: Function) {
       return (title: string, defineTests: Function, ...suiteArgs: any[]) => {
         const parentSuite = this.currentlyDefinedSuite;

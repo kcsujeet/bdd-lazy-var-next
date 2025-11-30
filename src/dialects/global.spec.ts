@@ -1,4 +1,4 @@
-import { expect } from "chai";
+import { expect } from 'chai';
 
 export {};
 
@@ -14,26 +14,26 @@ declare const $anotherVar: any;
 declare const $bddLazyCounter: any;
 
 function getVar(name: string) {
-  return (global as any)["$" + name];
+  return (global as any)['$' + name];
 }
 
-includeExamplesFor("Root Lazy Vars", getVar);
+includeExamplesFor('Root Lazy Vars', getVar);
 
-describe("Interface with globally defined lazy vars", function () {
-  includeExamplesFor("Lazy Vars Interface", getVar);
-  includeExamplesFor("Default suite tracking", getVar);
+describe('Interface with globally defined lazy vars', function () {
+  includeExamplesFor('Lazy Vars Interface', getVar);
+  includeExamplesFor('Default suite tracking', getVar);
 
-  describe("by default", function () {
+  describe('by default', function () {
     subject(function () {
       return {};
     });
 
-    def("firstName", "John");
-    def("anotherVar", "Doe");
+    def('firstName', 'John');
+    def('anotherVar', 'Doe');
 
     try {
       (global as any).$bddLazyCounter = 2;
-      def("bddLazyCounter", 5);
+      def('bddLazyCounter', 5);
     } catch {
       (global as any).$bddLazyCounter = null;
     }
@@ -43,11 +43,11 @@ describe("Interface with globally defined lazy vars", function () {
       expect((global as any).$subject).to.exist;
     });
 
-    it("allows to access lazy variable value by its name", function () {
+    it('allows to access lazy variable value by its name', function () {
       expect($subject).to.equal(subject());
     });
 
-    it("forwards calls to `get` function when access variable", function () {
+    it('forwards calls to `get` function when access variable', function () {
       var accessor = spy();
       var originalGet = (global as any).get;
 
@@ -56,10 +56,10 @@ describe("Interface with globally defined lazy vars", function () {
       $anotherVar;
       (global as any).get = originalGet;
 
-      expect(accessor).to.have.been.called.with("anotherVar");
+      expect(accessor).to.have.been.called.with('anotherVar');
     });
 
-    it("does not allow to redefine existing variable in global context", function () {
+    it('does not allow to redefine existing variable in global context', function () {
       // eslint-disable-next-line
       expect($bddLazyCounter).to.be.null;
     });

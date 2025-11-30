@@ -34,7 +34,7 @@ export class Variable {
     }
   }
 
-  static fromStack(context: any) {
+  static fromStack(context: any): Variable {
     return last(context[CURRENTLY_RETRIEVED_VAR_FIELD]) || Variable.EMPTY;
   }
 

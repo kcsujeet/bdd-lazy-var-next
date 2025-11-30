@@ -3,7 +3,7 @@ const puppeteer = require('puppeteer');
 
 process.env.CHROME_BIN = puppeteer.executablePath();
 
-module.exports = function(config) {
+module.exports = function (config) {
   const specs = (config.specs || '').split(',');
   const srcFiles = (config.src || '').split(',');
   const frameworks = (config.f || 'mocha').split(',');
@@ -36,8 +36,8 @@ module.exports = function(config) {
     client: {
       mocha: {
         ui: config.u,
-        require: srcFiles.reverse().map(filePath => path.resolve(filePath))
+        require: srcFiles.reverse().map((filePath) => path.resolve(filePath))
       }
     }
   });
-}
+};

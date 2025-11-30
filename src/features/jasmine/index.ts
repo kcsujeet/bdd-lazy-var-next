@@ -1,5 +1,5 @@
-import createLazyVarInterface from "../../core/interface";
-import { SuiteTracker } from "../../core/suite_tracker";
+import createLazyVarInterface from '../../core/interface';
+import { SuiteTracker } from '../../core/suite_tracker';
 
 declare const jest: any;
 
@@ -26,7 +26,7 @@ function addInterface(rootSuite: any, options: any) {
   const context = global as any;
 
   // Custom suite tracker for Jasmine that gets suite from describe() return value
-  class JasmineSuiteTracker extends options.Tracker {
+  class JasmineSuiteTracker extends (options.Tracker as typeof SuiteTracker) {
     wrapSuite(describe: Function) {
       return (title: string, defineTests: Function, ...suiteArgs: any[]) => {
         const parentSuite = this.currentlyDefinedSuite;
@@ -36,8 +36,8 @@ function addInterface(rootSuite: any, options: any) {
           description: title,
           getFullName() {
             return (
-              (parentSuite.getFullName ? `${parentSuite.getFullName()} ` : "") +
-              title
+              (parentSuite.getFullName ? `${parentSuite.getFullName()} ` : '')
+              + title
             );
           },
         };
@@ -62,10 +62,10 @@ function addInterface(rootSuite: any, options: any) {
     tracker,
     options
   );
-  const isJest = typeof jest !== "undefined";
+  const isJest = typeof jest !== 'undefined';
 
   Object.assign(context, ui);
-  ["", "x", "f"].forEach((prefix) => {
+  ['', 'x', 'f'].forEach((prefix) => {
     const describeKey = `${prefix}describe`;
     const itKey = `${prefix}it`;
 
@@ -82,11 +82,10 @@ function addInterface(rootSuite: any, options: any) {
 export default {
   createUi(name: string, options: any) {
     const config = { Tracker: SuiteTracker, ...options };
-    const rootSuite =
-      (global as any).jasmine &&
-      typeof (global as any).jasmine.getEnv === "function"
-        ? (global as any).jasmine.getEnv().topSuite()
-        : { parent: null, parentSuite: null };
+    const rootSuite = (global as any).jasmine
+      && typeof (global as any).jasmine.getEnv === 'function'
+      ? (global as any).jasmine.getEnv().topSuite()
+      : { parent: null, parentSuite: null };
 
     return addInterface(rootSuite, config);
   },

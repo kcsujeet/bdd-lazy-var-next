@@ -1,6 +1,6 @@
-import createLazyVarInterface from "../../core/interface";
-import { SuiteTracker } from "../../core/suite_tracker";
-import global from "../../utils/global";
+import createLazyVarInterface from '../../core/interface';
+import { SuiteTracker } from '../../core/suite_tracker';
+import global from '../../utils/global';
 
 let Mocha: any;
 try {
@@ -34,7 +34,7 @@ function addInterface(rootSuite: any, options: any) {
   let ui: any;
 
   rootSuite.afterEach(tracker.cleanUpCurrentContext);
-  rootSuite.on("pre-require", (context: any) => {
+  rootSuite.on('pre-require', (context: any) => {
     const { describe, it } = context;
 
     if (!ui) {
@@ -61,7 +61,7 @@ export default {
   createUi(name: string, options: any) {
     const config = {
       Tracker: SuiteTracker,
-      inheritUi: "bdd",
+      inheritUi: 'bdd',
       ...options,
     };
 
@@ -71,15 +71,15 @@ export default {
     };
 
     const getters = [
-      "get",
-      "def",
-      "subject",
-      "its",
-      "it",
-      "is",
-      "sharedExamplesFor",
-      "includeExamplesFor",
-      "itBehavesLike",
+      'get',
+      'def',
+      'subject',
+      'its',
+      'it',
+      'is',
+      'sharedExamplesFor',
+      'includeExamplesFor',
+      'itBehavesLike',
     ];
     const defs = getters.reduce((all: any, uiName: string) => {
       all[uiName] = { get: () => (global as any)[uiName] };

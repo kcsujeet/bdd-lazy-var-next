@@ -6,15 +6,9 @@
  * Replaces Rollup for building UMD bundles for bdd-lazy-var-next
  */
 
-const MODULE_NAME = "bdd_lazy_var";
-
-// External dependencies that should not be bundled
-const external = ["mocha", "jasmine", "jest", "vitest"];
-
 // UMD wrapper
 const createUMDWrapper = (code: string) => {
-  const optionalHelper =
-    "function optional(name) { try { return require(name); } catch(e) {} }";
+  const optionalHelper = 'function optional(name) { try { return require(name); } catch(e) {} }';
 
   return `(function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
@@ -44,11 +38,10 @@ async function buildBundle(entrypoint: string, outputFile: string) {
   try {
     const result = await Bun.build({
       entrypoints: [entrypoint],
-      target: "node",
-      format: "cjs",
+      target: 'node',
+      format: 'cjs',
       minify: false,
-      sourcemap: "external",
-      external,
+      sourcemap: 'external',
     });
 
     if (!result.success) {
@@ -61,10 +54,10 @@ async function buildBundle(entrypoint: string, outputFile: string) {
     let code = await result.outputs[0].text();
 
     // Remove the Bun pragma if present
-    code = code.replace(/^\/\/ @bun.*\n/gm, "");
+    code = code.replace(/^\/\/ @bun.*\n/gm, '');
 
     // Replace global.jasmine with globalThis.jasmine for browser compatibility
-    code = code.replace(/global\.jasmine/g, "globalThis.jasmine");
+    code = code.replace(/global\.jasmine/g, 'globalThis.jasmine');
 
     // Make framework requires optional
     code = makeOptionalRequires(code);
@@ -89,20 +82,20 @@ async function buildBundle(entrypoint: string, outputFile: string) {
 }
 
 async function main() {
-  console.log("Building bdd-lazy-var-next with Bun bundler...\n");
+  console.log('Building bdd-lazy-var-next with Bun bundler...\n');
 
   // Ensure dist directory exists
-  await Bun.write("dist/.gitkeep", "");
+  await Bun.write('dist/.gitkeep', '');
 
   // Build all three dialects
-  await buildBundle("./src/dialects/bdd.ts", "./dist/index.js");
-  await buildBundle("./src/dialects/bdd_global_var.ts", "./dist/global.js");
-  await buildBundle("./src/dialects/bdd_getter_var.ts", "./dist/getter.js");
+  await buildBundle('./src/dialects/bdd.ts', './dist/index.js');
+  await buildBundle('./src/dialects/bdd_global_var.ts', './dist/global.js');
+  await buildBundle('./src/dialects/bdd_getter_var.ts', './dist/getter.js');
 
-  console.log("\n✓ All builds completed successfully!");
+  console.log('\n✓ All builds completed successfully!');
 }
 
 main().catch((error) => {
-  console.error("Build failed:", error);
+  console.error('Build failed:', error);
   process.exit(1);
 });
