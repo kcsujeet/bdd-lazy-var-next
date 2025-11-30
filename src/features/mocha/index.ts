@@ -34,21 +34,21 @@ function addInterface(rootSuite: any, options: any) {
 		rootSuite,
 		suiteTracker: createSuiteTracker(),
 	});
-	let ui: any;
+	let helpers: any;
 
 	rootSuite.afterEach(tracker.cleanUpCurrentContext);
 	rootSuite.on("pre-require", (context: any) => {
 		const { describe, it } = context;
 
-		if (!ui) {
-			ui = createLazyVarInterface(context, tracker, options);
-			const { wrapIt: _wrapIt, ...restUi } = ui;
-			Object.assign(context, restUi);
+		if (!helpers) {
+			helpers = createLazyVarInterface(context, tracker, options);
+			const { wrapIt: _wrapIt, ...restHelpers } = helpers;
+			Object.assign(context, restHelpers);
 		}
 
-		context.it = ui.wrapIt(it);
-		context.it.only = ui.wrapIt(it.only);
-		context.it.skip = ui.wrapIt(it.skip);
+		context.it = helpers.wrapIt(it);
+		context.it.only = helpers.wrapIt(it.only);
+		context.it.skip = helpers.wrapIt(it.skip);
 		context.describe = tracker.wrapSuite(describe);
 		context.describe.skip = tracker.wrapSuite(describe.skip);
 		context.describe.only = tracker.wrapSuite(describe.only);
@@ -58,15 +58,15 @@ function addInterface(rootSuite: any, options: any) {
 }
 
 const api = {
-	createUi(name: string, options: any) {
+	createHelpers(name: string, options: any) {
 		const config = {
 			Tracker: SuiteTracker,
-			inheritUi: "bdd",
+			inheritInterface: "bdd",
 			...options,
 		};
 
 		(Mocha.interfaces as any)[name] = (rootSuite: any) => {
-			(Mocha.interfaces as any)[config.inheritUi](rootSuite);
+			(Mocha.interfaces as any)[config.inheritInterface](rootSuite);
 			return addInterface(rootSuite, config);
 		};
 
@@ -79,8 +79,8 @@ const api = {
 			"includeExamplesFor",
 			"itBehavesLike",
 		];
-		const defs = getters.reduce((all: any, uiName: string) => {
-			all[uiName] = { get: () => (global as any)[uiName] };
+		const defs = getters.reduce((all: any, helperName: string) => {
+			all[helperName] = { get: () => (global as any)[helperName] };
 			return all;
 		}, {});
 
@@ -92,7 +92,7 @@ export default api;
 
 // Auto-initialize
 if (Mocha) {
-	api.createUi("bdd-lazy-var-next", {});
+	api.createHelpers("bdd-lazy-var-next", {});
 }
 
 const proxyFn = (name: string) => {

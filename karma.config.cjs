@@ -5,7 +5,7 @@ process.env.CHROME_BIN = puppeteer.executablePath();
 
 module.exports = (config) => {
   const specs = (config.specs || '').split(',');
-  const srcFiles = (config.src || '').split(',');
+  const srcFiles = (config.src || '').split(',').filter(Boolean);
   const frameworks = (config.f || 'mocha').split(',');
 
   srcFiles.unshift(
@@ -13,10 +13,25 @@ module.exports = (config) => {
     'node_modules/chai-spies/chai-spies.js',
     'src/test/config.ts'
   );
+  
+  // Add activation script if using mocha
+  if (frameworks.includes('mocha')) {
+    srcFiles.push('src/test/activate_mocha_ui.js');
+  }
+
   specs.unshift(
     'src/test/interface_examples.ts',
     'src/test/default_suite_tracking_examples.ts'
   );
+
+  const files = srcFiles.filter(f => !f.includes('dist/mocha.js')).concat(specs);
+  
+  const processedFiles = files.map(file => {
+    if (typeof file === 'string' && !file.includes('node_modules/') && !file.includes('dist/')) {
+      return { pattern: file, type: 'module' };
+    }
+    return file;
+  });
 
   config.set({
     frameworks,
@@ -25,9 +40,11 @@ module.exports = (config) => {
     autoWatch: false,
     singleRun: true,
     browsers: ['ChromeHeadless'],
-    files: frameworks.includes('mocha') ? specs : srcFiles.concat(specs),
+    files: processedFiles,
     preprocessors: {
-      '**/*.ts': ['esbuild']
+      '**/*.ts': ['esbuild'],
+      'src/**/*.js': ['esbuild'],
+      'dist/**/*.js': ['esbuild']
     },
     esbuild: {
       target: 'es2015',
@@ -35,8 +52,7 @@ module.exports = (config) => {
     },
     client: {
       mocha: {
-        ui: config.u,
-        require: srcFiles.reverse().map((filePath) => path.resolve(filePath))
+        ui: 'bdd' // Start with bdd, switch to bdd-lazy-var-next later
       }
     }
   });

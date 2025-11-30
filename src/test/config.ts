@@ -1,5 +1,6 @@
 import chai from "chai";
 import spies from "chai-spies";
+import global from "../utils/global";
 
 declare const Bun: any;
 

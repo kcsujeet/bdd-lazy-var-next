@@ -72,9 +72,13 @@ function addInterface(rootSuite: any, options: any) {
 		rootSuite,
 		suiteTracker: createSuiteTracker(isJest),
 	});
-	const { wrapIt, ...ui } = createLazyVarInterface(context, tracker, options);
+	const { wrapIt, ...helpers } = createLazyVarInterface(
+		context,
+		tracker,
+		options,
+	);
 
-	Object.assign(context, ui);
+	Object.assign(context, helpers);
 	["", "x", "f"].forEach((prefix) => {
 		const describeKey = `${prefix}describe`;
 		const itKey = `${prefix}it`;
@@ -85,11 +89,11 @@ function addInterface(rootSuite: any, options: any) {
 	});
 	context.afterEach(tracker.cleanUpCurrentContext);
 
-	return ui;
+	return helpers;
 }
 
 const api = {
-	createUi(name: string, options: any) {
+	createHelpers(name: string, options: any) {
 		const config = { Tracker: SuiteTracker, ...options };
 		const rootSuite =
 			(globalThis as any).jasmine &&
@@ -104,7 +108,7 @@ const api = {
 export default api;
 
 // Auto-initialize
-const ui = api.createUi("bdd-lazy-var-next", {});
+const helpers = api.createHelpers("bdd-lazy-var-next", {});
 
 export const {
 	get,
@@ -113,4 +117,4 @@ export const {
 	sharedExamplesFor,
 	includeExamplesFor,
 	itBehavesLike,
-} = ui;
+} = helpers;

@@ -158,12 +158,12 @@ To run the existing test suite with the new frameworks:
 npm run build
 
 # Run Vitest tests
-npm run test.vitest-ui
+npm run test.vitest-helpers
 npm run test.vitest-global
 npm run test.vitest-getter
 
 # Run Bun tests
-npm run test.bun-ui
+npm run test.bun-helpers
 npm run test.bun-global
 npm run test.bun-getter
 ```

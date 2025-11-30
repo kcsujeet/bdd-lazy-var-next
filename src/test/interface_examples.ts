@@ -1,6 +1,6 @@
 import { expect } from "chai";
+import global from "../utils/global";
 
-declare const sharedExamplesFor: any;
 declare const context: any;
 declare const it: any;
 declare const def: any;
@@ -15,7 +15,7 @@ declare const xdescribe: any;
 
 const describe = (global as any).context || (global as any).describe;
 
-sharedExamplesFor("Lazy Vars Interface", (getVar: any) => {
+(global as any).sharedExamplesFor("Lazy Vars Interface", (getVar: any) => {
 	describe("by default", () => {
 		var definition: any;
 		var value = {};
@@ -290,7 +290,7 @@ sharedExamplesFor("Lazy Vars Interface", (getVar: any) => {
 	});
 });
 
-sharedExamplesFor("Root Lazy Vars", (getVar: any) => {
+(global as any).sharedExamplesFor("Root Lazy Vars", (getVar: any) => {
 	const varName = `hello.${Date.now()}.${Math.random()}`;
 
 	def(varName, () => "world");

@@ -1,5 +1,5 @@
 export {};
-const describe = (global as any).describe;
+const describe = (globalThis as any).describe;
 
 declare const includeExamplesFor: any;
 declare const get: any;

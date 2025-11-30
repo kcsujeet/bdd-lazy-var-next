@@ -6,7 +6,7 @@
 [![CI](https://github.com/kcsujeet/bdd-lazy-var-next/workflows/CI/badge.svg)](https://github.com/kcsujeet/bdd-lazy-var-next/actions)
 [![GitHub](https://img.shields.io/github/license/kcsujeet/bdd-lazy-var-next)](https://github.com/kcsujeet/bdd-lazy-var-next/blob/master/LICENSE)
 
-Provides "ui" for testing frameworks such as [mocha][mocha], [jasmine][jasmine], [jest][jest], [vitest][vitest] and [bun:test][bun] which allows to define lazy variables and subjects.
+Provides helpers for testing frameworks such as [bun:test][bun], [vitest][vitest], [jest][jest], [mocha][mocha] and [jasmine][jasmine] which allows to define lazy variables and subjects.
 
 > [!WARNING] > **Breaking Changes from `bdd-lazy-var`**
 >

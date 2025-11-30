@@ -1,6 +1,6 @@
 import { expect } from "chai";
+import global from "../utils/global";
 
-declare const sharedExamplesFor: any;
 declare const it: any;
 declare const def: any;
 declare const before: any;
@@ -8,7 +8,7 @@ declare const after: any;
 declare const beforeEach: any;
 declare const afterEach: any;
 
-sharedExamplesFor("Default suite tracking", (getVar: any) => {
+(global as any).sharedExamplesFor("Default suite tracking", (getVar: any) => {
 	(
 		global as any
 	).describe("when using variable inside another variable definition", () => {
