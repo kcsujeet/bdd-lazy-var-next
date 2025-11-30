@@ -1,0 +1,21 @@
+{
+  "name": "vite-consumer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "bdd-lazy-var-next": "file:../../"
+  },
+  "devDependencies": {
+    "vitest": "^1.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

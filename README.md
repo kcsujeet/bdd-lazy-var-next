@@ -66,6 +66,15 @@ preload = ["./setup.ts"]
 import "bdd-lazy-var-next/bun";
 ```
 
+**Bun Test Isolation**
+
+Bun runs all test files in a shared global context. This means global variable definitions (e.g., `def('foo')`) can collide across files, causing errors like "Cannot define variable twice".
+
+**Solutions:**
+
+- Define variables inside `describe` only
+- Use unique variable names or suite names in each test file.
+
 ### Vitest
 
 **Option 1: Explicit Imports (Recommended)**
@@ -83,6 +92,7 @@ Add to your `vitest.config.ts` setup files:
 export default defineConfig({
   test: {
     setupFiles: ["./setup.ts"],
+    globals: true
   },
 });
 ```
@@ -279,6 +289,50 @@ When using explicit imports, TypeScript loads corresponding declarations automat
 ```ts
 import { get, def } from "bdd-lazy-var-next/bun";
 ```
+
+## Bun Advanced Usage & Troubleshooting
+
+### Local Development & Linking
+
+When testing changes in a local consumer project (e.g., `examples/bun-consumer`), you may want to link the package locally:
+
+```json
+// package.json
+"dependencies": {
+  "bdd-lazy-var-next": "file:../../"
+}
+```
+
+**Note:** Linking with `file:../../` will copy the entire repo, including `node_modules`, which can be slow. For faster linking, use a minimal package or run `npm pack`/`bun pack` in the main repo and link the resulting `.tgz` file:
+
+```bash
+cd /Users/sujeetkc1/Desktop/bdd-lazy-var-next
+bun run build
+bun pack # or npm pack
+# Then in consumer project:
+bun add ../bdd-lazy-var-next/bdd-lazy-var-next-x.y.z.tgz
+```
+
+
+### Preload Setup for Bun
+
+To register globals for all tests, use Bun's preload feature in `bunfig.toml`:
+
+```toml
+[test]
+preload = ["./setup.ts"]
+```
+
+```ts
+// setup.ts
+import "bdd-lazy-var-next/bun";
+```
+
+### Troubleshooting
+
+- **Double Initialization Error:** If you see errors about variables being defined twice, ensure you are not importing the library globally in multiple places, and use unique variable names per test file.
+- **Local Linking Slow:** Use a packed `.tgz` file for local development to avoid copying the entire repo.
+- **TypeScript Types:** Ensure your `tsconfig.json` includes the correct type paths for Bun and the library.
 
 ## Motivation: Why the new way rocks
 

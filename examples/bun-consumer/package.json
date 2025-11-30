@@ -1,0 +1,13 @@
+{
+  "name": "bun-consumer",
+  "private": true,
+  "dependencies": {
+    "bdd-lazy-var-next": "file:../../"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
