@@ -1,22 +1,20 @@
-import '../../../test/config';
-import chai from 'chai';
-import {
-  beforeAll, afterAll, beforeEach, afterEach
-} from 'bun:test';
+import "../../../test/config";
+import { afterAll, afterEach, beforeAll, beforeEach } from "bun:test";
+import chai from "chai";
 
 declare global {
-  var spy: any;
+	var spy: any;
 }
 
 // Ensure Chai expect is used instead of Bun's expect
 beforeAll(() => {
-  (global as any).expect = chai.expect;
-  (global as any).spy = chai.spy;
+	(global as any).expect = chai.expect;
+	(global as any).spy = chai.spy;
 });
 
 beforeEach(() => {
-  (global as any).expect = chai.expect;
-  (global as any).spy = chai.spy;
+	(global as any).expect = chai.expect;
+	(global as any).spy = chai.spy;
 });
 
 // Ensure aliases
@@ -25,7 +23,7 @@ beforeEach(() => {
 (global as any).beforeEach = beforeEach;
 (global as any).afterEach = afterEach;
 
-require('../../../dialects/bdd_getter_var');
-require('../../../test/interface_examples');
-require('../../../test/default_suite_tracking_examples');
+require("../../../dialects/bdd_getter_var");
+require("../../../test/interface_examples");
+require("../../../test/default_suite_tracking_examples");
 // Note: shared_behavior.spec is a test file, not a helper, so it runs on its own

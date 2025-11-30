@@ -1,5 +1,5 @@
-import { expect } from 'bun:test';
-import '../../../../dist/global';
+import { expect } from "bun:test";
+import "../../../../dist/global";
 
 declare const describe: any;
 declare const it: any;
@@ -9,32 +9,32 @@ declare const get: any;
 declare var $value: any;
 declare var $obj: any;
 
-describe('Bun Native Usage', () => {
-  def('value', () => 42);
-  def('obj', () => ({ id: 1 }));
-  subject(() => 'main subject');
+describe("Bun Native Usage", () => {
+	def("value", () => 42);
+	def("obj", () => ({ id: 1 }));
+	subject(() => "main subject");
 
-  it('works with native expect and get()', () => {
-    expect(get('value')).toBe(42);
-    expect(get('obj')).toEqual({ id: 1 });
-    expect(get('subject')).toBe('main subject');
-  });
+	it("works with native expect and get()", () => {
+		expect(get("value")).toBe(42);
+		expect(get("obj")).toEqual({ id: 1 });
+		expect(get("subject")).toBe("main subject");
+	});
 
-  it('works with native expect and global accessors ($)', () => {
-    expect($value).toBe(42);
-    expect($obj).toEqual({ id: 1 });
-  });
+	it("works with native expect and global accessors ($)", () => {
+		expect($value).toBe(42);
+		expect($obj).toEqual({ id: 1 });
+	});
 
-  describe('nested context', () => {
-    def('value', () => 100);
+	describe("nested context", () => {
+		def("value", () => 100);
 
-    it('respects overrides', () => {
-      expect(get('value')).toBe(100);
-      expect($value).toBe(100);
-    });
+		it("respects overrides", () => {
+			expect(get("value")).toBe(100);
+			expect($value).toBe(100);
+		});
 
-    it('inherits other values', () => {
-      expect($obj).toEqual({ id: 1 });
-    });
-  });
+		it("inherits other values", () => {
+			expect($obj).toEqual({ id: 1 });
+		});
+	});
 });

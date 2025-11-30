@@ -1,5 +1,5 @@
-import JasmineCli from 'jasmine';
-import { createRequire } from 'module';
+import JasmineCli from "jasmine";
+import { createRequire } from "module";
 
 const require = createRequire(import.meta.url);
 
@@ -9,8 +9,8 @@ const helpers = [`../../../${process.argv[2]}`];
 
 helpers.forEach(require);
 jasmine.loadConfig({
-  spec_dir: '.',
-  spec_files: [process.argv[3]],
+	spec_dir: ".",
+	spec_files: [process.argv[3]],
 });
 
 jasmine.execute();

@@ -1,4 +1,4 @@
-import '../../../../dist/global';
+import "../../../../dist/global";
 
 declare const def: any;
 declare const subject: any;
@@ -35,32 +35,32 @@ declare var $obj: any;
 // So we should simulate that environment.
 // The best way is to run a test command that DOES NOT include the `setupFilesAfterEnv`.
 
-describe('Jest Native Usage', () => {
-  def('value', () => 42);
-  def('obj', () => ({ id: 1 }));
-  subject(() => 'main subject');
+describe("Jest Native Usage", () => {
+	def("value", () => 42);
+	def("obj", () => ({ id: 1 }));
+	subject(() => "main subject");
 
-  it('works with native expect and get()', () => {
-    expect(get('value')).toBe(42);
-    expect(get('obj')).toEqual({ id: 1 });
-    expect(get('subject')).toBe('main subject');
-  });
+	it("works with native expect and get()", () => {
+		expect(get("value")).toBe(42);
+		expect(get("obj")).toEqual({ id: 1 });
+		expect(get("subject")).toBe("main subject");
+	});
 
-  it('works with native expect and global accessors ($)', () => {
-    expect($value).toBe(42);
-    expect($obj).toEqual({ id: 1 });
-  });
+	it("works with native expect and global accessors ($)", () => {
+		expect($value).toBe(42);
+		expect($obj).toEqual({ id: 1 });
+	});
 
-  describe('nested context', () => {
-    def('value', () => 100);
+	describe("nested context", () => {
+		def("value", () => 100);
 
-    it('respects overrides', () => {
-      expect(get('value')).toBe(100);
-      expect($value).toBe(100);
-    });
+		it("respects overrides", () => {
+			expect(get("value")).toBe(100);
+			expect($value).toBe(100);
+		});
 
-    it('inherits other values', () => {
-      expect($obj).toEqual({ id: 1 });
-    });
-  });
+		it("inherits other values", () => {
+			expect($obj).toEqual({ id: 1 });
+		});
+	});
 });

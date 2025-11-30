@@ -1,90 +1,92 @@
-import { Metadata } from './metadata';
-import Symbol from '../utils/symbol';
+import Symbol from "../utils/symbol";
+import { Metadata } from "./metadata";
 
-const CURRENTLY_RETRIEVED_VAR_FIELD = Symbol.for('__currentVariableStack');
-const last = <T>(array: T[] | undefined): T | null => array ? array[array.length - 1] : null;
+const CURRENTLY_RETRIEVED_VAR_FIELD = Symbol.for("__currentVariableStack");
+const last = <T>(array: T[] | undefined): T | null =>
+	array ? array[array.length - 1] : null;
 
 export class Variable {
-  static EMPTY = new Variable(null, null);
+	static EMPTY = new Variable(null, null);
 
-  static allocate(varName: string, options: { in: any }) {
-    const variable = new this(varName, options.in);
+	static allocate(varName: string, options: { in: any }) {
+		const variable = new Variable(varName, options.in);
 
-    return variable.addToStack();
-  }
+		return variable.addToStack();
+	}
 
-  static evaluate(varName: string, options: { in: any }) {
-    if (!options.in) {
-      throw new Error(
-        `It looke like you are trying to evaluate "${varName}" too early. Evaluation context is undefined`
-      );
-    }
+	static evaluate(varName: string, options: { in: any }) {
+		if (!options.in) {
+			throw new Error(
+				`It looke like you are trying to evaluate "${varName}" too early. Evaluation context is undefined`,
+			);
+		}
 
-    let variable = Variable.fromStack(options.in);
+		let variable = Variable.fromStack(options.in);
 
-    if (variable.isSame(varName)) {
-      return variable.valueInParentContext(varName);
-    }
+		if (variable.isSame(varName)) {
+			return variable.valueInParentContext(varName);
+		}
 
-    try {
-      variable = Variable.allocate(varName, options);
-      return variable.value();
-    } finally {
-      variable.pullFromStack();
-    }
-  }
+		try {
+			variable = Variable.allocate(varName, options);
+			return variable.value();
+		} finally {
+			variable.pullFromStack();
+		}
+	}
 
-  static fromStack(context: any): Variable {
-    return last(context[CURRENTLY_RETRIEVED_VAR_FIELD]) || Variable.EMPTY;
-  }
+	static fromStack(context: any): Variable {
+		return last(context[CURRENTLY_RETRIEVED_VAR_FIELD]) || Variable.EMPTY;
+	}
 
-  name: string | null;
+	name: string | null;
 
-  context: any;
+	context: any;
 
-  evaluationMeta: Metadata | null;
+	evaluationMeta: Metadata | null;
 
-  constructor(varName: string | null, context: any) {
-    this.name = varName;
-    this.context = context;
-    this.evaluationMeta = context ? Metadata.of(context) : null;
-  }
+	constructor(varName: string | null, context: any) {
+		this.name = varName;
+		this.context = context;
+		this.evaluationMeta = context ? Metadata.of(context) : null;
+	}
 
-  isSame(anotherVarName: string) {
-    return (
-      this.name
-      && (this.name === anotherVarName
-        || Metadata.of(this.context, this.name).isNamedAs(anotherVarName))
-    );
-  }
+	isSame(anotherVarName: string) {
+		return (
+			this.name &&
+			(this.name === anotherVarName ||
+				Metadata.of(this.context, this.name).isNamedAs(anotherVarName))
+		);
+	}
 
-  value() {
-    return this.evaluationMeta && this.evaluationMeta.getVar(this.name!);
-  }
+	value() {
+		return this.evaluationMeta && this.evaluationMeta.getVar(this.name!);
+	}
 
-  addToStack() {
-    this.context[CURRENTLY_RETRIEVED_VAR_FIELD] = this.context[CURRENTLY_RETRIEVED_VAR_FIELD] || [];
-    this.context[CURRENTLY_RETRIEVED_VAR_FIELD].push(this);
+	addToStack() {
+		this.context[CURRENTLY_RETRIEVED_VAR_FIELD] =
+			this.context[CURRENTLY_RETRIEVED_VAR_FIELD] || [];
+		this.context[CURRENTLY_RETRIEVED_VAR_FIELD].push(this);
 
-    return this;
-  }
+		return this;
+	}
 
-  pullFromStack() {
-    this.context[CURRENTLY_RETRIEVED_VAR_FIELD].pop();
-  }
+	pullFromStack() {
+		this.context[CURRENTLY_RETRIEVED_VAR_FIELD].pop();
+	}
 
-  valueInParentContext(varOrAliasName: string) {
-    const meta = this.evaluationMeta;
+	valueInParentContext(varOrAliasName: string) {
+		const meta = this.evaluationMeta;
 
-    if (!meta) return undefined;
+		if (!meta) return undefined;
 
-    try {
-      this.evaluationMeta = meta.lookupMetadataFor(varOrAliasName);
-      return this.evaluationMeta.evaluate(varOrAliasName);
-    } finally {
-      this.evaluationMeta = meta;
-    }
-  }
+		try {
+			this.evaluationMeta = meta.lookupMetadataFor(varOrAliasName);
+			return this.evaluationMeta.evaluate(varOrAliasName);
+		} finally {
+			this.evaluationMeta = meta;
+		}
+	}
 }
 
 export default Variable;
