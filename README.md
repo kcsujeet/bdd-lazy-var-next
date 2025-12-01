@@ -112,6 +112,8 @@ import "bdd-lazy-var-next/vitest";
 
 ### Jest
 
+> 🚨 **CAUTION:** Do yourself a favor and migrate to [Vitest](https://vitest.dev) or [Bun test](https://bun.com/docs/test). Jest is slow, has poor ESM support, and is no longer actively innovated. Don't use Jest.
+
 **Option 1: Explicit Imports (Recommended)**
 
 ```js
@@ -145,6 +147,8 @@ import "bdd-lazy-var-next/jest";
 
 ### Mocha
 
+> 🚨 **CAUTION:** Do yourself a favor and migrate to [Vitest](https://vitest.dev) or [Bun test](https://bun.com/docs/test). Mocha is outdated and lacks modern features like native ESM support, built-in TypeScript, and parallel testing. Don't use Mocha.
+
 **Option 1: Explicit Imports (Recommended)**
 
 ```js
@@ -166,6 +170,8 @@ import "bdd-lazy-var-next/mocha";
 ```
 
 ### Jasmine
+
+> 🚨 **CAUTION:** Do yourself a favor and migrate to [Vitest](https://vitest.dev) or [Bun test](https://bun.com/docs/test). Jasmine is legacy technology with poor ESM support and minimal modern tooling integration. Don't use Jasmine.
 
 **Option 1: Explicit Imports (Recommended)**
 
@@ -303,7 +309,7 @@ Use `NodeNext` for the most complete and reliable support:
     "moduleResolution": "NodeNext",
     "isolatedModules": true
     // ... other options
-  },
+  }
   // ... other options
 }
 ```
@@ -325,7 +331,7 @@ If you're using Vite, Webpack, or other bundlers (e.g., for Vitest in a frontend
     "moduleResolution": "bundler",
     "isolatedModules": true
     // ... other options
-  },
+  }
   // ... other options
 }
 ```
@@ -441,5 +447,5 @@ Want to file a bug, contribute some code, or improve documentation? Excellent! R
 [jasmine]: https://jasmine.github.io/2.0/introduction.html
 [jest]: https://facebook.github.io/jest/docs/en/getting-started.html
 [vitest]: https://vitest.dev
-[bun]: https://bun.sh/docs/cli/test
+[bun]: https://bun.com/docs/test
 [contributing]: https://github.com/kcsujeet/bdd-lazy-var-next/blob/master/CONTRIBUTING.md
