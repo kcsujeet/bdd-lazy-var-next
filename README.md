@@ -120,13 +120,28 @@ import { get, def } from "bdd-lazy-var-next/jest";
 
 **Option 2: Global Variables**
 
-Add to your `jest.config.js`:
+Add to your `jest.config.ts`:
 
-```js
-module.exports = {
-  setupFilesAfterEnv: ["bdd-lazy-var-next/jest"],
+```ts
+// jest.config.ts
+import type { Config } from "jest";
+
+const config: Config = {
+  setupFilesAfterEnv: ["./setup.ts"],
+  // ... other config
 };
+
+export default config;
 ```
+
+```ts
+// setup.ts
+import "bdd-lazy-var-next/jest";
+```
+
+**Example:**
+
+[Jest Consumer Example](./examples/jest-consumer/)
 
 ### Mocha
 
@@ -251,9 +266,6 @@ Very often you may find that some behavior repeats (e.g., when you implement Ada
 
 **WARNING**: files containing shared examples must be loaded before the files that use them.
 
-<details>
-  <summary>Example: Shared Examples</summary>
-
 ```js
 sharedExamplesFor("a collection", (size) => {
   it("has correct size", () => {
@@ -272,30 +284,74 @@ describe("Map", () => {
 });
 ```
 
-</details>
-
 ## TypeScript Support
 
 It's also possible to use `bdd-lazy-var-next` with TypeScript.
 
-<details>
-  <summary>tsconfig.json</summary>
+### Configuration
+
+The library uses `package.json` `exports` field to provide framework-specific entry points (`./bun`, `./jest`, `./vitest`, etc.). Your TypeScript configuration needs to support this.
+
+#### For Node.js / Backend Projects (Recommended)
+
+Use `NodeNext` for the most complete and reliable support:
 
 ```json
 {
   "compilerOptions": {
-    // ...
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "isolatedModules": true
+    // ... other options
   },
-  "include": ["src/**/*", "node_modules/bdd-lazy-var-next/index.d.ts"]
+  // ... other options
+}
+```
+
+**Why `NodeNext`?**
+
+- Fully supports `package.json` `exports` field with conditional exports
+- Correctly resolves the `types` field for subpath imports like `bdd-lazy-var-next/jest`
+- Best option for Node.js, Bun, Jest, Mocha testing environments
+
+#### For Frontend / Bundler Projects
+
+If you're using Vite, Webpack, or other bundlers (e.g., for Vitest in a frontend app), you can use:
+
+```json
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "isolatedModules": true
+    // ... other options
+  },
+  // ... other options
 }
 ```
 
 </details>
 
+**Note:** `bundler` moduleResolution should work for most cases, but if you encounter type resolution issues with subpath imports, switch to `NodeNext`.
+
+### Usage
+
 When using explicit imports, TypeScript loads corresponding declarations automatically:
 
 ```ts
 import { get, def } from "bdd-lazy-var-next/bun";
+```
+
+For global usage (preload/setup files), the types are available globally after importing:
+
+```ts
+// setup.ts
+import "bdd-lazy-var-next/bun";
+
+// In test files, no import needed:
+describe("test", () => {
+  def("value", () => 42); // TypeScript knows about def, get, etc.
+});
 ```
 
 ## Bun Advanced Usage & Troubleshooting
@@ -353,9 +409,6 @@ Every time I see a `get('<variable>')` reference in my tests, I know where it's 
 
 ### The old way (for comparison)
 
-<details>
-  <summary>Click to see the old, messy way</summary>
-
 ```js
 describe("Suite", function () {
   var name;
@@ -375,8 +428,6 @@ describe("Suite", function () {
 ```
 
 This pattern becomes difficult as tests grow, leading to "variable soup" and potential leaks.
-
-</details>
 
 ## Want to help?
 

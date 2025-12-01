@@ -1,190 +1,206 @@
 {
-	"name": "bdd-lazy-var-next",
-	"version": "0.0.1",
-	"author": "Sujeet Kc",
-	"description": "Provides helpers for testing frameworks such as mocha/jasmine/jest/vitest/bun which allows to define lazy variables and subjects",
-	"type": "module",
-	"license": "MIT",
-	"readmeFilename": "README.md",
-	"repository": {
-		"type": "git",
-		"url": "git@github.com:kcsujeet/bdd-lazy-var-next.git"
-	},
-	"keywords": [
-		"mocha.js",
-		"jasmine",
-		"jest",
-		"vitest",
-		"bun",
-		"bun:test",
-		"bdd",
-		"lazy",
-		"variable",
-		"syntax",
-		"dsl",
-		"subject",
-		"rspec"
-	],
-	"bugs": {
-		"url": "https://github.com/kcsujeet/bdd-lazy-var-next/issues"
-	},
-	"types": "index.d.ts",
-	"exports": {
-		"./bun": "./dist/bun.js",
-		"./vitest": "./dist/vitest.js",
-		"./jest": "./dist/jest.js",
-		"./jasmine": "./dist/jasmine.js",
-		"./mocha": "./dist/mocha.js"
-	},
-	"peerDependencies": {
-		"jasmine": ">=2",
-		"jasmine-core": "^4.6.1",
-		"jest": ">=20",
-		"mocha": ">=2.3",
-		"vitest": ">=1.0.0"
-	},
-	"peerDependenciesMeta": {
-		"jasmine": {
-			"optional": true
-		},
-		"jasmine-core": {
-			"optional": true
-		},
-		"jest": {
-			"optional": true
-		},
-		"mocha": {
-			"optional": true
-		},
-		"vitest": {
-			"optional": true
-		}
-	},
-	"devDependencies": {
-		"@babel/core": "^7.28.5",
-		"@babel/plugin-proposal-object-rest-spread": "^7.20.7",
-		"@babel/plugin-transform-object-assign": "^7.27.1",
-		"@babel/preset-env": "^7.28.5",
-		"@biomejs/biome": "^2.3.8",
-		"@semantic-release/changelog": "^6.0.3",
-		"@semantic-release/git": "^10.0.1",
-		"@types/bun": "^1.3.3",
-		"@types/chai": "4",
-		"@types/chai-spies": "^1.0.6",
-		"@types/jasmine": "^5.1.13",
-		"@types/jest": "^30.0.0",
-		"@types/mocha": "^10.0.10",
-		"@types/node": "^24.10.1",
-		"assertion-error": "1.1.0",
-		"babel-plugin-transform-object-assign": "^6.22.0",
-		"chai": "^4.5.0",
-		"chai-spies": "^1.1.0",
-		"esbuild": "^0.27.0",
-		"husky": "^9.1.7",
-		"jasmine": "^4.6.0",
-		"jest": "^30.2.0",
-		"karma": "^6.4.4",
-		"karma-chrome-launcher": "^3.2.0",
-		"karma-esbuild": "^2.3.0",
-		"karma-jasmine": "^5.1.0",
-		"karma-mocha": "^2.0.1",
-		"lint-staged": "^16.2.7",
-		"mocha": "^11.7.5",
-		"puppeteer": "^24.31.0",
-		"semantic-release": "^24.2.9",
-		"ts-jest": "^29.4.5",
-		"ts-node": "^10.9.2",
-		"tsx": "^4.21.0",
-		"typescript": "^5.9.3",
-		"vitest": "^3.2.4"
-	},
-	"scripts": {
-		"mocha": "NODE_PATH=. mocha --loader ./node_modules/ts-node/esm.mjs -r src/test/config.ts src/test/*_examples.ts src/test/shared_behavior.spec.ts",
-		"test.mocha": "bun run mocha -- -u dist/mocha.js src/features/mocha/test/bdd.test.ts",
-		"test.mocha-in-browser": "karma start -u bdd-lazy-var-next --src dist/mocha.js --specs src/features/mocha/test/bdd.test.ts karma.config.cjs",
-		"test.jasmine": "bun run src/features/jasmine/runner.ts dist/jasmine.js src/features/jasmine/test/bdd.test.ts",
-		"test.jasmine-in-browser": "karma start -f jasmine --src dist/jasmine.js --specs src/features/jasmine/test/bdd.test.ts karma.config.cjs",
-		"test.jest": "NODE_OPTIONS=--experimental-vm-modules SRC_FILE=dist/jest.js jest --findRelatedTests src/features/jest/test/bdd.test.ts",
-		"test.vitest": "SRC_FILE=dist/vitest.js vitest run src/features/vitest/test/bdd.test.ts",
-		"test.bun": "bun test --preload ./src/features/bun/preloads/helpers.ts src/features/bun/test/bdd.test.ts",
-		"test.native.bun": "bun test src/features/bun/test/native_usage.test.ts",
-		"test.native.jest": "NODE_OPTIONS=--experimental-vm-modules bun run jest --no-cache --config=jest.native.config.js",
-		"test.native.vitest": "bun run vitest run -c vitest.native.config.ts",
-		"test.native.jasmine": "bun run src/features/jasmine/native_runner.ts dist/jasmine.js src/features/jasmine/test/native_usage.test.ts",
-		"test.native.mocha": "node --import tsx node_modules/mocha/bin/mocha.js -r src/features/mocha/test/setup.js -r dist/mocha.js -u bdd-lazy-var-next src/features/mocha/test/native_usage.test.ts",
-		"test.native": "bun run test.native.bun && bun run test.native.jest && bun run test.native.vitest && bun run test.native.jasmine && bun run test.native.mocha",
-		"test": "bun run test.mocha && bun run test.mocha-in-browser && bun run test.jasmine && bun run test.jasmine-in-browser && bun run test.jest",
-		"prebuild": "bun run lint",
-		"build": "bun run build.ts",
-		"lint": "biome check --write src",
-		"lint:check": "biome check src",
-		"type-check": "tsc --noEmit",
-		"ci": "bun lint:check && bun run type-check && bun run build && bun run test.mocha && bun run test.jasmine && bun run test.vitest && bun run test.bun && bun run test.native",
-		"prepare": "husky",
-		"prerelease": "NODE_ENV=production bun run build",
-		"release": "semantic-release"
-	},
-	"lint-staged": {
-		"src/**/*.{js,ts}": [
-			"biome check --write --no-errors-on-unmatched"
-		]
-	},
-	"jest": {
-		"preset": "ts-jest/presets/default-esm",
-		"testEnvironment": "node",
-		"extensionsToTreatAsEsm": [
-			".ts"
-		],
-		"moduleNameMapper": {
-			"^(\\.{1,2}/.*)\\.js$": "$1"
-		},
-		"transform": {
-			"^.+\\.tsx?$": [
-				"ts-jest",
-				{
-					"useESM": true,
-					"tsconfig": "tsconfig.jest.json"
-				}
-			]
-		},
-		"testMatch": [
-			"<rootDir>/src/features/jest/test/**/*.test.ts"
-		],
-		"setupFilesAfterEnv": [
-			"./src/features/jest/setup.ts"
-		]
-	},
-	"files": [
-		"dist",
-		"index.d.ts"
-	],
-	"release": {
-		"branches": [
-			"master"
-		],
-		"plugins": [
-			[
-				"@semantic-release/commit-analyzer",
-				{
-					"releaseRules": [
-						{
-							"type": "chore",
-							"scope": "deps",
-							"release": "patch"
-						},
-						{
-							"type": "docs",
-							"scope": "README",
-							"release": "patch"
-						}
-					]
-				}
-			],
-			"@semantic-release/release-notes-generator",
-			"@semantic-release/changelog",
-			"@semantic-release/npm",
-			"@semantic-release/git",
-			"@semantic-release/github"
-		]
-	}
+  "name": "bdd-lazy-var-next",
+  "version": "0.0.1",
+  "author": "Sujeet Kc",
+  "description": "Provides helpers for testing frameworks such as mocha/jasmine/jest/vitest/bun which allows to define lazy variables and subjects",
+  "type": "module",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:kcsujeet/bdd-lazy-var-next.git"
+  },
+  "keywords": [
+    "mocha.js",
+    "jasmine",
+    "jest",
+    "vitest",
+    "bun",
+    "bun:test",
+    "bdd",
+    "lazy",
+    "variable",
+    "syntax",
+    "dsl",
+    "subject",
+    "rspec"
+  ],
+  "bugs": {
+    "url": "https://github.com/kcsujeet/bdd-lazy-var-next/issues"
+  },
+  "types": "index.d.ts",
+  "exports": {
+    "./bun": {
+      "types": "./dist/bun.d.ts",
+      "default": "./dist/bun.js"
+    },
+    "./vitest": {
+      "types": "./dist/vitest.d.ts",
+      "default": "./dist/vitest.js"
+    },
+    "./jest": {
+      "types": "./dist/jest.d.ts",
+      "default": "./dist/jest.js"
+    },
+    "./jasmine": {
+      "types": "./dist/jasmine.d.ts",
+      "default": "./dist/jasmine.js"
+    },
+    "./mocha": {
+      "types": "./dist/mocha.d.ts",
+      "default": "./dist/mocha.js"
+    }
+  },
+  "peerDependencies": {
+    "jasmine": ">=2",
+    "jasmine-core": "^4.6.1",
+    "jest": ">=20",
+    "mocha": ">=2.3",
+    "vitest": ">=1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "jasmine": {
+      "optional": true
+    },
+    "jasmine-core": {
+      "optional": true
+    },
+    "jest": {
+      "optional": true
+    },
+    "mocha": {
+      "optional": true
+    },
+    "vitest": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
+    "@babel/plugin-transform-object-assign": "^7.27.1",
+    "@babel/preset-env": "^7.28.5",
+    "@biomejs/biome": "^2.3.8",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@types/bun": "^1.3.3",
+    "@types/chai": "4",
+    "@types/chai-spies": "^1.0.6",
+    "@types/jasmine": "^5.1.13",
+    "@types/jest": "^30.0.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^24.10.1",
+    "assertion-error": "1.1.0",
+    "babel-plugin-transform-object-assign": "^6.22.0",
+    "chai": "^4.5.0",
+    "chai-spies": "^1.1.0",
+    "esbuild": "^0.27.0",
+    "husky": "^9.1.7",
+    "jasmine": "^4.6.0",
+    "jest": "^30.2.0",
+    "karma": "^6.4.4",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-esbuild": "^2.3.0",
+    "karma-jasmine": "^5.1.0",
+    "karma-mocha": "^2.0.1",
+    "lint-staged": "^16.2.7",
+    "mocha": "^11.7.5",
+    "puppeteer": "^24.31.0",
+    "semantic-release": "^24.2.9",
+    "ts-jest": "^29.4.5",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "scripts": {
+    "mocha": "NODE_PATH=. mocha --loader ./node_modules/ts-node/esm.mjs -r src/test/config.ts src/test/*_examples.ts src/test/shared_behavior.spec.ts",
+    "test.mocha": "bun run mocha -- -u dist/mocha.js src/features/mocha/test/bdd.test.ts",
+    "test.mocha-in-browser": "karma start -u bdd-lazy-var-next --src dist/mocha.js --specs src/features/mocha/test/bdd.test.ts karma.config.cjs",
+    "test.jasmine": "bun run src/features/jasmine/runner.ts dist/jasmine.js src/features/jasmine/test/bdd.test.ts",
+    "test.jasmine-in-browser": "karma start -f jasmine --src dist/jasmine.js --specs src/features/jasmine/test/bdd.test.ts karma.config.cjs",
+    "test.jest": "NODE_OPTIONS=--experimental-vm-modules SRC_FILE=dist/jest.js jest --findRelatedTests src/features/jest/test/bdd.test.ts",
+    "test.vitest": "SRC_FILE=dist/vitest.js vitest run src/features/vitest/test/bdd.test.ts",
+    "test.bun": "bun test --preload ./src/features/bun/preloads/helpers.ts src/features/bun/test/bdd.test.ts",
+    "test.native.bun": "bun test src/features/bun/test/native_usage.test.ts",
+    "test.native.jest": "NODE_OPTIONS=--experimental-vm-modules bun run jest --no-cache --config=jest.native.config.js",
+    "test.native.vitest": "bun run vitest run -c vitest.native.config.ts",
+    "test.native.jasmine": "bun run src/features/jasmine/native_runner.ts dist/jasmine.js src/features/jasmine/test/native_usage.test.ts",
+    "test.native.mocha": "node --import tsx node_modules/mocha/bin/mocha.js -r src/features/mocha/test/setup.js -r dist/mocha.js -u bdd-lazy-var-next src/features/mocha/test/native_usage.test.ts",
+    "test.native": "bun run test.native.bun && bun run test.native.jest && bun run test.native.vitest && bun run test.native.jasmine && bun run test.native.mocha",
+    "test": "bun run test.mocha && bun run test.mocha-in-browser && bun run test.jasmine && bun run test.jasmine-in-browser && bun run test.jest",
+    "prebuild": "bun run lint",
+    "build": "bun run build.ts",
+    "lint": "biome check --write src",
+    "lint:check": "biome check src",
+    "type-check": "tsc --noEmit",
+    "ci": "bun lint:check && bun run type-check && bun run build && bun run test.mocha && bun run test.jasmine && bun run test.vitest && bun run test.bun && bun run test.native",
+    "prepare": "husky",
+    "prerelease": "NODE_ENV=production bun run build",
+    "release": "semantic-release"
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts}": [
+      "biome check --write --no-errors-on-unmatched"
+    ]
+  },
+  "jest": {
+    "preset": "ts-jest/presets/default-esm",
+    "testEnvironment": "node",
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "transform": {
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "useESM": true,
+          "tsconfig": "tsconfig.jest.json"
+        }
+      ]
+    },
+    "testMatch": [
+      "<rootDir>/src/features/jest/test/**/*.test.ts"
+    ],
+    "setupFilesAfterEnv": [
+      "./src/features/jest/setup.ts"
+    ]
+  },
+  "files": [
+    "dist",
+    "index.d.ts",
+    "global.d.ts"
+  ],
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "releaseRules": [
+            {
+              "type": "chore",
+              "scope": "deps",
+              "release": "patch"
+            },
+            {
+              "type": "docs",
+              "scope": "README",
+              "release": "patch"
+            }
+          ]
+        }
+      ],
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      "@semantic-release/git",
+      "@semantic-release/github"
+    ]
+  }
 }
