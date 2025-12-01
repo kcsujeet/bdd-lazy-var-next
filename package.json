@@ -1,6 +1,6 @@
 {
   "name": "bdd-lazy-var-next",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Sujeet Kc",
   "description": "Provides helpers for testing frameworks such as mocha/jasmine/jest/vitest/bun which allows to define lazy variables and subjects",
   "type": "module",
