@@ -1,1 +1,1 @@
-import 'bdd-lazy-var-next/bun';
+import "bdd-lazy-var-next/bun";

@@ -292,7 +292,7 @@ describe("Map", () => {
 
 ## TypeScript Support
 
-It's also possible to use `bdd-lazy-var-next` with TypeScript.
+`bdd-lazy-var-next` includes full TypeScript support with generic types for type-safe variable definitions and access.
 
 ### Configuration
 
@@ -340,7 +340,7 @@ If you're using Vite, Webpack, or other bundlers (e.g., for Vitest in a frontend
 
 **Note:** `bundler` moduleResolution should work for most cases, but if you encounter type resolution issues with subpath imports, switch to `NodeNext`.
 
-### Usage
+### Basic Usage
 
 When using explicit imports, TypeScript loads corresponding declarations automatically:
 
@@ -359,6 +359,351 @@ describe("test", () => {
   def("value", () => 42); // TypeScript knows about def, get, etc.
 });
 ```
+
+### Type-Safe Variables
+
+All functions (`def`, `get`, `subject`) support TypeScript generics for type safety.
+
+#### Method 1: Explicit Type Parameters (Recommended)
+
+Specify the type when calling `get()` for full type safety:
+
+```ts
+import { def, get } from "bdd-lazy-var-next/bun";
+
+// Define your types
+interface User {
+  name: string;
+  age: number;
+  email: string;
+}
+
+// Define variables (types are optional here)
+def("userName", () => "John Doe");
+def("user", () => ({
+  name: "John Doe",
+  age: 30,
+  email: "john@example.com",
+}));
+def("scores", () => [95, 87, 92, 88]);
+
+// Get variables with explicit type parameters
+const userName = get<string>("userName");
+console.log(userName.toUpperCase()); // Type-safe string methods ✓
+
+const user = get<User>("user");
+console.log(user.email); // Type-safe property access ✓
+
+const scores = get<number[]>("scores");
+const average = scores.reduce((a, b) => a + b, 0) / scores.length; // ✓
+```
+
+#### Method 2: Variable Type Annotations
+
+Let TypeScript infer from your variable declaration:
+
+```ts
+// TypeScript infers the type from the annotation
+const userName: string = get("userName");
+console.log(userName.toUpperCase()); // Works!
+
+const user: User = get("user");
+console.log(user.email); // Works!
+
+const scores: number[] = get("scores");
+console.log(scores.length); // Works!
+```
+
+#### Typing `def()` (Optional)
+
+You can also add types to `def()` for consistency:
+
+```ts
+// Type the definition function
+def<string>("userName", () => "John Doe");
+def<User>("user", () => ({
+  name: "John Doe",
+  age: 30,
+  email: "john@example.com",
+}));
+def<number[]>("scores", () => [95, 87, 92, 88]);
+```
+
+#### Type-Safe `subject()`
+
+Define and access subjects with types:
+
+```ts
+import { subject } from "bdd-lazy-var-next/bun";
+
+describe("User", () => {
+  // Named subject with type
+  subject<User>("currentUser", () => ({
+    name: "Jane Smith",
+    age: 25,
+    email: "jane@example.com",
+  }));
+
+  it("has correct properties", () => {
+    // Access with type safety
+    const user = subject<User>();
+    expect(user.name).toBe("Jane Smith");
+  });
+});
+
+describe("Array operations", () => {
+  // Anonymous subject with type
+  subject<number[]>(() => [1, 2, 3, 4, 5]);
+
+  it("calculates sum", () => {
+    const numbers = subject<number[]>();
+    const sum = numbers.reduce((a, b) => a + b, 0);
+    expect(sum).toBe(15);
+  });
+});
+```
+
+#### Advanced Type Usage
+
+You can use any TypeScript type, including generics and unions:
+
+```ts
+// Generic types
+def<Record<string, number>>("scores", () => ({
+  math: 95,
+  science: 87,
+  english: 92,
+}));
+
+// Union types
+def<"active" | "inactive" | "pending">("status", () => "active");
+
+// Function types
+def<(x: number) => number>("double", () => (x) => x * 2);
+
+// Promise types
+def<Promise<User>>("asyncUser", async () => {
+  return await fetchUser();
+});
+```
+
+### Type Safety Benefits
+
+1. **Compile-time type checking**: Catch type errors before runtime
+2. **IntelliSense support**: Get autocomplete and inline documentation
+3. **Refactoring safety**: TypeScript will flag issues when types change
+4. **Self-documenting code**: Types serve as inline documentation
+
+### Complete Example with Type Safety
+
+```ts
+import { describe, it, expect } from "bun:test";
+import { def, get, subject } from "bdd-lazy-var-next/bun";
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+}
+
+describe("Shopping Cart", () => {
+  def("products", () => [
+    { id: 1, name: "Laptop", price: 999 },
+    { id: 2, name: "Mouse", price: 25 },
+  ]);
+
+  def("quantities", () => [1, 2]);
+
+  subject("totalPrice", () => {
+    // Use explicit type parameters for type safety
+    const products = get<Product[]>("products");
+    const quantities = get<number[]>("quantities");
+
+    return products.reduce((total, product, index) => {
+      return total + product.price * quantities[index];
+    }, 0);
+  });
+
+  it("calculates total price correctly", () => {
+    const total = subject<number>();
+    expect(total).toBe(1049); // 999*1 + 25*2
+  });
+
+  it("has type-safe property access", () => {
+    const products = get<Product[]>("products");
+
+    // TypeScript knows products is Product[]
+    expect(products[0].name).toBe("Laptop"); // ✓ Type-safe!
+    expect(products[0].price).toBe(999);     // ✓ Autocomplete works!
+    expect(products.length).toBe(2);
+  });
+
+  it("alternative: using variable type annotations", () => {
+    // You can also use type annotations instead of explicit parameters
+    const products: Product[] = get("products");
+    const quantities: number[] = get("quantities");
+
+    expect(products.length).toBe(2);
+    expect(quantities.length).toBe(2);
+  });
+});
+```
+
+### React Testing Library Example
+
+`bdd-lazy-var-next` works perfectly with React Testing Library for component testing:
+
+<details>
+<summary><strong>Bun Example</strong></summary>
+
+```tsx
+import { describe, it, expect, mock } from "bun:test";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { def, get, subject } from "bdd-lazy-var-next/bun";
+import { UserProfile, type User } from "./UserProfile";
+
+describe("UserProfile Component", () => {
+  // Define user with type safety
+  def("user", () => ({
+    id: get<number>("userId"),
+    name: get<string>("userName"),
+    email: get<string>("userEmail"),
+    role: get<"admin" | "user">("userRole"),
+  }));
+
+  def("userId", () => 1);
+  def("userName", () => "John Doe");
+  def("userEmail", () => "john@example.com");
+  def("userRole", () => "user" as const);
+
+  def("onEdit", () => mock(() => {}));
+  def("onDelete", () => mock(() => {}));
+
+  // Subject: render the component
+  subject("profile", () =>
+    render(
+      <UserProfile
+        user={get<User>("user")}
+        onEdit={get("onEdit")}
+        onDelete={get("onDelete")}
+      />
+    )
+  );
+
+  it("renders user information", () => {
+    subject();
+    expect(screen.getByTestId("user-name")).toHaveTextContent("John Doe");
+    expect(screen.getByTestId("user-email")).toHaveTextContent("john@example.com");
+  });
+
+  it("calls onEdit when clicked", async () => {
+    subject();
+    await userEvent.click(screen.getByTestId("edit-button"));
+    expect(get("onEdit")).toHaveBeenCalledTimes(1);
+  });
+
+  describe("admin user", () => {
+    def("userName", () => "Admin User");
+    def("userRole", () => "admin" as const);
+
+    it("displays admin role", () => {
+      subject();
+      expect(screen.getByTestId("user-role")).toHaveTextContent("Role: admin");
+    });
+  });
+});
+```
+
+</details>
+
+<details>
+<summary><strong>Vitest Example</strong></summary>
+
+```tsx
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { def, get, subject } from "bdd-lazy-var-next/vitest";
+import { Counter } from "./Counter";
+
+describe("Counter Component", () => {
+  def("counterProps", () => ({
+    initialCount: get<number>("initialCount"),
+    label: get<string>("label"),
+  }));
+
+  def("initialCount", () => 0);
+  def("label", () => "Count");
+
+  subject("counter", () => render(<Counter {...get("counterProps")} />));
+
+  it("renders with default count", () => {
+    subject();
+    expect(screen.getByTestId("count-label")).toHaveTextContent("Count: 0");
+  });
+
+  it("increments the counter", async () => {
+    subject();
+    await userEvent.click(screen.getByTestId("increment"));
+    expect(screen.getByTestId("count-label")).toHaveTextContent("Count: 1");
+  });
+
+  describe("with custom initial count", () => {
+    def("initialCount", () => 10);
+
+    it("starts at the custom count", () => {
+      subject();
+      expect(screen.getByTestId("count-label")).toHaveTextContent("Count: 10");
+    });
+  });
+});
+```
+
+</details>
+
+**Key Benefits for React Testing:**
+
+1. **DRY Component Setup**: Define props once, reuse in nested contexts
+2. **Easy Overrides**: Override specific props in nested describe blocks
+3. **Type Safety**: Full TypeScript support with React components
+4. **Clean Tests**: Focus on behavior, not setup boilerplate
+5. **Lazy Rendering**: Components only render when `subject()` is called
+
+**Important: Prevent Memory Leaks**
+
+When using React Testing Library with `bdd-lazy-var-next`, you **must** add cleanup to prevent memory leaks:
+
+**For Bun:**
+```ts
+// setup.ts
+import { cleanup } from "@testing-library/react";
+import { afterEach } from "bun:test";
+
+afterEach(() => {
+  cleanup();
+});
+```
+
+**For Vitest:**
+```ts
+// setup.ts
+import { cleanup } from "@testing-library/react";
+import { afterEach } from "vitest";
+
+afterEach(() => {
+  cleanup();
+});
+```
+
+**Why this matters:**
+
+Without cleanup, rendered components accumulate in memory across tests, causing:
+- 🐌 **Slow test execution** (especially noticeable in Vitest)
+- 💾 **Memory leaks** from accumulated DOM nodes and React instances
+- ❌ **Test interference** from leftover state
+
+The memory leak is particularly bad when using `subject()` with `render()` because each test renders a component that stays mounted unless explicitly cleaned up.
 
 ## Bun Advanced Usage & Troubleshooting
 

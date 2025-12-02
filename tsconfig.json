@@ -15,7 +15,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"allowJs": true,
 		"types": [
-			"bun-types",
+			"@types/bun",
 			"chai",
 			"chai-spies",
 			"jasmine",

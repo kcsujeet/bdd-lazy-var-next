@@ -8,12 +8,21 @@
     "build": "vite build"
   },
   "dependencies": {
-    "bdd-lazy-var-next": "file:../../"
+    "bdd-lazy-var-next": "file:../../",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "vitest": "^1.0.0",
     "@vitejs/plugin-react": "^4.0.0",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.5.0",
+    "@testing-library/jest-dom": "^6.1.0",
+    "@vitest/ui": "^1.0.0",
+    "jsdom": "^23.0.0"
   },
   "peerDependencies": {
     "typescript": "^5"

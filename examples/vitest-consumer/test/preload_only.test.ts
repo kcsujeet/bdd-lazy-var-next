@@ -2,10 +2,10 @@ import { describe, it, expect } from "vitest";
 
 // No import of bdd-lazy-var-next here, relying on preload
 
-def("foo", "bar");
+def("foo", () => "bar");
 
 describe("Consumer Project Preload Only", () => {
-  def("bar", "baz");
+  def("bar", () => "baz");
 
   it("works with preload only", () => {
     expect(get("bar")).toBe("baz");

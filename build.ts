@@ -99,10 +99,10 @@ async function generateEntryPointTypes() {
 
 declare global {
   const get: GetVar;
-  function def(name: string, implementation: () => any): void;
-  function def(name: string, value: any): void;
-  function subject(name: string, implementation: () => any): void;
-  function subject(implementation: () => any): void;
+  function def<T = any>(name: string | string[], implementation: () => T): void;
+  function subject<T = any>(name: string, implementation: () => T): void;
+  function subject<T = any>(implementation: () => T): void;
+  function subject<T = any>(): T;
   function sharedExamplesFor(name: string, implementation: (...args: any[]) => void): void;
   function includeExamplesFor(name: string, ...args: any[]): void;
   function itBehavesLike(name: string, ...args: any[]): void;

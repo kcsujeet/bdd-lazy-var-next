@@ -1,13 +1,20 @@
 export interface GetVar {
-	(name: string): any;
-	variable(name: string): any;
-	definitionOf(name: string): any;
+	<T = any>(name: string): T;
+	variable<T = any>(name: string): () => T;
+	definitionOf<T = any>(name: string): () => T;
 }
 
 export const get: GetVar;
-export function def(name: string, implementation: () => any): void;
-export function subject(name: string, implementation: () => any): void;
-export function subject(implementation: () => any): void;
+
+export function def<T = any>(
+	name: string | string[],
+	implementation: () => T,
+): void;
+
+export function subject<T = any>(name: string, implementation: () => T): void;
+export function subject<T = any>(implementation: () => T): void;
+export function subject<T = any>(): T;
+
 export function sharedExamplesFor(
 	name: string,
 	implementation: (...args: any[]) => void,
