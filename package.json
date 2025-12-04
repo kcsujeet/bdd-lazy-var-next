@@ -40,15 +40,21 @@
     },
     "./jest": {
       "types": "./dist/jest.d.ts",
-      "default": "./dist/jest.js"
+      "require": "./dist/jest.cjs",
+      "import": "./dist/jest.mjs",
+      "default": "./dist/jest.cjs"
     },
     "./jasmine": {
       "types": "./dist/jasmine.d.ts",
-      "default": "./dist/jasmine.js"
+      "require": "./dist/jasmine.cjs",
+      "import": "./dist/jasmine.cjs",
+      "default": "./dist/jasmine.cjs"
     },
     "./mocha": {
       "types": "./dist/mocha.d.ts",
-      "default": "./dist/mocha.js"
+      "require": "./dist/mocha.cjs",
+      "import": "./dist/mocha.cjs",
+      "default": "./dist/mocha.cjs"
     }
   },
   "peerDependencies": {

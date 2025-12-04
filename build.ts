@@ -41,15 +41,15 @@ function makeOptionalRequires(code: string) {
   return result;
 }
 
-async function buildBundle(entrypoint: string, outputFile: string) {
-  console.log(`Building ${outputFile}...`);
+async function buildBundle(entrypoint: string, outputFile: string, format: "esm" | "cjs" = "esm") {
+  console.log(`Building ${outputFile} (${format})...`);
 
   try {
     const result = await Bun.build({
       entrypoints: [entrypoint],
       target: "node",
-      format: "esm",
-      minify: false,
+      format,
+      minify: true,
       sourcemap: "external",
     });
 
@@ -117,17 +117,26 @@ declare global {
 }
 
 async function main() {
-  console.log("Building bdd-lazy-var-next with Bun bundler (ESM)...\n");
+  console.log("Building bdd-lazy-var-next with Bun bundler...\n");
 
   // Ensure dist directory exists
   await Bun.write("dist/.gitkeep", "");
 
   // Build specific runners directly from features
-  await buildBundle("./src/features/bun/index.ts", "./dist/bun.js");
-  await buildBundle("./src/features/vitest/index.ts", "./dist/vitest.js");
-  await buildBundle("./src/features/jest/index.ts", "./dist/jest.js");
-  await buildBundle("./src/features/jasmine/index.ts", "./dist/jasmine.js");
-  await buildBundle("./src/features/mocha/index.ts", "./dist/mocha.js");
+  // ESM for modern test runners (Bun, Vitest)
+  await buildBundle("./src/features/bun/index.ts", "./dist/bun.js", "esm");
+  await buildBundle("./src/features/vitest/index.ts", "./dist/vitest.js", "esm");
+
+  // Build both ESM and CJS for traditional test runners (Jest, Jasmine, Mocha)
+  // CJS is the default format in package.json exports
+  await buildBundle("./src/features/jest/index.ts", "./dist/jest.cjs", "cjs");
+  await buildBundle("./src/features/jest/index.ts", "./dist/jest.mjs", "esm");
+
+  await buildBundle("./src/features/jasmine/index.ts", "./dist/jasmine.cjs", "cjs");
+  await buildBundle("./src/features/jasmine/index.ts", "./dist/jasmine.mjs", "esm");
+
+  await buildBundle("./src/features/mocha/index.ts", "./dist/mocha.cjs", "cjs");
+  await buildBundle("./src/features/mocha/index.ts", "./dist/mocha.mjs", "esm");
 
   // Generate type definitions for each entry point
   await generateEntryPointTypes();

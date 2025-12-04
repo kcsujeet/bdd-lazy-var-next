@@ -1,2 +1,2 @@
-import "bdd-lazy-var-next/jest";
+require("bdd-lazy-var-next/jest");
 import "@testing-library/jest-dom";

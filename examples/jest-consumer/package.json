@@ -2,9 +2,8 @@
   "name": "jest-consumer",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "bunx jest"
   },
   "dependencies": {
     "bdd-lazy-var-next": "file:../../",
