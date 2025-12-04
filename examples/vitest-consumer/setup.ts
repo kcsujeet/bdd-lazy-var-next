@@ -5,5 +5,5 @@ import { afterEach } from "vitest";
 
 // Clean up React Testing Library after each test to prevent memory leaks
 afterEach(() => {
-  cleanup();
+	cleanup();
 });

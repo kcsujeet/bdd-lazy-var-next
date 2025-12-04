@@ -1,15 +1,21 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "types": ["jest", "@testing-library/jest-dom"],
-    "jsx": "react-jsx",
-    "isolatedModules": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "lib": ["esnext", "dom", "dom.iterable"]
-  },
-  "include": ["test/**/*.ts", "test/**/*.tsx", "src/**/*.ts", "src/**/*.tsx", "setup.ts"]
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"types": ["jest", "@testing-library/jest-dom"],
+		"jsx": "react-jsx",
+		"isolatedModules": true,
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"lib": ["esnext", "dom", "dom.iterable"]
+	},
+	"include": [
+		"test/**/*.ts",
+		"test/**/*.tsx",
+		"src/**/*.ts",
+		"src/**/*.tsx",
+		"setup.ts"
+	]
 }

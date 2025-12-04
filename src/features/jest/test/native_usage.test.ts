@@ -1,4 +1,4 @@
-import "../../../../dist/jest";
+import "../../../../dist/jest.mjs";
 
 declare const def: any;
 declare const subject: any;

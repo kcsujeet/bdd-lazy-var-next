@@ -23,10 +23,12 @@ function makeOptionalRequires(code: string) {
     return ""; // Remove the import
   });
 
-  // Remove usages for all collected names
+
+  // Remove usages for all collected names and also namespace.createRequire patterns
   names.forEach((name) => {
+    // Match both import.meta.url and resolved file paths like "file://..."
     const usageRegex = new RegExp(
-      `(?:var|const|let)\\s+\\w+\\s*=\\s*${name}\\(import\\.meta\\.url\\);?`,
+      `(?:var|const|let)\\s+\\w+\\s*=\\s*(?:\\w+\\.)?${name}\\([^)]+\\);?`,
       "g"
     );
     result = result.replace(usageRegex, "");
@@ -41,7 +43,11 @@ function makeOptionalRequires(code: string) {
   return result;
 }
 
-async function buildBundle(entrypoint: string, outputFile: string, format: "esm" | "cjs" = "esm") {
+async function buildBundle(
+  entrypoint: string,
+  outputFile: string,
+  format: "esm" | "cjs" = "esm"
+) {
   console.log(`Building ${outputFile} (${format})...`);
 
   try {
@@ -49,13 +55,15 @@ async function buildBundle(entrypoint: string, outputFile: string, format: "esm"
       entrypoints: [entrypoint],
       target: "node",
       format,
-      minify: true,
+      minify: false,
       sourcemap: "external",
     });
 
     if (!result.success) {
       console.error(`Build failed for ${outputFile}:`);
-      result.logs.forEach((log) => console.error(log));
+      result.logs.forEach((log) => {
+        console.error(log);
+      });
       process.exit(1);
     }
 
@@ -125,15 +133,27 @@ async function main() {
   // Build specific runners directly from features
   // ESM for modern test runners (Bun, Vitest)
   await buildBundle("./src/features/bun/index.ts", "./dist/bun.js", "esm");
-  await buildBundle("./src/features/vitest/index.ts", "./dist/vitest.js", "esm");
+  await buildBundle(
+    "./src/features/vitest/index.ts",
+    "./dist/vitest.js",
+    "esm"
+  );
 
   // Build both ESM and CJS for traditional test runners (Jest, Jasmine, Mocha)
   // CJS is the default format in package.json exports
   await buildBundle("./src/features/jest/index.ts", "./dist/jest.cjs", "cjs");
   await buildBundle("./src/features/jest/index.ts", "./dist/jest.mjs", "esm");
 
-  await buildBundle("./src/features/jasmine/index.ts", "./dist/jasmine.cjs", "cjs");
-  await buildBundle("./src/features/jasmine/index.ts", "./dist/jasmine.mjs", "esm");
+  await buildBundle(
+    "./src/features/jasmine/index.ts",
+    "./dist/jasmine.cjs",
+    "cjs"
+  );
+  await buildBundle(
+    "./src/features/jasmine/index.ts",
+    "./dist/jasmine.mjs",
+    "esm"
+  );
 
   await buildBundle("./src/features/mocha/index.ts", "./dist/mocha.cjs", "cjs");
   await buildBundle("./src/features/mocha/index.ts", "./dist/mocha.mjs", "esm");

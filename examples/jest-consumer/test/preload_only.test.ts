@@ -1,11 +1,11 @@
-import { describe, it, expect } from "@jest/globals";
+import { describe, expect, it } from "@jest/globals";
 
 // No import of bdd-lazy-var-next here, relying on preload
 
 describe("Consumer Project Preload Only", () => {
-  def("bar", () => "baz");
+	def("bar", () => "baz");
 
-  it("works with preload only", () => {
-    expect(get("bar")).toBe("baz");
-  });
+	it("works with preload only", () => {
+		expect(get("bar")).toBe("baz");
+	});
 });

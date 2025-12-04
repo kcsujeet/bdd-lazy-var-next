@@ -1,13 +1,13 @@
-import { describe, it, expect } from "bun:test";
+import { describe, expect, it } from "bun:test";
 
 // No import of bdd-lazy-var-next here, relying on preload
 
 describe("Consumer Project Preload Only", () => {
-  def("bar", () => "baz");
+	def("bar", () => "baz");
 
-  it("works with preload only", () => {
-    // Use explicit type parameter for type safety
-    const bar = get<string>("bar");
-    expect(bar).toBe("baz");
-  });
+	it("works with preload only", () => {
+		// Use explicit type parameter for type safety
+		const bar = get<string>("bar");
+		expect(bar).toBe("baz");
+	});
 });

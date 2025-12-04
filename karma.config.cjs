@@ -1,4 +1,4 @@
-const path = require("path");
+const _path = require("node:path");
 const puppeteer = require("puppeteer");
 
 process.env.CHROME_BIN = puppeteer.executablePath();
