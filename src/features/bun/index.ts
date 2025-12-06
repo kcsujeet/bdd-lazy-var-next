@@ -135,65 +135,39 @@ function addInterface(rootSuite: any, options: any) {
 		}
 
 		if (describeFn) {
-			const wrapped = tracker.wrapSuite(describeFn);
-
-			try {
-				const currentVal = wrapped;
-				Object.defineProperty(context, describeKey, {
-					get() {
-						return currentVal;
-					},
-					set(_val) {
-						// Ignore assignment to preserve our wrapper
-					},
-					configurable: true,
-					enumerable: true,
-				});
-
-				// Try to patch bun:test module exports
-				const bunTest = requireModule("bun:test"); // eslint-disable-line global-require, import/no-unresolved
-				if (bunTest) {
-					if (bunTest.describe !== wrapped) {
-						bunTest.describe = wrapped;
-					}
-					if (prefix === "x" && bunTest.describe.skip !== wrapped) {
-						bunTest.describe.skip = wrapped;
-					}
-					if (prefix === "f") {
-						try {
-							if (bunTest.describe.only !== wrapped) {
-								bunTest.describe.only = wrapped;
-							}
-						} catch {
-							// Ignore error in CI environments where .only is disabled
-						}
-					}
-
-					// Attempt to mock the module for ESM imports
-					if (bunTest.mock?.module) {
-						bunTest.mock.module("bun:test", () => {
-							return {
-								...bunTest,
-								describe: context.describe,
-								it: context.it,
-								xdescribe: context.xdescribe,
-								fdescribe: context.fdescribe,
-								xit: context.xit,
-								fit: context.fit,
-							};
-						});
-					}
-				}
-			} catch {
-				// Ignore
-			}
-			context[`${prefix}context`] = wrapped;
+			context[describeKey] = tracker.wrapSuite(describeFn);
+			context[`${prefix}context`] = context[describeKey];
 		}
 	});
 
 	// Use global afterEach directly (Bun test doesn't have it on context)
 	if (typeof (global as any).afterEach === "function") {
 		(global as any).afterEach(tracker.cleanUpCurrentContext);
+	}
+
+	// NOTE: Mocking bun:test causes hangs in some environments/versions of Bun.
+	// It seems to create a deadlock or infinite recursion when loading bun:test.
+	try {
+		const { mock } = requireModule("bun:test");
+		if (mock?.module) {
+			mock.module("bun:test", () => {
+				const original = requireModule("bun:test");
+				return {
+					...original,
+					describe: context.describe,
+					xdescribe: context.xdescribe,
+					fdescribe: context.fdescribe,
+					it: context.it,
+					xit: context.xit,
+					fit: context.fit,
+					test: context.it,
+					xtest: context.xit,
+					ftest: context.fit,
+				};
+			});
+		}
+	} catch (_e) {
+		// Ignore if mocking fails or not available
 	}
 
 	return helpers;

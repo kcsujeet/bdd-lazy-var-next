@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-// No import of bdd-lazy-var-next here, relying on preload
+// No import of bdd-lazy-var-next here, relying on global preload
 
 def("foo", () => "bar");
 

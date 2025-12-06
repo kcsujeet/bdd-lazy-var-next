@@ -89,6 +89,8 @@ import { get, def } from "bdd-lazy-var-next/vitest";
 
 **Option 2: Global Variables**
 
+**Note**: You **must** set `globals: true` in your Vitest configuration for `bdd-lazy-var-next` to work correctly, even if you use explicit imports (i.e. import { it, expect } from 'vitest'). This is because the library relies on global lifecycle hooks.
+
 Add to your `vitest.config.ts` setup files:
 
 ```ts
@@ -113,6 +115,8 @@ import "bdd-lazy-var-next/vitest";
 ### Jest
 
 > 🚨 **CAUTION:** Do yourself a favor and migrate to [Vitest](https://vitest.dev) or [Bun test](https://bun.com/docs/test). Jest is slow, has poor ESM support, and is no longer actively innovated. Don't use Jest.
+
+**Important**: You must use the global `describe`, `it`, `test`, and `expect` variables provided by Jest. Importing them from `@jest/globals` is **not supported** and will cause "Cannot define variable twice" errors because the library cannot intercept those imports to add its tracking logic.
 
 **Option 1: Explicit Imports (Recommended)**
 
@@ -534,7 +538,7 @@ describe("Shopping Cart", () => {
 
     // TypeScript knows products is Product[]
     expect(products[0].name).toBe("Laptop"); // ✓ Type-safe!
-    expect(products[0].price).toBe(999);     // ✓ Autocomplete works!
+    expect(products[0].price).toBe(999); // ✓ Autocomplete works!
     expect(products.length).toBe(2);
   });
 
@@ -594,7 +598,9 @@ describe("UserProfile Component", () => {
   it("renders user information", () => {
     subject();
     expect(screen.getByTestId("user-name")).toHaveTextContent("John Doe");
-    expect(screen.getByTestId("user-email")).toHaveTextContent("john@example.com");
+    expect(screen.getByTestId("user-email")).toHaveTextContent(
+      "john@example.com"
+    );
   });
 
   it("calls onEdit when clicked", async () => {
@@ -675,6 +681,7 @@ describe("Counter Component", () => {
 When using React Testing Library with `bdd-lazy-var-next`, you **must** add cleanup to prevent memory leaks:
 
 **For Bun:**
+
 ```ts
 // setup.ts
 import { cleanup } from "@testing-library/react";
@@ -686,6 +693,7 @@ afterEach(() => {
 ```
 
 **For Vitest:**
+
 ```ts
 // setup.ts
 import { cleanup } from "@testing-library/react";
@@ -699,6 +707,7 @@ afterEach(() => {
 **Why this matters:**
 
 Without cleanup, rendered components accumulate in memory across tests, causing:
+
 - 🐌 **Slow test execution** (especially noticeable in Vitest)
 - 💾 **Memory leaks** from accumulated DOM nodes and React instances
 - ❌ **Test interference** from leftover state

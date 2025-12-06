@@ -2,6 +2,7 @@ declare var sharedExamplesFor: any;
 declare var describe: any;
 declare var xdescribe: any;
 declare var context: any;
+declare var xcontext: any;
 declare var it: any;
 declare var def: any;
 declare var subject: any;
@@ -28,6 +29,13 @@ const describeFn =
 		? context
 		: typeof describe === "function"
 			? describe
+			: null;
+
+const xdescribeFn =
+	typeof xcontext === "function"
+		? xcontext
+		: typeof xdescribe === "function"
+			? xdescribe
 			: null;
 
 sharedExamplesFor("Lazy Vars Interface", () => {
@@ -77,7 +85,7 @@ sharedExamplesFor("Lazy Vars Interface", () => {
 			expect(getStatic()).to.equal(get("staticVar"));
 		});
 
-		describe("nested suite", () => {
+		describeFn("nested suite", () => {
 			def("lastName", "Smith");
 
 			it("uses suite specific variable inside dynamic parent variable", () => {
@@ -94,7 +102,7 @@ sharedExamplesFor("Lazy Vars Interface", () => {
 		});
 	});
 
-	describe("dynamic variable definition", () => {
+	describeFn("dynamic variable definition", () => {
 		var prevValue: any,
 			valueInAfterEach: any,
 			valueInBefore: any,
@@ -142,57 +150,66 @@ sharedExamplesFor("Lazy Vars Interface", () => {
 		});
 	});
 
-	describe("when fallbacks to parent variable definition through suites tree", () => {
-		def("var", "Doe");
+	describeFn(
+		"when fallbacks to parent variable definition through suites tree",
+		() => {
+			def("var", "Doe");
 
-		describe("nested suite without variable definition", () => {
-			def("hasVariables", true);
+			describeFn("nested suite without variable definition", () => {
+				def("hasVariables", true);
 
-			it("fallbacks to parent variable definition", () => {
-				expect(get("var")).to.equal("Doe");
-			});
-
-			it("can define other variables inside", () => {
-				expect(get("hasVariables")).to.equal(true);
-			});
-
-			describe("nested suite with variable definition", () => {
-				def("var", () => `${get("anotherVar")} ${get("var")}`);
-
-				def("anotherVar", () => "John");
-
-				it("uses correct parent variable definition", () => {
-					expect(get("var")).to.equal("John Doe");
+				it("fallbacks to parent variable definition", () => {
+					expect(get("var")).to.equal("Doe");
 				});
 
-				describe("one more nested suite without variable definition", () => {
+				it("can define other variables inside", () => {
+					expect(get("hasVariables")).to.equal(true);
+				});
+
+				describeFn("nested suite with variable definition", () => {
+					def("var", () => `${get("anotherVar")} ${get("var")}`);
+
+					def("anotherVar", () => "John");
+
 					it("uses correct parent variable definition", () => {
 						expect(get("var")).to.equal("John Doe");
 					});
+
+					describeFn(
+						"one more nested suite without variable definition",
+						() => {
+							it("uses correct parent variable definition", () => {
+								expect(get("var")).to.equal("John Doe");
+							});
+						},
+					);
 				});
 			});
-		});
-	});
+		},
+	);
 
-	describe('when variable is used inside "afterEach" of parent and child suites', () => {
-		var subjectInChild: any;
+	describeFn(
+		'when variable is used inside "afterEach" of parent and child suites',
+		() => {
+			var subjectInChild: any;
 
-		subject(() => ({}));
+			subject(() => ({}));
 
-		describe("parent suite", () => {
-			afterEach(() => {
-				expect(subject()).to.equal(subjectInChild);
-			});
+			describeFn("parent suite", () => {
+				afterEach(() => {
+					expect(subject()).to.equal(subjectInChild);
+				});
 
-			describe("child suite", () => {
-				it("uses the same variable instance", () => {
-					subjectInChild = subject();
+				describeFn("child suite", () => {
+					it("uses the same variable instance", () => {
+						subjectInChild = subject();
+					});
 				});
 			});
-		});
-	});
+		},
+	);
 
-	describe("named subject", () => {
+	describeFn("named subject", () => {
 		var subjectValue = {};
 
 		subject("named", subjectValue);
@@ -205,7 +222,7 @@ sharedExamplesFor("Lazy Vars Interface", () => {
 			expect(get("named")).to.equal(subjectValue);
 		});
 
-		describe("nested suite", () => {
+		describeFn("nested suite", () => {
 			var nestedSubjectValue = {};
 
 			subject("nested", nestedSubjectValue);
@@ -219,7 +236,7 @@ sharedExamplesFor("Lazy Vars Interface", () => {
 			});
 		});
 
-		describe("parent subject in child one", () => {
+		describeFn("parent subject in child one", () => {
 			subject("nested", () => get("subject"));
 
 			it('can access parent subject inside named subject by accessing "subject" variable', () => {
@@ -232,10 +249,10 @@ sharedExamplesFor("Lazy Vars Interface", () => {
 		});
 	});
 
-	describe("variables in skipped suite", () => {
+	describeFn("variables in skipped suite", () => {
 		subject([]);
 
-		xdescribe("Skipped suite", () => {
+		xdescribeFn("Skipped suite", () => {
 			var object = {};
 
 			subject(object);
@@ -246,13 +263,13 @@ sharedExamplesFor("Lazy Vars Interface", () => {
 		});
 	});
 
-	describe("referencing child lazy variable from parent", () => {
+	describeFn("referencing child lazy variable from parent", () => {
 		def("model", () => ({ value: get("value") }));
 
-		describe("nested suite", () => {
+		describeFn("nested suite", () => {
 			subject(() => get("model").value);
 
-			describe("suite which defines variable used in parent suite", () => {
+			describeFn("suite which defines variable used in parent suite", () => {
 				def("value", () => ({ x: 5 }));
 
 				subject(() => get("subject").x);
@@ -264,39 +281,45 @@ sharedExamplesFor("Lazy Vars Interface", () => {
 		});
 	});
 
-	describe("when parent variable is accessed multiple times inside child definition", () => {
-		subject(() => ({ isParent: true, name: "test" }));
+	describeFn(
+		"when parent variable is accessed multiple times inside child definition",
+		() => {
+			subject(() => ({ isParent: true, name: "test" }));
 
-		describe("child suite", () => {
-			subject(() => ({
-				isParent: !subject().isParent,
-				name: `${subject().name} child`,
-			}));
+			describeFn("child suite", () => {
+				subject(() => ({
+					isParent: !subject().isParent,
+					name: `${subject().name} child`,
+				}));
 
-			it("retrieves proper parent variable", () => {
-				expect(subject().isParent).to.equal(false);
-				expect(subject().name).to.equal("test child");
+				it("retrieves proper parent variable", () => {
+					expect(subject().isParent).to.equal(false);
+					expect(subject().name).to.equal("test child");
+				});
 			});
-		});
-	});
+		},
+	);
 
-	describe("when calls variable defined in parent suites", () => {
+	describeFn("when calls variable defined in parent suites", () => {
 		subject(() => ({ isRoot: get("isRoot") }));
 
 		def("isRoot", true);
 
-		describe("one more level which overrides parent variable", () => {
+		describeFn("one more level which overrides parent variable", () => {
 			subject(() => get("subject").isRoot);
 
-			describe("suite that calls parent variable and redefines dependent variable", () => {
-				def("isRoot", false);
+			describeFn(
+				"suite that calls parent variable and redefines dependent variable",
+				() => {
+					def("isRoot", false);
 
-				it("gets the correct variable", () => {
-					expect(get("subject")).to.equal(false);
-				});
-			});
+					it("gets the correct variable", () => {
+						expect(get("subject")).to.equal(false);
+					});
+				},
+			);
 
-			describe("suite that calls parent variable", () => {
+			describeFn("suite that calls parent variable", () => {
 				it("gets the correct variable", () => {
 					expect(get("subject")).to.equal(true);
 				});
