@@ -1,7 +1,6 @@
 // NOTE: We cannot import describe/it/expect from @jest/globals because bdd-lazy-var-next
 // needs to wrap the global versions to track suite context.
 // import { describe, it, expect } from "@jest/globals";
-import { def, get } from "bdd-lazy-var-next/jest";
 
 const calculateLineItemTotalTaxRate = (lineItem: {
 	line_item_taxes?: { rate: string | number }[];
