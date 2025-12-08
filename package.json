@@ -10,9 +10,6 @@
 		"type": "git",
 		"url": "git@github.com:kcsujeet/bdd-lazy-var-next.git"
 	},
-	"publishConfig": {
-		"registry": "https://npm.pkg.github.com"
-	},
 	"keywords": [
 		"mocha.js",
 		"jasmine",
