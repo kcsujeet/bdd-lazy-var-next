@@ -1,3 +1,4 @@
+import { def, get } from "bdd-lazy-var-next/jest";
 
 def("foo", () => "bar");
 

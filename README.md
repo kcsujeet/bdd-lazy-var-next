@@ -13,7 +13,7 @@ Provides helpers for testing frameworks such as [bun:test][bun], [vitest][vitest
 > If you are migrating from the original library, please note the following critical changes:
 >
 > 1. **No Auto-Detection**: You **must** import from the specific framework entry point (e.g., `bdd-lazy-var-next/bun`, `bdd-lazy-var-next/jest`). The generic `bdd-lazy-var` import is not supported.
-> 2. **Explicit Imports**: We strongly recommend using explicit imports (`import { get, def } from ...`) over global variables.
+> 2. **Explicit Imports Only**: Global variables (`def`, `get`, `subject`) are **no longer supported**. You must explicit import them.
 > 3. **Native ESM**: This library is published as native ESM. Ensure your environment supports ESM.
 > 4. **Removed `its` Shortcut**: The `its` shortcut and `is.expected` helper have been removed to simplify the API and reduce maintenance. Use standard `it` blocks with assertions instead.
 
@@ -31,8 +31,6 @@ bun add -d bdd-lazy-var-next
 
 ### Bun
 
-**Option 1: Explicit Imports (Recommended)**
-
 ```ts
 import { get, def, subject } from "bdd-lazy-var-next/bun";
 
@@ -40,30 +38,6 @@ describe("My Bun Test", () => {
   def("value", () => 1);
   // ...
 });
-```
-
-**Option 2: Global Variables**
-
-Import the library once (e.g. in setup) to register globals:
-
-```ts
-import "bdd-lazy-var-next/bun";
-
-describe("My Bun Test", () => {
-  def("value", () => 1); // Available globally
-});
-```
-
-Or add it to your `bunfig.toml` preload:
-
-```toml
-[test]
-preload = ["./setup.ts"]
-```
-
-```ts
-// setup.ts
-import "bdd-lazy-var-next/bun";
 ```
 
 **Bun Test Isolation**
@@ -81,31 +55,24 @@ Bun runs all test files in a shared global context. This means global variable d
 
 ### Vitest
 
-**Option 1: Explicit Imports (Recommended)**
-
-```ts
-import { get, def } from "bdd-lazy-var-next/vitest";
-```
-
-**Option 2: Global Variables**
-
-**Note**: You **must** set `globals: true` in your Vitest configuration for `bdd-lazy-var-next` to work correctly, even if you use explicit imports (i.e. import { it, expect } from 'vitest'). This is because the library relies on global lifecycle hooks.
-
-Add to your `vitest.config.ts` setup files:
+**Note**: You **must** set `globals: true` in your Vitest configuration for `bdd-lazy-var-next` to work correctly. This is because the library relies on global lifecycle hooks provided by Vitest (like `beforeAll`, `afterAll`).
 
 ```ts
 // vitest.config.ts
 export default defineConfig({
   test: {
-    setupFiles: ["./setup.ts"],
     globals: true,
   },
 });
 ```
 
 ```ts
-// setup.ts
-import "bdd-lazy-var-next/vitest";
+// test/example.test.ts
+import { get, def } from "bdd-lazy-var-next/vitest";
+
+describe("My Vitest Test", () => {
+  // ...
+});
 ```
 
 **Example:**
@@ -118,31 +85,8 @@ import "bdd-lazy-var-next/vitest";
 
 **Important**: You must use the global `describe`, `it`, `test`, and `expect` variables provided by Jest. Importing them from `@jest/globals` is **not supported** and will cause "Cannot define variable twice" errors because the library cannot intercept those imports to add its tracking logic.
 
-**Option 1: Explicit Imports (Recommended)**
-
 ```js
 import { get, def } from "bdd-lazy-var-next/jest";
-```
-
-**Option 2: Global Variables**
-
-Add to your `jest.config.ts`:
-
-```ts
-// jest.config.ts
-import type { Config } from "jest";
-
-const config: Config = {
-  setupFilesAfterEnv: ["./setup.ts"],
-  // ... other config
-};
-
-export default config;
-```
-
-```ts
-// setup.ts
-import "bdd-lazy-var-next/jest";
 ```
 
 **Example:**
@@ -153,45 +97,17 @@ import "bdd-lazy-var-next/jest";
 
 > 🚨 **CAUTION:** Do yourself a favor and migrate to [Vitest](https://vitest.dev) or [Bun test](https://bun.com/docs/test). Mocha is outdated and lacks modern features like native ESM support, built-in TypeScript, and parallel testing. Don't use Mocha.
 
-**Option 1: Explicit Imports (Recommended)**
-
 ```js
 import { get, def } from "bdd-lazy-var-next/mocha";
-```
-
-**Option 2: Global Variables**
-
-You can require it globally via command line:
-
-```bash
-mocha -r bdd-lazy-var-next/mocha
-```
-
-Or import it in your test/setup file:
-
-```js
-import "bdd-lazy-var-next/mocha";
 ```
 
 ### Jasmine
 
 > 🚨 **CAUTION:** Do yourself a favor and migrate to [Vitest](https://vitest.dev) or [Bun test](https://bun.com/docs/test). Jasmine is legacy technology with poor ESM support and minimal modern tooling integration. Don't use Jasmine.
 
-**Option 1: Explicit Imports (Recommended)**
-
 ```js
 import { get, def } from "bdd-lazy-var-next/jasmine";
 ```
-
-**Option 2: Global Variables**
-
-Create a helper file (e.g., `spec/helpers/bdd-lazy-var.js`) or import it in your spec file:
-
-```js
-import "bdd-lazy-var-next/jasmine";
-```
-
-And ensure it's included in your `jasmine.json` helpers list.
 
 ## Usage Guide
 
@@ -350,18 +266,6 @@ When using explicit imports, TypeScript loads corresponding declarations automat
 
 ```ts
 import { get, def } from "bdd-lazy-var-next/bun";
-```
-
-For global usage (preload/setup files), the types are available globally after importing:
-
-```ts
-// setup.ts
-import "bdd-lazy-var-next/bun";
-
-// In test files, no import needed:
-describe("test", () => {
-  def("value", () => 42); // TypeScript knows about def, get, etc.
-});
 ```
 
 ### Type-Safe Variables

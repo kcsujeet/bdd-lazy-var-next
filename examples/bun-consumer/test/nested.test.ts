@@ -1,3 +1,4 @@
+import { def, get } from "bdd-lazy-var-next/bun";
 import { describe, expect, it } from "bun:test";
 
 const calculateLineItemTotalTaxRate = (lineItem: {
@@ -55,5 +56,3 @@ describe("calculateTotalTaxRate", () => {
 		});
 	});
 });
-
-itBehavesLike()
