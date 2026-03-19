@@ -1,3 +1,8 @@
+## ⚠️⚠️⚠️This is no longer maintained
+I'm working on a better type-safe alternative to `bdd-lazy-var` -> [testoise](https://github.com/kcsujeet/testoise). I'd recommend to check it out. : )
+
+---
+
 # BDD + lazy variable definition (aka rspec)
 
 > **Note**: This is a fork of the original [bdd-lazy-var](https://github.com/stalniy/bdd-lazy-var) with added support for Vitest and Bun test frameworks.
